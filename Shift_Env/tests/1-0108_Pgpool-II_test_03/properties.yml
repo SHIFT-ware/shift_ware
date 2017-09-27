@@ -1,0 +1,40 @@
+192.168.127.31:
+  connection_hostname: '192.168.127.31'
+  operating_system: 'Linux'
+  Pgpool:
+    state: started
+    enabled: yes
+    exec_groups:
+      primary:
+        name: postgres
+        gid: 1000
+      secondary:
+        - name: test1
+          gid: 1001
+        - name: test2
+          gid: 1002
+    exec_user:
+      name: postgres
+      uid: 1000
+      home_dir: /home/postgres
+      shell: /bin/bash
+    config:
+      md5sum: '86677cd14dae093aac72f742020369b1'
+    pcp_users:
+      - name: saito
+    pool_passwd:
+      - name: postgres
+    pool_hba:
+      - type: local
+        database: all
+        user: all
+        method: trust
+      - type: host
+        database: all
+        user: all
+        address: 0.0.0.0/0
+        method: md5
+192.168.127.41:
+  connection_hostname: '192.168.127.41'
+  operating_system: 'Linux'
+

@@ -1,0 +1,30 @@
+---
+- name: 1-0001-39_Snmp - install package
+  yum:
+    name: net-snmp
+    state: present
+
+- name: 1-0001-39_Snmp - start and enable service
+  service:
+    name: 'snmpd'
+    state: 'started'
+    enabled: 'yes'
+
+- name: 1-0001-39_Snmp - set community
+  lineinfile:
+    dest: '/etc/snmp/snmpd.conf'
+    insertafter: "^#       sec.name  source          community"
+    line: "com2sec {{ item.sec_name }}  {{ item.source }}  {{ item.community }}"
+    state: present
+  notify: snmp_restart
+  with_items: base_advanced.snmpd.sec | default([])
+
+- name: 1-0001-39_Snmp - set trap
+  lineinfile:
+    dest: '/etc/snmp/snmpd.conf'
+    insertafter: EOF
+    line: "trapsink {{ item.server }}  {{ item.community }}  {{ item.port }}"
+    state: present
+  notify: snmp_restart
+  with_items: base_advanced.snmpd.trap | default([])
+                                                                                             

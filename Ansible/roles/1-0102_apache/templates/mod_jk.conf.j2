@@ -1,0 +1,52 @@
+# Load mod_jk module
+# Specify the filename of the mod_jk lib
+LoadModule jk_module modules/mod_jk.so
+ 
+# Where to find workers.properties
+JkWorkersFile conf.d/workers.properties
+
+# Where to put jk logs
+#JkLogFile logs/mod_jk.log
+JkLogFile /var/log/httpd/mod_jk.log
+ 
+# Set the jk log level [debug/error/info]
+JkLogLevel error
+ 
+# Select the log format
+JkLogStampFormat  "[%a %b %d %H:%M:%S %Y]"
+ 
+# JkOptions indicates to send SSK KEY SIZE
+#JkOptions +ForwardKeySize +ForwardURICompat -ForwardDirectories
+ 
+# JkRequestLogFormat
+JkRequestLogFormat "%w %V %T %R"
+
+# Mount your applications
+#JkMount /application/* loadbalancer
+ 
+# You can use external file for mount points.
+# It will be checked for updates each 60 seconds.
+# The format of the file is: /url=worker
+# /examples/*=loadbalancer
+JkMountFile conf.d/uriworkermap.properties
+
+# Add shared memory.
+# This directive is present with 1.2.10 and
+# later versions of mod_jk, and is needed for
+# for load balancing to work properly
+JkShmFile /dev/shm/jk.shm
+              
+{% if apac_apache.accessible_addresses is defined %}
+# Add jkstatus for managing runtime data
+<Location /jkstatus/>
+    Order deny,allow
+    Deny from all
+{% if apac_apache.accessible_addresses.0.address == "0.0.0.0" %}
+   Allow from all
+{% else %}
+{% for address in apac_apache.accessible_addresses %}
+    Allow from {{ address.address }}
+{% endfor %}
+{% endif %}
+</Location>
+{% endif %}

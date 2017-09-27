@@ -1,0 +1,18 @@
+192.168.127.31:
+  connection_hostname: '192.168.127.31'
+  operating_system: 'Linux'
+  BASE:
+    OSCORE:
+      version: '6.5'
+  ADVANCED:
+    name_resolve:
+      pri_name_resolve: 'files'
+192.168.127.41:
+  connection_hostname: '192.168.127.41'
+  operating_system: 'Linux'
+  BASE:
+    OSCORE:
+      version: '7.1'
+  ADVANCED:
+    name_resolve:
+      pri_name_resolve: 'files'

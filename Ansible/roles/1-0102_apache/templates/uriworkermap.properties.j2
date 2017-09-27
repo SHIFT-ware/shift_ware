@@ -1,0 +1,10 @@
+# Simple worker configuration file
+# Mount the Servlet context to the ajp13 worker
+
+{% for jkmount in apac_apache.mod_jk.jkmount %}
+{% if jkmount.positive %}
+{{ jkmount.uri }}={{ jkmount.workers }}
+{% else %}
+!{{ jkmount.uri }}={{ jkmount.workers }}
+{% endif %}
+{% endfor %}

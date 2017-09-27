@@ -1,0 +1,9 @@
+{% if base_advanced.name_resolve.name_server is defined  %}
+{% for server in (base_advanced.name_resolve.name_server | selectattr('server', 'defined') | map(attribute='server') | list | join(',')).split(',') %}
+nameserver {{ server }}
+{% endfor %}
+{% endif %}
+
+{% if base_advanced.name_resolve.dns_suffix is defined  %}
+search {{ base_advanced.name_resolve.dns_suffix | selectattr('suffix', 'defined') | map(attribute='suffix') | list | join(' ') | regex_replace(',',' ')}}
+{% endif %}

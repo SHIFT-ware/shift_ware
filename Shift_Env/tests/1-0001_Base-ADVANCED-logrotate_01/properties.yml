@@ -1,0 +1,29 @@
+192.168.127.31:
+  connection_hostname: '192.168.127.31'
+  operating_system: 'Linux'
+  BASE: 
+  ADVANCED:
+    logrotate_basic_option: 
+      cycle: 'daily'
+      rotate_num: 10
+      create: False
+      add_date: False
+      compress: False
+    logrotate_files: 
+      - path: '/var/log/wtmp'
+      - path: '/var/log/btmp'
+192.168.127.41:
+  connection_hostname: '192.168.127.41'
+  operating_system: 'Linux'
+  BASE: 
+  ADVANCED:
+    logrotate_basic_option: 
+      cycle: 'daily'
+      rotate_num: 10
+      create: False
+      add_date: False
+      compress: False
+    logrotate_files: 
+      - path: '/var/log/wtmp'
+      - path: '/var/log/btmp'
+

@@ -1,0 +1,158 @@
+---
+- name: 2-0001-105_EventLog - set tmp variable
+  set_fact:
+    eventlog: "{{ base_ADVANCED.eventlog }}"
+
+- name: 2-0001-105_EventLog - check required parameter is set
+  fail:
+    msg: "required params are not defined"
+  when:
+    - eventlog.application.filepath is not defined or
+      eventlog.application.type is not defined or
+      eventlog.application.maxsize is not defined or
+      eventlog.security.filepath is not defined or
+      eventlog.security.type is not defined or
+      eventlog.security.maxsize is not defined or
+      eventlog.system.filepath is not defined or
+      eventlog.system.type is not defined or
+      eventlog.system.maxsize is not defined
+
+- name: 2-0001-105_EventLog - check registry "AutoBackupLogFiles" value when type is "overrite" or "none"
+  raw: powershell '(Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.name }}").AutoBackupLogFiles'
+  with_items:
+    - name: "Application"
+      param: "{{ eventlog.application }}"
+    - name: "Security"
+      param: "{{ eventlog.security }}"
+    - name: "System"
+      param: "{{ eventlog.system }}"
+  register: ret_pre
+  when: item.param.type == "overwrite" or item.param.type == "none"
+  changed_when: ret_pre.stdout != "0\r\n"
+  always_run: yes
+
+- name: 2-0001-105_EventLog - set registry "AutoBackupLogFiles" value when type is "overrite" or "none"
+  raw: powershell 'Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.item.name }}" AutoBackupLogFiles -Value 0 -Type Dword'
+  with_items: ret_pre.results
+  when: item | changed
+  always_run: no
+
+- name: 2-0001-105_EventLog - post check registry "AutoBackupLogFiles" value when type is "overrite" or "none"
+  raw: powershell '(Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.item.name }}").AutoBackupLogFiles'
+  with_items: ret_pre.results
+  register: ret_post
+  when: item | changed
+  failed_when: ret_post.stdout != "0\r\n"
+  always_run: no
+
+- name: 2-0001-105_EventLog - check registry "AutoBackupLogFiles" value when type is "archive"
+  raw: powershell '(Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.name }}").AutoBackupLogFiles'
+  with_items: 
+    - name: "Application"
+      param: "{{ eventlog.application }}"
+    - name: "Security"
+      param: "{{ eventlog.security }}"
+    - name: "System"
+      param: "{{ eventlog.system }}"
+  register: ret_pre
+  when: item.param.type == "archive"
+  changed_when: ret_pre.stdout != "1\r\n"
+  always_run: yes
+
+- name: 2-0001-105_EventLog - set registry "AutoBackupLogFiles" value when type is "archive"
+  raw: powershell 'Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.item.name }}" AutoBackupLogFiles -Value 1 -Type Dword'
+  with_items: ret_pre.results
+  when: item | changed
+  always_run: no
+
+- name: 2-0001-105_EventLog - post check registry "AutoBackupLogFiles" value when type is "archive"
+  raw: powershell '(Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.item.name }}").AutoBackupLogFiles'
+  with_items: ret_pre.results
+  register: ret_post
+  when: item | changed
+  failed_when: ret_post.stdout != "1\r\n"
+  always_run: no
+
+- name: 2-0001-105_EventLog - check registry "Retention" value when type is "override"
+  raw: powershell '(Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.name }}").Retention'
+  with_items: 
+    - name: "Application"
+      param: "{{ eventlog.application }}"
+    - name: "Security"
+      param: "{{ eventlog.security }}"
+    - name: "System"
+      param: "{{ eventlog.system }}"
+  register: ret_pre
+  when: item.param.type == "overwrite"
+  changed_when: ret_pre.stdout != "0\r\n"
+  always_run: yes
+
+- name: 2-0001-105_EventLog - set registry "Retention" value when type is "override"
+  raw: powershell 'Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.item.name }}" Retention -Value 0 -Type Dword'
+  with_items: ret_pre.results
+  when: item | changed
+  always_run: no
+
+- name: 2-0001-105_EventLog - post check registry "Retention" value when type is "override"
+  raw: powershell '(Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.item.name }}").Retention'
+  with_items: ret_pre.results
+  register: ret_post
+  when: item | changed
+  failed_when: ret_post.stdout != "0\r\n"
+  always_run: no
+
+- name: 2-0001-105_EventLog - check registry "Retention" value when type is "archive" or "none"
+  raw: powershell '(Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.name }}").Retention'
+  with_items: 
+    - name: "Application"
+      param: "{{ eventlog.application }}"
+    - name: "Security"
+      param: "{{ eventlog.security }}"
+    - name: "System"
+      param: "{{ eventlog.system }}"
+  register: ret_pre
+  when: item.param.type == "archive" or item.param.type == "none"
+  changed_when: ret_pre.stdout != "4294967295\r\n"
+  always_run: yes
+
+- name: 2-0001-105_EventLog - set registry "Retention" value when type is "archive" or "none"
+  raw: powershell 'Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.item.name }}" Retention -Value 4294967295 -Type Dword'
+  with_items: ret_pre.results
+  when: item | changed
+  always_run: no
+
+
+- name: 2-0001-105_EventLog - post check registry "Retention" value when type is "archive" or "none"
+  raw: powershell '(Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.item.name }}").Retention'
+  with_items: ret_pre.results
+  register: ret_post
+  when: item | changed
+  failed_when: ret_post.stdout != "4294967295\r\n"
+  always_run: no
+
+- name: 2-0001-105_EventLog - check registry "MaxSize" value
+  raw: powershell 'Write-Host ((Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.name }}").MaxSize/1KB).ToString() -NoNewline'
+  with_items: 
+    - name: "Application"
+      param: "{{ eventlog.application }}"
+    - name: "Security"
+      param: "{{ eventlog.security }}"
+    - name: "System"
+      param: "{{ eventlog.system }}"
+  register: ret_pre
+  changed_when: ret_pre.stdout != "{{ item.param.maxsize }}"
+  always_run: yes
+
+- name: 2-0001-105_EventLog - set MaximumSize of Eventlog
+  raw: powershell 'Limit-Eventlog -LogName {{ item.item.name }} -MaximumSize ({{ item.item.param.maxsize }}*1KB)'
+  with_items: ret_pre.results
+  when: item | changed
+  always_run: yes
+
+- name: 2-0001-105_EventLog - post check registry "MaxSize" value
+  raw: powershell 'Write-Host ((Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\{{ item.item.name }}").MaxSize/1KB).ToString() -NoNewLine'
+  with_items: ret_pre.results
+  register: ret_post
+  when: item | changed
+  failed_when: ret_post.stdout != "{{ item.item.param.maxsize }}"
+  always_run: no

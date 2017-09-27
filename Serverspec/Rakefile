@@ -1,0 +1,30 @@
+require 'rake'
+require 'rspec/core/rake_task'
+require 'yaml'
+require 'active_support/core_ext/hash/indifferent_access' 
+
+task :spec => 'spec:all'
+task :defalut => 'spec:all'
+
+hosts=YAML.load_file('Serverspec.inventory')
+
+namespace :spec do
+  task :all => hosts.map { |h| 'spec:' + h[:name] }
+
+  hosts.each do |host|
+    desc "Run spec to #{host[:name]}"
+
+    RSpec::Core::RakeTask.new(host[:name].to_sym) do |t|
+      ENV['CONN_USER'] = host[:conn_user]
+      ENV['CONN_PASSWORD'] = host[:conn_password]
+      if defined? host[:sudo_password]
+        ENV['SUDO_PASSWORD'] = host[:sudo_password]
+      end
+
+      ENV['TARGET_HOST'] = host[:name]
+      puts "\n========================================"
+      puts "HOSTNAME: #{host[:name]}"
+      t.pattern = 'spec/{' + host[:roles].join(',') + '}/**/*_spec.rb'
+    end
+  end
+end

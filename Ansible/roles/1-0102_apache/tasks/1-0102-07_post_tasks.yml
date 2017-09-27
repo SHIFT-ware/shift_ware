@@ -1,0 +1,14 @@
+---
+- meta: flush_handlers
+
+- name: 1-0102-07_post_tasks - change httpd service state
+  service:
+    name: httpd
+    state: "{{ apac_apache.state }}"
+  when: apac_apache.state is defined
+
+- name: 1-0102-07_post_tasks - change auto_starting setting of httpd service
+  service:
+    name: httpd
+    enabled: "{{ apac_apache.enabled }}"
+  when: apac_apache.enabled is defined

@@ -1,0 +1,5 @@
+- name: RevokeSudoAuthToUser
+  file: >
+    path="/etc/sudoers.d/shift_tmp"
+    state=absent
+  register: ret_1_9902_07_SudoAuth

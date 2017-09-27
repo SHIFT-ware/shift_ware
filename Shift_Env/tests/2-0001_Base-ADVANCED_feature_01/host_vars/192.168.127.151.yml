@@ -1,0 +1,8 @@
+connection_hostname: '192.168.127.151'
+remote_tmp_dir: 'C:\.shift'
+BASE: 
+ADVANCED: 
+    feature: 
+      - name: 'SNMP サービス'
+
+

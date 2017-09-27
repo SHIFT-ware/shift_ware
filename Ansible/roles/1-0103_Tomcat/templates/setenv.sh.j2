@@ -1,0 +1,151 @@
+#!/bin/sh
+
+{% if tomc_tomcat.envs is defined %}
+# CATALINA_HOME   May point at your Catalina "build" directory.
+{% if tomc_tomcat.envs.catalina_home is defined %}
+CATALINA_HOME="{{ tomc_tomcat.envs.catalina_home }}"
+{% endif %}
+
+# CATALINA_BASE   (Optional) Base directory for resolving dynamic portions
+#                 of a Catalina installation.  If not present, resolves to
+#                 the same directory that CATALINA_HOME points to.
+{% if tomc_tomcat.envs.catalina_base is defined %}
+CATALINA_BASE="{{ tomc_tomcat.envs.catalina_base }}"
+{% endif %}
+
+# CATALINA_OUT    (Optional) Full path to a file where stdout and stderr
+#                 will be redirected.
+#                 Default is $CATALINA_BASE/logs/catalina.out
+{% if tomc_tomcat.envs.catalina_out is defined %}
+CATALINA_OUT="{{ tomc_tomcat.envs.catalina_out }}"
+{% endif %}
+
+# JAVA_HOME       Must point at your Java Development Kit installation.
+#                 Required to run the with the "debug" argument.
+{% if tomc_tomcat.envs.java_home is defined %}
+JAVA_HOME="{{ tomc_tomcat.envs.java_home }}"
+{% endif %}
+{% endif %}
+
+{% if tomc_tomcat.catalina_opts is defined %}
+# CATALINA_OPTS   (Optional) Java runtime options used when the "start",
+#                 "run" or "debug" command is executed.
+#                 Include here and not in JAVA_OPTS all options, that should
+#                 only be used by Tomcat itself, not by the stop process,
+#                 the version command etc.
+#                 Examples are heap size, GC logging, JMX ports etc.
+{% if tomc_tomcat.catalina_opts.server is defined and tomc_tomcat.catalina_opts.server %}
+CATALINA_OPTS="$CATALINA_OPTS -server"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.Xms is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -Xms{{ tomc_tomcat.catalina_opts.Xms }}m"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.Xmx is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -Xmx{{ tomc_tomcat.catalina_opts.Xmx }}m"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.MaxMetaspaceSize is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:MaxMetaspaceSize={{ tomc_tomcat.catalina_opts.MaxMetaspaceSize }}m"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.MaxPermSize is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:MaxPermSize={{ tomc_tomcat.catalina_opts.MaxPermSize }}m"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.PermSize is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:PermSize={{ tomc_tomcat.catalina_opts.PermSize }}m"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.Xss is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -Xss{{ tomc_tomcat.catalina_opts.Xss }}k"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.NewSize is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:NewSize={{ tomc_tomcat.catalina_opts.NewSize }}m"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.MaxNewSize is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:MaxNewSize={{ tomc_tomcat.catalina_opts.MaxNewSize }}m"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.TargetSurvivorRatio is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:TargetSurvivorRatio={{ tomc_tomcat.catalina_opts.TargetSurvivorRatio }}"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.MetaspaceSize is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:MetaspaceSize={{ tomc_tomcat.catalina_opts.MetaspaceSize }}m"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.InitialTenuringThreshold is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:InitialTenuringThreshold={{ tomc_tomcat.catalina_opts.InitialTenuringThreshold }}"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.MaxTenuringThreshold is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:MaxTenuringThreshold={{ tomc_tomcat.catalina_opts.MaxTenuringThreshold }}"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.SurvivorRatio is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:SurvivorRatio={{ tomc_tomcat.catalina_opts.SurvivorRatio }}"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.UseConcMarkSweepGC is defined and tomc_tomcat.catalina_opts.UseConcMarkSweepGC %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+UseConcMarkSweepGC"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.UseParNewGC is defined and tomc_tomcat.catalina_opts.UseParNewGC %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+UseParNewGC"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.CMSParallelRemarkEnabled is defined and tomc_tomcat.catalina_opts.CMSParallelRemarkEnabled %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+CMSParallelRemarkEnabled"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.CMSConcurrentMTEnabled is defined and tomc_tomcat.catalina_opts.CMSConcurrentMTEnabled %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+CMSConcurrentMTEnabled"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.CMSIncrementalMode is defined and tomc_tomcat.catalina_opts.CMSIncrementalMode %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+CMSIncrementalMode"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.CMSIncrementalPacing is defined and tomc_tomcat.catalina_opts.CMSIncrementalPacing %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+CMSIncrementalPacing"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.CMSIncrementalDutyCycleMin is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:CMSIncrementalDutyCycleMin={{ tomc_tomcat.catalina_opts.CMSIncrementalDutyCycleMin }}"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.CMSIncrementalDutyCycle is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:CMSIncrementalDutyCycle={{ tomc_tomcat.catalina_opts.CMSIncrementalDutyCycle }}"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.CMSClassUnloadingEnabled is defined and tomc_tomcat.catalina_opts.CMSClassUnloadingEnabled %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+CMSClassUnloadingEnabled"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.CMSInitiatingOccupancyFraction is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:CMSInitiatingOccupancyFraction={{ tomc_tomcat.catalina_opts.CMSInitiatingOccupancyFraction }}"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.UseParallelGC is defined and tomc_tomcat.catalina_opts.UseParallelGC %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+UseParallelGC"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.UseParallelOldGC is defined and tomc_tomcat.catalina_opts.UseParallelOldGC %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+UseParallelOldGC"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.UseTLAB is defined and tomc_tomcat.catalina_opts.UseTLAB %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+UseTLAB"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.ResizeTLAB is defined and tomc_tomcat.catalina_opts.ResizeTLAB %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+ResizeTLAB"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.DisableExplicitGC is defined and tomc_tomcat.catalina_opts.DisableExplicitGC %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+DisableExplicitGC"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.UseCompressedOops is defined and tomc_tomcat.catalina_opts.UseCompressedOops %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+UseCompressedOops"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.UseStringCache is defined and tomc_tomcat.catalina_opts.UseStringCache %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+UseStringCache"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.UseAdaptiveGCBoundary is defined and tomc_tomcat.catalina_opts.UseAdaptiveGCBoundary %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+UseAdaptiveGCBoundary"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.UseBiasedLocking is defined and tomc_tomcat.catalina_opts.UseBiasedLocking %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+UseBiasedLocking"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.HeapDumpOnOutOfMemoryError is defined and tomc_tomcat.catalina_opts.HeapDumpOnOutOfMemoryError %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.OptimizeStringConcat is defined and tomc_tomcat.catalina_opts.OptimizeStringConcat %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+OptimizeStringConcat"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.Xloggc is defined %}
+CATALINA_OPTS="$CATALINA_OPTS -Xloggc:{{ tomc_tomcat.catalina_opts.Xloggc }}"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.PrintGCDetails is defined and tomc_tomcat.catalina_opts.PrintGCDetails %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+PrintGCDetails"
+{% endif %}
+{% if tomc_tomcat.catalina_opts.PrintGCDateStamps is defined and tomc_tomcat.catalina_opts.PrintGCDateStamps %}
+CATALINA_OPTS="$CATALINA_OPTS -XX:+PrintGCDateStamps"
+{% endif %}
+{% endif %}

@@ -1,0 +1,26 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+    ID: 
+      user: 
+        - name: 'testuser'
+          groups: 'Users'
+          account_disabled: False
+          user_cannot_change_password: False
+          password_never_expires: False
+      uac: 
+        level: 'lua_disabled'
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+    ID: 
+      user: 
+        - name: 'testuser'
+          groups: 'Users'
+          account_disabled: False
+          user_cannot_change_password: False
+          password_never_expires: False
+      uac: 
+        level: 'lua_disabled'

@@ -1,0 +1,5 @@
+---
+- name: postgresql_service_restart
+  service:
+    name: "postgresql-{{ pgsq_version }}"
+    state: restarted

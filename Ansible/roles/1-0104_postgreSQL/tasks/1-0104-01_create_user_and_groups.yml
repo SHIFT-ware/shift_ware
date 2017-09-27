@@ -1,0 +1,72 @@
+---
+- block:
+  - name: 1-0104-01_create_user_and_groups - check postgresql user's primary group
+    shell: grep -e "^postgres:" /etc/group
+    failed_when: false
+    changed_when: false
+    register: check_primary_group
+  
+  - name: 1-0104-01_create_user_and_groups - create postgresql user's primary group with specified gid
+    group:
+      name: "postgres"
+      gid: "{{ pgsq_exec_groups_primary_gid }}"
+    when:
+      - check_primary_group.rc != 0 
+      - pgsq_exec_groups_primary_gid is defined
+
+  - name: 1-0104-01_create_user_and_groups - create postgresql user's primary group with default gid
+    group:
+      name: "postgres"
+    when:
+      - check_primary_group.rc != 0 
+      - pgsq_exec_groups_primary_gid is undefined
+
+  - name: 1-0104-01_create_user_and_groups - check postgresql user's secondary groups
+    shell: grep -e "^{{ item.name }}:" /etc/group
+    failed_when: false
+    changed_when: false
+    register: check_secondary_groups
+    with_items:
+      "{{ pgsq_exec_groups_secondary | default('') }}"
+    when: item.name is defined
+
+  - name: 1-0104-01_create_user_and_groups - create postgresql user's secondary group
+    group:
+      name: "{{ item.item.name }}"
+      gid: "{{ item.item.gid | default(omit) }}"
+    with_items:
+      check_secondary_groups.results
+    when:
+      - not ( check_secondary_groups | skipped )
+      - item.rc != 0
+
+  - name: 1-0104-01_create_user_and_groups - check postgresql user
+    shell: id postgres
+    failed_when: false
+    changed_when: false
+    register: check_postgresql_user
+
+  - name: 1-0104-01_create_user_and_groups - set strings of secondary groups
+    set_fact:
+      sub_groups_str:
+        "{{ pgsq_exec_groups_secondary | map(attribute='name') | join(',') }}"
+    when:
+      - pgsq_exec_groups_secondary is defined
+
+  - name: 1-0104-01_create_user_and_groups - create postgresql user
+    user:
+      name: "postgres"
+      uid: "{{ pgsq_exec_user_uid }}"
+      group: "postgres"
+      groups: "{{ sub_groups_str | default(omit) }}"
+      home: "/var/lib/pgsql"
+      shell: "{{ pgsq_exec_user_shell }}"
+      password: "{{ pgsq_exec_user_password | password_hash('sha512') }}"
+      state: present 
+    when:
+      - check_postgresql_user.rc != 0
+  when:
+    - pgsq_exec_user_uid is defined or
+      pgsq_exec_user_shell is defined or
+      pgsq_exec_user_password is defined or
+      pgsq_exec_groups_secondary is defined

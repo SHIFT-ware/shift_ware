@@ -1,0 +1,16 @@
+---
+- name: 2-0001-095_Feature - set tmp variable
+  set_fact:
+    feature: "{{ base_ADVANCED.feature }}"
+
+- name: 2-0001-095_Feature - install feature
+  raw: (Get-WindowsFeature | Where-Object {$_.Path -eq "{{ item.name }}"} | Install-WindowsFeature -IncludeAllSubFeature -IncludeManagementTools).Success
+  with_items: feature
+  notify: 
+    - server_restart_for_Win
+    - wait_for_WinRM_port_down
+    - wait_for_WinRM_port_up
+  register: ret
+  failed_when: ret.stdout != "True\r\n"
+
+- meta: flush_handlers

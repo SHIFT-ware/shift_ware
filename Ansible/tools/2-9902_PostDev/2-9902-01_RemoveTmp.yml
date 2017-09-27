@@ -1,0 +1,6 @@
+---
+- name: 2-9902-01_RemoveTmp
+  win_file: >
+    path='{{ remote_tmp_dir }}'
+    state=absent
+

@@ -1,0 +1,45 @@
+192.168.127.31:
+  connection_hostname: '192.168.127.31'
+  operating_system: 'Linux'
+  BASE: 
+    OSCORE: 
+      version: '6.5'
+      lang: 'en_US'
+      keyboard: 
+        keybord_locale: 'us'
+      time: 
+        timezone: 'Asia/Seoul'
+        utc: True
+      runlevel: 5
+      selinux: 'disabled'
+      kdump: 
+        service_state: 'running'
+        path: '/var/crash'
+      grub_option: 
+        - key: 'default'
+          value: '0'
+        - key: 'timeout'
+          value: '7'
+192.168.127.41:
+  connection_hostname: '192.168.127.41'
+  operating_system: 'Linux'
+  BASE: 
+    OSCORE: 
+      version: '7.1'
+      lang: 'en_US'
+      keyboard: 
+        keybord_locale: 'us'
+      time: 
+        timezone: 'Asia/Seoul'
+        utc: True
+      runlevel: 5
+      selinux: 'disabled'
+      kdump: 
+        service_state: 'running'
+        path: '/var/crash'
+      grub_option: 
+        - key: 'GRUB_DEFAULT'
+          value: 'saved'
+        - key: 'GRUB_TIMEOUT'
+          value: '7'
+

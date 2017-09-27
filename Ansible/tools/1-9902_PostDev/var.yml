@@ -1,0 +1,14 @@
+---
+ansible_ssh_user: root
+ansible_become_pass: "{{ ansible_ssh_pass }}"
+
+l9902_remote_tmp_dir: #削除対象のディレクトリ。ホームディレクトリ以外を指定していた場合用に実装。
+  path: "{{ l9901_remote_tmp_dir.path }}"
+
+l9902_local_user:     #秘密鍵を削除するローカルユーザ
+  name: "{{ l9901_local_user.name }}"
+
+l9902_remote_user:    #削除対象のリモートユーザ
+  name: "{{ l9901_remote_user.name }}"
+
+

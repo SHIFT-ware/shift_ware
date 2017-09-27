@@ -1,0 +1,67 @@
+---
+- name: 2-0001-078_DnsSuffix - set tmp variable "dns_suffix"
+  set_fact:
+     dns_suffix: "{{ base_NETWORK.dns_suffix }}"
+     location: 'HKLM:\SYSTEM\CurrentControlSet\services\Tcpip\Parameters'
+
+- name: 2-0001-078_DnsSuffix - set tmp variable "properties"
+  set_fact:
+    properties: []
+
+- block:
+  - name: 2-0001-078_DnsSuffix - set tmp variable "property" to prepare changing dns suffix
+    set_fact:
+      property: 
+        - property: 'NV Domain'
+          data: '{{ dns_suffix.primary.fqdn }}'
+          type: 'String'
+
+  - name: 2-0001-078_DnsSuffix - push data "property" to "properties" to prepare changing dns suffix
+    set_fact:
+      properties: "{{ properties + property }}"
+  when: dns_suffix.primary.fqdn is defined
+
+- block:
+  - name: 2-0001-078_DnsSuffix - set tmp variable "property" to prepare changing registry value "SyncDomainWithMembership" to 1
+    set_fact:
+      property: [{ property: 'SyncDomainWithMembership', data: '1', type: 'DWord' }]
+    when: dns_suffix.primary.change_when_domain_membership_changed == true
+
+  - name: 2-0001-078_DnsSuffix - set tmp variable "property" to prepare changing registry value "SyncDomainWithMembership" to 0
+    set_fact:
+      property: [{ property: 'SyncDomainWithMembership', data: '0', type: 'DWord' }]
+    when: dns_suffix.primary.change_when_domain_membership_changed == false
+
+  - name: 2-0001-078_DnsSuffix - push data "property" to "properties" to prepare changing registry value "SyncDomainWithMembership"
+    set_fact:
+      properties: "{{ properties + property }}"
+  when: dns_suffix.primary.change_when_domain_membership_changed is defined
+
+- name: 2-0001-078_DnsSuffix - create registry path
+  raw: if ( ! ( Test-Path '{{ location }}' )) { New-Item '{{ location }}' -Force }
+  always_run: yes
+
+- name: 2-0001-078_DnsSuffix - check registry value
+  raw: (Get-ItemProperty '{{ location }}').'{{ item.property }}'
+  with_items: properties
+  register: ret_pre
+  changed_when: ret_pre.stdout != "{{ item.data }}\r\n"
+  notify:
+    - server_restart_for_Win
+    - wait_for_WinRM_port_down
+    - wait_for_WinRM_port_up
+  always_run: yes
+
+- name: 2-0001-078_DnsSuffix - set registry value
+  raw: Set-ItemProperty '{{ location }}' '{{ item.item.property }}' -Value '{{ item.item.data }}' -Type '{{ item.item.type }}'
+  with_items: ret_pre.results
+  when:
+    - item.changed == true
+  always_run: no
+
+- name: 2-0001-078_DnsSuffix - post check registry value
+  raw: (Get-ItemProperty '{{ location }}').'{{ item.property }}'
+  with_items: properties
+  register: ret_post
+  changed_when: ret_post.stdout != "{{ item.data }}\r\n"
+  always_run: no

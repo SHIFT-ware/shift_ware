@@ -1,0 +1,3 @@
+tomc_tmp_dir: "{{ remote_tmp_dir }}/{{ role_name }}"
+
+tomc_tomcat: "{{ Tomcat }}"

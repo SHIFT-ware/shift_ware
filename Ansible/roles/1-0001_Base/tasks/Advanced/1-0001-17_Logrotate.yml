@@ -1,0 +1,36 @@
+---
+- name: 1-0001-17_Logrotate - set rotate_cycle={{ base_advanced.logrotate_basic_option.cycle }}
+  lineinfile:
+    dest: /etc/logrotate.conf
+    regexp: '^(daily|weekly|monthly)'
+    line: '{{ base_advanced.logrotate_basic_option.cycle }}'
+  when: base_advanced.logrotate_basic_option.cycle is defined
+
+- name: 1-0001-17_Logrotate - set rotate_num={{ base_advanced.logrotate_basic_option.rotate_num }}
+  lineinfile:
+    dest: /etc/logrotate.conf
+    regexp: '^rotate'
+    line: 'rotate {{ base_advanced.logrotate_basic_option.rotate_num }}'
+  when: base_advanced.logrotate_basic_option.rotate_num is defined
+
+- name: 1-0001-17_Logrotate - set create={{ base_advanced.logrotate_basic_option.create }}
+  lineinfile:
+    dest: /etc/logrotate.conf
+    regexp: '^#?create'
+    line: "{{ base_advanced.logrotate_basic_option.create | regex_replace('True', 'create') | regex_replace('False', '#create') }}"
+  when: base_advanced.logrotate_basic_option.create is defined
+
+- name: 1-0001-17_Logrotate - set add_date={{ base_advanced.logrotate_basic_option.add_date }}
+  lineinfile:
+    dest: /etc/logrotate.conf
+    regexp: '^#?dateext'
+    line: "{{ base_advanced.logrotate_basic_option.add_date | regex_replace('True', 'dateext') | regex_replace('False', '#dateext') }}"
+  when: base_advanced.logrotate_basic_option.add_date is defined
+
+- name: 1-0001-17_Logrotate - set compress={{ base_advanced.logrotate_basic_option.compress }}
+  lineinfile:
+    dest: /etc/logrotate.conf
+    regexp: '^#?compress'
+    line: "{{ base_advanced.logrotate_basic_option.compress | regex_replace('True', 'compress') | regex_replace('False', '#compress') }}"
+  when: base_advanced.logrotate_basic_option.compress is defined
+

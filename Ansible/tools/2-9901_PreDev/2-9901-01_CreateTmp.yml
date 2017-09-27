@@ -1,0 +1,6 @@
+---
+- name: 2-9901-01_CreateTmp
+  win_file:
+    path: '{{ remote_tmp_dir }}'
+    state: directory
+

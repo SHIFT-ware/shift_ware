@@ -1,0 +1,8 @@
+---
+- name: 1-0001-40_Syslog - set syslog
+  lineinfile:
+    dest: /etc/rsyslog.conf
+    regexp: '^#?{{ item.selector | regex_escape() }}\s+{{ item.output | regex_escape() }}\s*$'
+    line: '{{ item.selector }}        {{ item.output }}'
+  with_items: base_advanced.syslog.filters
+  notify: rsyslog_restart

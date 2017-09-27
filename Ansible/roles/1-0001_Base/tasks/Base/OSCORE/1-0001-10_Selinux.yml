@@ -1,0 +1,26 @@
+---
+- name: 1-0001-10_Selinux - change selinux status for rhel6
+  lineinfile:
+    dest: /etc/selinux/config
+    regexp: "^SELINUX="
+    line: "SELINUX={{ base_base.OSCORE.selinux }}"
+    state: present
+  notify: 
+    - server_restart_for_RHEL6
+    - wait_for_SSH_port_down
+    - wait_for_SSH_port_up
+  when:
+    - ansible_distribution_major_version == "6"
+
+- name: 1-0001-10_Selinux - change selinux status for rhel7
+  lineinfile:
+    dest: /etc/selinux/config
+    regexp: "^SELINUX="
+    line: "SELINUX={{ base_base.OSCORE.selinux }}"
+    state: present
+  notify: 
+    - server_restart_for_RHEL7
+    - wait_for_SSH_port_down
+    - wait_for_SSH_port_up
+  when:
+    - ansible_distribution_major_version == "7"

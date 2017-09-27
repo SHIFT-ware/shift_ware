@@ -1,0 +1,18 @@
+connection_hostname: '192.168.127.151'
+remote_tmp_dir: 'C:\.shift'
+BASE: 
+ADVANCED: 
+  eventlog: 
+    application: 
+      filepath: 'C:\Windows\system32\winevt\Logs\Application.evtx'
+      type: 'overwrite'
+      maxsize: 2048
+    security: 
+      filepath: 'C:\Windows\system32\winevt\Logs\Security.evtx'
+      type: 'archive'
+      maxsize: 2048
+    system: 
+      filepath: 'C:\Windows\system32\winevt\Logs\System.evtx'
+      type: 'none'
+      maxsize: 2048
+

@@ -1,0 +1,30 @@
+---
+- name: 1-0001-23_Sshd - install package
+  yum:
+    name: openssh-server
+    state: present
+
+- name: 1-0001-23_Sshd - start and enable service
+  service:
+    name: sshd
+    state: started
+    enabled: yes
+
+- name: 1-0001-23_Sshd - set parameter "PermitRootLogin"
+  lineinfile:
+    dest: '/etc/ssh/sshd_config'
+    state: present
+    regexp: "^PermitRootLogin"
+    insertafter: "^#PermitRootLogin"
+    line: "PermitRootLogin {{ base_advanced.sshd.permit_root_login | regex_replace('True', 'yes') | regex_replace('False', 'no') }}"
+  when: base_advanced.sshd.permit_root_login is defined
+
+- name: 1-0001-23_Sshd - set parameter PasswordAuthentication
+  lineinfile:
+    dest: '/etc/ssh/sshd_config'
+    state: present
+    regexp: "^PasswordAuthentication"
+    insertafter: "^#PasswordAuthentication"
+    line: "PasswordAuthentication {{ base_advanced.sshd.password_auth | regex_replace('True', 'yes') | regex_replace('False', 'no') }}"
+  when: base_advanced.sshd.password_auth is defined
+

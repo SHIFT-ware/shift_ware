@@ -1,0 +1,17 @@
+---
+- name: 2-0001-012_UserGroup - define empty tmp variable
+  set_fact:
+    group: []
+  when: base_BASE.ID.group is undefined
+
+- name: 2-0001-012_UserGroup - set tmp variable
+  set_fact:
+    group: "{{ base_BASE.ID.group }}"
+  when: base_BASE.ID.group is defined
+
+- name: 2-0001-012_UserGroup - modify group
+  win_group:
+    name: "{{ item.name }}"
+    state: present
+  with_items: group 
+

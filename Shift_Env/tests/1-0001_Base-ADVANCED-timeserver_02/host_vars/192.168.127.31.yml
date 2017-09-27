@@ -1,0 +1,14 @@
+connection_hostname: '192.168.127.31'
+remote_tmp_dir: '~root/.shift'
+BASE: 
+ADVANCED:
+  timeserver: 
+    - server: '192.168.127.1'
+      prefer: False
+  ntp_packages: 
+    - name: 'ntp-4.2.6p5-1.el6.x86_64.rpm'
+    - name: 'libedit-2.11-4.20080712cvs.1.el6.x86_64.rpm'
+    - name: 'ntpdate-4.2.6p5-1.el6.x86_64.rpm'
+  ntp_option: 
+    slew: False
+

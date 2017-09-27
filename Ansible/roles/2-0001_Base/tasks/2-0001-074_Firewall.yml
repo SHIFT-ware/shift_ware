@@ -1,0 +1,50 @@
+---
+- name: 2-0001-074_Firewall - set tmp variable
+  set_fact:
+    firewall: "{{ base_NETWORK.firewall }}"
+
+- name: 2-0001-074_Firewall - check required parameter is set
+  fail:
+    msg: "required params is not defined"
+  when:
+    - firewall.domain.enabled_flag is not defined or
+      firewall.private.enabled_flag is not defined or
+      firewall.public.enabled_flag is not defined
+
+- name: 2-0001-074_Firewall - check firewall enabled status
+  raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name '{{ item.name }}').Enabled
+  register: ret_pre
+  changed_when: ret_pre.stdout != "{{ item.enable }}"
+  always_run: yes
+  with_items:
+    - name: Domain
+      enable: "{{ firewall.domain.enabled_flag }}"
+    - name: Private
+      enable: "{{ firewall.private.enabled_flag }}"
+    - name: Public
+      enable: "{{ firewall.public.enabled_flag }}"
+
+- name: 2-0001-074_Firewall - set firewall enabled status
+  raw: Set-NetFirewallProfile -Name '{{ item.name }}' -Enabled '{{ item.enable }}'
+  always_run: no
+  with_items:
+    - name: Domain
+      enable: "{{ firewall.domain.enabled_flag }}"
+    - name: Private
+      enable: "{{ firewall.private.enabled_flag }}"
+    - name: Public
+      enable: "{{ firewall.public.enabled_flag }}"
+
+- name: 2-0001-074_Firewall - post check firewall enabled status
+  raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name '{{ item.name }}').Enabled
+  register: ret_post
+  failed_when: ret_post.stdout != "{{ item.enable }}"
+  always_run: no
+  with_items:
+    - name: Domain
+      enable: "{{ firewall.domain.enabled_flag }}"
+    - name: Private
+      enable: "{{ firewall.private.enabled_flag }}"
+    - name: Public
+      enable: "{{ firewall.public.enabled_flag }}"
+

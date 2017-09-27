@@ -1,0 +1,19 @@
+connection_hostname: '192.168.127.41'
+remote_tmp_dir: '~root/.shift'
+ZabbixAgent:
+    config:
+        pidfile: '/var/run/zabbix/zabbix_agentd.pid'
+        logfile: '/var/log/zabbix/zabbix_agentd2.log'
+        enableremotecommands: '1'
+        server: '192.168.127.7'
+        listenport: '10051'
+        serveractive: '192.168.127.7'
+        hostnameitem: 'system.hostname2'
+        timeout: '2'
+        allowroot: '1'
+        include:
+            - path: '/etc/zabbix/zabbix_agentd.d/*.conf2'
+    service:
+        state: 'stopped'
+        enabled: 'no'
+

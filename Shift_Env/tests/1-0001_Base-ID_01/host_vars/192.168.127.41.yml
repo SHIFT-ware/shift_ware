@@ -1,0 +1,25 @@
+connection_hostname: '192.168.127.41'
+remote_tmp_dir: '~root/.shift'
+BASE: 
+  ID: 
+    user: 
+      - name: 'user001'
+        password: 'password'
+        uid: 501
+        group: 'groupe001'
+        home_dir: '/home/user001'
+        shell: '/bin/bash'
+        sub_groups: 'groupe002'
+      - name: 'user002'
+        password: 'password'
+        uid: 502
+        group: 'root'
+        home_dir: '/home/user002'
+        shell: '/bin/bash'
+        sub_groups: 'groupe001,groupe002'
+    user_group: 
+      - name: 'groupe001'
+        gid: 503
+      - name: 'groupe002'
+        gid: 504
+

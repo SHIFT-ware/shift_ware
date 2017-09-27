@@ -1,0 +1,18 @@
+- name: CheckSelinuxConfig
+  shell: grep -q ^SELINUX=disabled /etc/selinux/config
+  register: ret_before
+  failed_when: ret_before.rc not in [ 0 , 1 ] #grep結果が空のとき:1 grep処理が異常のとき:2
+  changed_when: ret_before.rc == 0
+
+- name: ModifySelinuxConfigToDisable
+  shell: sed -i -e 's/^SELINUX=disabled/SELINUX=enforcing/g' /etc/selinux/config
+  when: ret_before|changed
+  register: ret_1_9902_01_Selinux
+  changed_when: ret_1_9902_01_Selinux.rc == 0
+  failed_when: ret_1_9902_01_Selinux.rc != 0
+  notify:
+    - server_restart_for_RHEL6
+    - server_restart_for_RHEL7
+    - wait_for_SSH_port_down
+    - wait_for_SSH_port_up
+

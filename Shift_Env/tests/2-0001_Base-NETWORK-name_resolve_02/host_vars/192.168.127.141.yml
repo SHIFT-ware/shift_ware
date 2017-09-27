@@ -1,0 +1,11 @@
+connection_hostname: '192.168.127.141'
+remote_tmp_dir: 'C:\.shift'
+BASE: 
+NETWORK: 
+  name_resolve: 
+    dns_server: 
+      nic_name: 'イーサネット'
+      server: 
+        - ip: '192.168.127.50'
+        - ip: '127.0.0.1'
+

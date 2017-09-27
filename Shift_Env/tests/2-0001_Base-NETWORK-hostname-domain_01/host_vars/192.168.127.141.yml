@@ -1,0 +1,11 @@
+connection_hostname: '192.168.127.141'
+remote_tmp_dir: 'C:\.shift'
+BASE: 
+NETWORK: 
+  hostname: 'target30'
+  domain: 
+    type: 'workgroup'
+    name: 'TESTWORKGROUP'
+    user: 'Administrator'
+    password: 'p@ssw0rd'
+

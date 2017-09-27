@@ -1,0 +1,25 @@
+- block:
+  - name: 1-0102-05_install_mod_jk2.4 - copy mod_jk
+    copy:
+      src: mod_jk.so
+      dest: /etc/httpd/modules/mod_jk.so
+      mode: 755
+  
+  - name: 1-0102-05_install_mod_jk2.4 - put mod_jk.conf
+    template:
+      src: mod_jk.conf.j2
+      dest: /etc/httpd/conf.d/mod_jk.conf
+    notify: restart httpd
+  
+  - name: 1-0102-05_install_mod_jk2.4 - put workers.properties
+    template:
+      src: workers.properties.j2
+      dest: /etc/httpd/conf.d/workers.properties
+    notify: restart httpd
+  
+  - name: 1-0102-05_install_mod_jk2.4 - put uriworkermap.properties
+    template:
+      src: uriworkermap.properties.j2
+      dest: /etc/httpd/conf.d/uriworkermap.properties
+    notify: restart httpd
+  when: apac_apache.mod_jk is defined

@@ -1,0 +1,5 @@
+---
+- include: 1-0108-01_packages.yml
+- include: 1-0108-02_create_user_and_groups.yml
+- include: 1-0108-03_pgpool_config.yml
+- include: 1-0108-04_post_tasks.yml

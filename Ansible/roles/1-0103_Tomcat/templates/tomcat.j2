@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+# Startup script for the Tomcat Servlet Container
+#
+# chkconfig: 2345 85 15
+# description: Tomcat is the servlet container that is used in the official \
+#              Reference Implementation for the Java Servlet and JavaServer \
+#              Pages technologies
+
+TOMCAT_USER={{ tomc_tomcat.exec_user.name | default('root') }}
+CATALINA_HOME={{ tomc_tomcat.envs.catalina_home }}
+
+. /etc/rc.d/init.d/functions
+prog=tomcat
+
+start() {
+    echo -n $"Starting $prog: "
+    daemon --user $TOMCAT_USER $CATALINA_HOME/bin/startup.sh > /dev/null
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+        echo_success
+    else
+        echo_failure
+    fi
+    echo
+    [ $RETVAL -eq 0 ] && touch /var/lock/subsys/$prog
+    return $RETVAL
+}
+stop() {
+    echo -n $"Stopping $prog: "
+    daemon --user $TOMCAT_USER $CATALINA_HOME/bin/shutdown.sh > /dev/null
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+        echo_success
+    else
+        echo_failure
+    fi
+    echo
+    [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$prog
+    return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  status)
+    INSTANCES=`ps -aef|grep java|grep tomcat|grep org.apache.catalina.startup.Bootstrap|wc -l`
+    if [ $INSTANCES -eq 0 ]; then
+        echo $prog is stopped
+        RETVAL=3
+    else
+        if [ $INSTANCES -eq 1 ]; then
+            echo $prog is running 1 instance...
+        else
+            echo $prog is running $INSTANCES instances...
+        fi
+        RETVAL=0
+    fi
+    ;;
+  *)
+    echo $"Usage: $prog {start|stop|restart|status|help}"
+    exit 1
+esac
+
+exit $RETVAL

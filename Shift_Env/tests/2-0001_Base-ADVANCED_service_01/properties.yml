@@ -1,0 +1,22 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+  ADVANCED: 
+    service: 
+      - name: 'Appinfo'
+        state: True
+        start_mode: 'Auto'
+        delay_flag: False
+        trigger_flag: False
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+  ADVANCED: 
+    service: 
+      - name: 'Appinfo'
+        state: True
+        start_mode: 'Auto'
+        delay_flag: False
+        trigger_flag: False

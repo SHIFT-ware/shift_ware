@@ -1,0 +1,32 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+  STORAGE: 
+    directory: 
+      - path: 'C:\temp'
+        owner: 'BUILTIN\Administrators'
+        acl: 
+          - user: 'BUILTIN\Users'
+            rights: 'Read, Synchronize'
+            type: 'Allow'
+            inherit: 'thisfolder, subfolder, file'
+          - user: 'Guest'
+            rights: 'FullControl'
+            type: 'Allow'
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+  STORAGE: 
+    directory: 
+      - path: 'C:\temp'
+        owner: 'BUILTIN\Administrators'
+        acl: 
+          - user: 'BUILTIN\Users'
+            rights: 'Read, Synchronize'
+            type: 'Allow'
+            inherit: 'thisfolder, subfolder, file'
+          - user: 'Guest'
+            rights: 'FullControl'
+            type: 'Allow'

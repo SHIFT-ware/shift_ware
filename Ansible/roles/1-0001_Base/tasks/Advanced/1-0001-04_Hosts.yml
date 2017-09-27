@@ -1,0 +1,16 @@
+---
+- name: 1-0001-04_Hosts - disable IPv6 localhost
+  lineinfile:
+    dest: '/etc/hosts'
+    state: present
+    regexp: "::1         localhost localhost.localdomain localhost6 localhost6.localdomain6"
+    line: "#::1         localhost localhost.localdomain localhost6 localhost6.localdomain6"
+    
+- name: 1-0001-04_Hosts - register IPv4 name
+  lineinfile:
+    dest: '/etc/hosts'
+    state: present
+    line: "{{ item.ip }}     {{ item.server }}"
+  with_items: base_advanced.name_resolve.hosts_records
+  when: base_advanced.name_resolve.hosts_records is defined
+

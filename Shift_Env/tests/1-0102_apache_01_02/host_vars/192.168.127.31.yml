@@ -1,0 +1,106 @@
+connection_hostname: '192.168.127.31'
+remote_tmp_dir: '~root/.shift'
+
+apache:
+  packages:
+    - name: "apr-1.5.2-1.x86_64.rpm"
+    - name: "apr-util-1.5.4-1.x86_64.rpm"
+    - name: "mailcap-2.1.31-2.el6.noarch.rpm"
+    - name: "httpd-2.4.12-1.x86_64.rpm"
+    - name: "mod_ssl-2.4.12-1.x86_64.rpm"
+  state: started                                                   # サービスの起動状態
+  enabled: true                                                     # サービスの自動起動設定
+  exec_user:                                                       # サービス実行ユーザ
+    name: apache                                                   # ユーザ名
+    uid: 48                                                        # uid
+    home_dir: /var/www                                             # ホームディレクトリ
+    shell: /sbin/nologin                                           # ログインシェル
+    password: p@ssw0rd
+  exec_groups:                                                     # サービス実行ユーザの所属グループ
+    primary:                                                       # プライマリグループ
+      name: apache                                                 # グループ名
+      gid: 48                                                      # gid
+    secondary:                                                     # セカンダリグループ
+      - name: test1                                                # グループ名
+        gid: 1001                                                  # gid
+      - name: test2                                                # グループ名
+        gid: 1002                                                  # gid
+  mod_jk:                                                          # mod_jk設定
+    common_params:                                                 # 共通パラメータ
+      ajp_port: 8009                                               # AJPポート番号
+      socket_timeout: 60                                           # パラメータsocket_timeout
+      socket_keepalive: "False"                                    # パラメータsocket_keepalive
+      connection_pool_size: 200                                    # パラメータconnection_pool_size
+      connection_pool_minsize: 0                                   # パラメータconnection_pool_minsize
+      connection_pool_timeout: 60                                  # パラメータconnection_pool_timeout
+    loadbalance:                                                   # ロードバランサ設定
+      sticky_session: yes                                          # sticky_sessionの有効無効
+    linked_ap_servers:                                             # 連携するAPサーバ
+      - jvmroute: tomcat01                                         # jvmroute
+        host: 192.168.127.101                                      # ホスト名orIP
+        weight: 1                                                  # ロードバランス時の重み(小さいほうが優先)
+      - jvmroute: tomcat02                                         # jvmroute
+        host: 192.168.127.102                                      # ホスト名orIP
+        weight: 1                                                  # ロードバランス時の重み(小さいほうが優先)
+    jkmount:                                                       # URIマップの設定
+      - uri: /jkstatus                                             # uri
+        workers: status                                            # 対応させるワーカ(カンマ区切りで記載)
+        positive: yes                                              # 対応の有効無効
+  Listen:
+    - port: 80
+    - port: 443
+  ServerName: www.example.com:80
+  DocumentRoot: /var/www/html
+  ServerAdmin: you@example.com
+  ErrorLog: /var/log/httpd/error_log
+  CustomLog: /var/log/httpd/access_log combined env=!no_log
+  Timeout: 60                                                      # パラメータTimeout
+  KeepAlive: "Off"                                                 # パラメータKeepAlive
+  MaxKeepAliveRequests: 100                                        # パラメータMaxKeepAliveRequests
+  KeepAliveTimeout: 15                                             # パラメータKeepAliveTimeout
+  ServerTokens: OS                                                 # パラメータServerTokens
+  autoindex:                                                       # httpd-autoindex設定
+    enable_followsymlinks: yes                                     # /var/www/iconsに対するFollowSymLinksオプションの有効無効
+  visible_server_status: yes                                       # server_statusの可視不可視
+  visible_server_info: yes                                         # server_infoの可視不可視
+  is_default_charset_utf8: yes                                     # デフォルト言語をUTF8にするか
+  is_1st_prior_language_ja: yes                                    # 言語優先度でjaを1番にするか
+  disable_userdir: no                                              # ディレクティブUserDirをdisabledとするか
+  accessible_addresses:                                            # アクセス可能なIP
+    - address: 0.0.0.0
+  virtualhost:                                                     # VirtualHost設定
+    vhosts:                                                        # VirtualHost
+      - ServerName: dummy-host.example.com                         # パラメータServerName
+        DocumentRoot: /usr/docs/dummy-host.example.com         # パラメータDocumentRoot
+        ServerAdmin: webmaster@dummy-host.example.com              # パラメータServerAdmin
+        ServerAlias: www.dummy-host.example.com                    # パラメータServerAlias
+        CustomLog: /var/log/httpd/access_nossl.log combined
+        ErrorLog: /var/log/httpd/error_nossl.log
+        port: 80
+    ssl_vhosts:                                                    # VirtualHost(SSL対応)
+      - ServerName: dummy-host2.example.com                        # パラメータServerName
+        DocumentRoot: /usr/docs/dummy-host2.example.com        # パラメータDocumentRoot
+        ServerAdmin: webmaster@dummy-host2.example.com             # パラメータServerAdmin
+        ServerAlias: test                                          # パラメータServerAlias
+        CustomLog: /var/log/httpd/access_ssl.log combined
+        ErrorLog: /var/log/httpd/error_ssl.log
+        SSLCertificateFile: /etc/pki/tls/ca.crt                # パラメータSSLCertificateFile
+        SSLCertificateKeyFile: /etc/pki/tls/private/ca.key     # パラメータSSLCertificateKeyFile
+        port: 443
+  mpm:                                                             # MPM設定
+    type: prefork                                                  # MPMのタイプ(workerかprefork)
+    worker:                                                        # MPM worker設定
+      ThreadLimit: 100                                             # パラメータThreadLimit
+      StartServers: 4                                              # パラメータStartServers
+      MinSpareThreads: 25                                          # パラメータMinSpareThreads
+      MaxSpareThreads: 75                                          # パラメータMaxSpareThreads
+      MaxClients: 300                                              # パラメータMaxClients
+      ThreadsPerChild: 25                                          # パラメータThreadsPerChild
+      MaxRequestsPerChild: 0                                       # パラメータMaxRequestsPerChild
+    prefork:                                                       # MPM prefork設定
+      StartServers: 8                                              # パラメータStartServers
+      MinSpareServers: 5                                           # パラメータMinSpareServers
+      MaxSpareServers: 20                                          # パラメータMaxSpareServers
+      ServerLimit: 256                                             # パラメータServerLimit
+      MaxClients: 256                                              # パラメータMaxClients
+      MaxRequestsPerChild: 4000                                    # パラメータMaxRequestsPerChild

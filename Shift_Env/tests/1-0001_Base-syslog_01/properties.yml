@@ -1,0 +1,23 @@
+192.168.127.31:
+  connection_hostname: '192.168.127.31'
+  operating_system: 'Linux'
+  BASE: 
+  ADVANCED:
+    syslog: 
+      filters: 
+        - selector: 'local7.*'
+          output: '/var/log/boot_test.log'
+        - selector: '*.info;mail.none;authpriv.none;cron.none'
+          output: '/var/log/messages_test'
+192.168.127.41:
+  connection_hostname: '192.168.127.41'
+  operating_system: 'Linux'
+  BASE: 
+  ADVANCED:
+    syslog: 
+      filters: 
+        - selector: 'local7.*'
+          output: '/var/log/boot_test.log'
+        - selector: '*.info;mail.none;authpriv.none;cron.none'
+          output: '/var/log/messages_test'
+

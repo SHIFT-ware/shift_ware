@@ -1,0 +1,47 @@
+---
+- name: 1-9902_PostDev
+  hosts: all
+  become: yes
+  vars_files:
+    - ../1-9901_PreDev/var.yml
+    - var.yml
+  tasks:
+    - include: 1-9902-04_TmpDir.yml
+    - include: 1-9902-08_SshConfig.yml
+    - include: 1-9902-07_SudoAuth.yml
+    - include: 1-9902-02_User.yml
+    - include: 1-9902-01_Selinux.yml
+    - include: 1-9902-09_DeleteKeys.yml
+  handlers:
+    - name: server_restart_for_RHEL6
+      command: shutdown -r now
+      when: >
+        ansible_os_family == "RedHat" and
+        ansible_distribution_major_version == "6"
+    - name: server_restart_for_RHEL7
+      command: shutdown -r
+      when: >
+        ansible_os_family == "RedHat" and
+        ansible_distribution_major_version == "7"
+    - name: wait_for_SSH_port_down # use for monitor server downed
+      wait_for: >
+        host={{ inventory_hostname }}
+        port=22
+        state=stopped
+      delegate_to: 127.0.0.1
+    - name: wait_for_SSH_port_up # use for monitor server upped
+      wait_for: >
+        host={{ inventory_hostname }}
+        port=22
+        state=started
+        delay=30
+      delegate_to: 127.0.0.1
+    - name: remove_ssh-key_from_local
+      file: >
+        path='~{{ l9902_local_user.name }}/.ssh/{{ item.keyfile }}'
+        state=absent
+      delegate_to: 127.0.0.1
+      run_once: True
+      with_items:
+        - keyfile: "id_rsa_shift"
+        - keyfile: "id_rsa_shift.pub"

@@ -1,0 +1,43 @@
+---
+- name: 2-0001-098_Rdp - set tmp variable
+  set_fact:
+     rdp: "{{ base_ADVANCED.rdp }}"
+  when: base_ADVANCED.rdp is defined
+
+- name: 2-0001-098_Rdp - set variable "rdp_flg" for powershell 1
+  set_fact:
+    rdp_flg: "1"
+  when: 
+    - rdp is defined
+    - rdp == "enabled"
+
+- name: 2-0001-098_Rdp - set variable "rdp_flg" for powershell 0
+  set_fact:
+    rdp_flg: "0"
+  when:
+    - rdp is defined
+    - rdp == "disabled"
+
+- name: 2-0001-098_Rdp - check rdp setting
+  raw: (Get-WmiObject win32_TerminalServiceSetting -Namespace root\cimv2\TerminalServices).AllowTSConnections
+  register: ret_pre
+  when: rdp_flg is defined
+  changed_when: ret_pre.stdout != "{{ rdp_flg }}\r\n"
+  always_run: yes
+
+- name: 2-0001-098_Rdp - modify rdp setting
+  raw: (Get-WmiObject win32_TerminalServiceSetting -Namespace 'root\cimv2\TerminalServices').SetAllowTSConnections("{{ rdp_flg }}")
+  when:
+    - rdp_flg is defined
+    - ret_pre | changed
+  always_run: no
+
+- name: 2-0001-098_Rdp - post check rdp setting
+  raw: (Get-WmiObject win32_TerminalServiceSetting -Namespace root\cimv2\TerminalServices).AllowTSConnections
+  register: ret_post
+  when:
+    - rdp_flg is defined
+    - ret_pre | changed
+  failed_when: ret_post.stdout != "{{ rdp_flg }}\r\n"
+  always_run: no
+

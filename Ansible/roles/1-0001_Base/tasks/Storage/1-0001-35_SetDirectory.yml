@@ -1,0 +1,9 @@
+- name: 1-0001-35_SetDirectory - modify directory
+  file:
+    state: directory
+    path: "{{ item.path }}"
+    owner: "{{ item.owner_user | default(omit) }}"
+    group: "{{ item.owner_group | default(omit) }}"
+    mode: "{{ item.permission | default(omit) }}"
+  with_items: base_storage.directory
+

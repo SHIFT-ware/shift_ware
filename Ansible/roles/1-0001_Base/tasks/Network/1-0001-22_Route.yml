@@ -1,0 +1,46 @@
+---
+- name: 1-0001-22_Route - check route table
+  shell: ip route
+  register: routes
+  changed_when: false
+
+- block:    
+  - name: 1-0001-22_Route - set default gateway for rhel6
+    lineinfile:
+      dest: '/etc/sysconfig/network-scripts/route-{{ base_network.default_gw.if }}'
+      line: "default via {{ base_network.default_gw.addr }}"
+      state: present
+      create: yes
+    notify: network_service_restart
+    when: base_network.default_gw is defined
+  
+  - name: 1-0001-22_Route - set static route for rhel6
+    lineinfile:
+      dest: '/etc/sysconfig/network-scripts/route-{{ item.if }}'
+      line: "{{ item.dest }} via {{ item.gw }}"
+      state: present
+      create: yes
+    notify: network_service_restart
+    with_items: base_network.static_routing
+    when: base_network.static_routing is defined
+  when: ansible_distribution_major_version == "6"
+
+- block:
+  - name: 1-0001-22_Route - set default gateway for rhel7
+    shell: nmcli connection modify {{ base_network.default_gw.if }} ipv4.gateway '{{ base_network.default_gw.addr }}'
+    notify: network_service_restart
+    when:
+      - base_network.default_gw is defined
+      - routes.stdout.find('default via {{ base_network.default_gw.addr }} dev {{ base_network.default_gw.if }}') == -1
+    
+  - name: 1-0001-22_Route - set static route for rhel7
+    shell: nmcli connection modify {{ item.if }} +ipv4.routes '{{ item.dest }} {{ item.gw }}'
+    notify: network_service_restart
+    with_items: base_network.static_routing
+    when:
+      - base_network.static_routing is defined
+      - routes.stdout.find('{{ item.dest }} via {{ item.gw }} dev {{ item.if }}') == -1
+      - item.dest != "0.0.0.0/0"
+  when: ansible_distribution_major_version == "7"
+
+- meta: flush_handlers

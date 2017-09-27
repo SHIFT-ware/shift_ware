@@ -1,0 +1,44 @@
+connection_hostname: '192.168.127.31'
+remote_tmp_dir: '~root/.shift'
+Pgpool:
+  packages:
+    - name: libmemcached-0.31-1.1.el6.x86_64.rpm
+    - name: pgpool-II-pg94-3.4.8-1pgdg.rhel6.x86_64.rpm
+    - name: postgresql94-9.4.10-1PGDG.rhel6.x86_64.rpm
+    - name: postgresql94-libs-9.4.10-1PGDG.rhel6.x86_64.rpm
+    - name: postgresql-libs-8.4.20-6.el6.x86_64.rpm
+  state: started
+  enabled: yes
+  exec_groups:
+    primary:
+      name: postgres
+      gid: 1000
+    secondary:
+      - name: test1
+        gid: 1001
+      - name: test2
+        gid: 1002
+  exec_user:
+    name: postgres
+    uid: 1000
+    home_dir: /home/postgres
+    shell: /bin/bash
+    password: p@ssw0rd
+  config:
+    filename: pgpool_192.168.127.31.conf
+  pcp_users:
+    - name: saito
+      password: p@ssw0rd
+  pool_passwd:
+    - name: postgres
+      password: p@ssw0rd
+  pool_hba:
+    - type: local
+      database: all
+      user: all
+      method: trust
+    - type: host
+      database: all
+      user: all
+      address: 0.0.0.0/0
+      method: md5

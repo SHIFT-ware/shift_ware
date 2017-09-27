@@ -1,0 +1,16 @@
+---
+- name: 1-0001-20_Nsswitch - give priority to dns
+  lineinfile:
+    dest: '/etc/nsswitch.conf'
+    state: present
+    regexp: "^hosts:"
+    line: "hosts:      dns files"
+  when: base_advanced.name_resolve.pri_name_resolve == "dns"
+
+- name: 1-0001-20_Nsswitch - give priority to hosts
+  lineinfile:
+    dest: '/etc/nsswitch.conf'
+    state: present
+    regexp: "^hosts:"
+    line: "hosts:      files dns"
+  when: base_advanced.name_resolve.pri_name_resolve == "files"

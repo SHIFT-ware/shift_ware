@@ -1,0 +1,4 @@
+apac_apache_tmp_dir: "{{ remote_tmp_dir }}/{{ role_name }}"
+
+apac_apache: "{{ apache }}"
+

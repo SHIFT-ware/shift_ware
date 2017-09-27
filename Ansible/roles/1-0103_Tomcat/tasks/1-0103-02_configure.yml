@@ -1,0 +1,142 @@
+---
+- name: 1-0103-02_configure - check tomcat is installed
+  stat:
+    path: "{{ tomc_tomcat.install_dir }}/bin/startup.sh"
+  register: check_installed
+  when: tomc_tomcat.install_dir is defined
+
+- block:
+  - name: 1-0103-02_configure - create tmp dir
+    file:
+      path: "{{ tomc_tmp_dir }}"
+      recurse: yes
+      state: directory
+
+  - name: 1-0103-02_configure - unzip tomcat package
+    unarchive:
+      src: "{{ tomc_tomcat.tarball }}"
+      dest: "{{ tomc_tmp_dir }}"
+
+  - name: 1-0103-02_configure - create install dir of tomcat
+    file:
+      path: "{{ tomc_tomcat.install_dir }}"
+      state: directory
+
+  - name: 1-0103-02_configure - copy tomcat directory to install dir
+    shell: cp -rp {{ tomc_tmp_dir }}/{{ tomc_tomcat.tarball | replace('.tar.gz','')}}/* {{ tomc_tomcat.install_dir }}
+
+  - name: 1-0103-02_configure - delete tmp dir
+    file:
+      path: "{{ tomc_tmp_dir }}"
+      state: absent
+  when:
+    - not (check_installed | skipped)
+    - check_installed.stat.exists == false
+
+- block:
+  - name: 1-0103-02_configure - drop initial applications
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - "{{ tomc_tomcat.install_dir }}/webapps/docs"
+      - "{{ tomc_tomcat.install_dir }}/webapps/examples"
+    when:
+      - tomc_tomcat.initial_apps.enable is defined
+      - tomc_tomcat.initial_apps.enable == false
+  
+  - name: 1-0103-02_configure - drop manager applications
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - "{{ tomc_tomcat.install_dir }}/webapps/manager"
+      - "{{ tomc_tomcat.install_dir }}/webapps/host-manager"
+    when:
+      - tomc_tomcat.manager.enable is defined
+      - tomc_tomcat.manager.enable == false
+  
+  - name: 1-0103-02_configure - put server.xml
+    template:
+      src: server.xml.j2
+      dest: "{{ tomc_tomcat.install_dir }}/conf/server.xml"
+    notify:
+      - check_tomcat_service_exists
+      - restart_tomcat_service
+      - restart_tomcat_process
+  
+  - name: 1-0103-02_configure - put setenv.sh
+    template:
+      src: setenv.sh.j2
+      dest: "{{ tomc_tomcat.install_dir }}/bin/setenv.sh"
+    notify:
+      - check_tomcat_service_exists
+      - restart_tomcat_service
+      - restart_tomcat_process
+  
+  - name: 1-0103-02_configure - put tomcat-users.xml
+    template:
+      src: tomcat-users.xml.j2
+      dest: "{{ tomc_tomcat.install_dir }}/conf/tomcat-users.xml"
+    notify:
+      - check_tomcat_service_exists
+      - restart_tomcat_service
+      - restart_tomcat_process
+    when:
+      - tomc_tomcat.manager.enable is defined
+      - tomc_tomcat.manager.enable == true
+  
+  - name: 1-0103-02_configure - change tomcat home owner
+    file:
+      path: "{{ tomc_tomcat.install_dir }}"
+      owner: "{{ tomc_tomcat.exec_user.name }}"
+      group: "{{ tomc_tomcat.exec_groups.primary.name }}"
+      recurse: yes
+      state: directory
+    when:
+      - tomc_tomcat.exec_user.name is defined
+      - tomc_tomcat.exec_groups.primary.name is defined
+  when:
+    - tomc_tomcat.install_dir is defined
+
+- block:
+  - name: 1-0103-02_configure - put service script
+    template:
+      src: tomcat.j2
+      dest: /etc/init.d/tomcat
+      mode: "755"
+  
+  - name: 1-0103-02_configure - check tomcat service exists
+    shell: chkconfig --list tomcat
+    changed_when: false
+    failed_when: false
+    register: check_tomcat_service
+
+  - name: 1-0103-02_configure - entry tomcat service
+    shell: chkconfig --add tomcat 
+    when:
+      - check_tomcat_service.rc != 0
+  when:
+    - tomc_tomcat.init_script.enable is defined
+    - tomc_tomcat.init_script.enable == true
+
+- block:
+  - name: 1-0103-02_configure - check tomcat service exists
+    shell: chkconfig --list tomcat
+    changed_when: false
+    failed_when: false
+    register: check_tomcat_service
+  
+  - name: 1-0103-02_configure - delete tomcat service
+    shell: chkconfig --del tomcat 
+    when:
+      - check_tomcat_service.rc == 0
+
+  - name: 1-0103-02_configure - remove service script
+    file:
+      path: /etc/init.d/tomcat
+      state: absent
+  when:
+    - tomc_tomcat.init_script.enable is defined
+    - tomc_tomcat.init_script.enable == false
+

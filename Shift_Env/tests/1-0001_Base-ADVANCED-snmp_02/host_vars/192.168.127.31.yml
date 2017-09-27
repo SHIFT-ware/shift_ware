@@ -1,0 +1,23 @@
+connection_hostname: '192.168.127.31'
+remote_tmp_dir: '~root/.shift'
+BASE: 
+ADVANCED:
+  snmpd: 
+    packages: 
+      - name: 'lm_sensors-libs-3.1.1-17.el6.x86_64.rpm'
+      - name: 'net-snmp-5.5-49.el6.x86_64.rpm'
+      - name: 'net-snmp-libs-5.5-49.el6.x86_64.rpm'
+      - name: 'perl-5.10.1-136.el6.x86_64.rpm'
+      - name: 'perl-Module-Pluggable-3.90-136.el6.x86_64.rpm'
+      - name: 'perl-Pod-Escapes-1.04-136.el6.x86_64.rpm'
+      - name: 'perl-Pod-Simple-3.13-136.el6.x86_64.rpm'
+      - name: 'perl-libs-5.10.1-136.el6.x86_64.rpm'
+      - name: 'perl-version-0.77-136.el6.x86_64.rpm'
+    trap: 
+      - server: '192.168.127.10'
+        community: 'test1'
+        port: '162'
+      - server: '192.168.0.11'
+        community: 'test2'
+        port: '162'
+

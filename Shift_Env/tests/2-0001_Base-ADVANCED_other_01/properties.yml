@@ -1,0 +1,24 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+  ADVANCED: 
+    organization: 'TIS'
+    owner: 'TIS'
+    rdp: 'disabled'
+    error_report: 'disabled'
+    windows_update: 'disabled'
+    psexecpolicy: 'RemoteSigned'
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+  ADVANCED: 
+    organization: 'TIS'
+    owner: 'TIS'
+    rdp: 'disabled'
+    error_report: 'disabled'
+    windows_update: 'disabled'
+    psexecpolicy: 'RemoteSigned'
+
+

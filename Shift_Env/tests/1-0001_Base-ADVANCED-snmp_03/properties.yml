@@ -1,0 +1,27 @@
+192.168.127.31:
+  connection_hostname: '192.168.127.31'
+  operating_system: 'Linux'
+  BASE: 
+  ADVANCED:
+    snmpd: 
+      sec: 
+        - sec_name: 'notConfigUser'
+          source: 'default'
+          community: 'public'
+        - sec_name: 'local'
+          source: 'localhost'
+          community: 'COMMUNITY'
+192.168.127.41:
+  connection_hostname: '192.168.127.41'
+  operating_system: 'Linux'
+  BASE: 
+  ADVANCED:
+    snmpd: 
+      sec: 
+        - sec_name: 'notConfigUser'
+          source: 'default'
+          community: 'public'
+        - sec_name: 'local'
+          source: 'localhost'
+          community: 'COMMUNITY'
+

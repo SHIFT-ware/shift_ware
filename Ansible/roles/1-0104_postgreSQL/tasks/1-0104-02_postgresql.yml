@@ -1,0 +1,120 @@
+---
+- block:
+  - name: 1-0104-02_postgresql - check installed package
+    shell: rpm -qa | grep -q "{{ item.name | regex_replace('\.rpm', '') }}"
+    register: installed
+    changed_when: installed.rc == 1
+    failed_when: installed.rc == 2
+    with_items: pgsq_packages | default("")
+
+  - name: 1-0104-02_postgresql - create tmp dir
+    file:
+      path: "{{ pgsq_tmp_dir }}"
+      state: directory
+    when: installed | changed
+
+  - name: 1-0104-02_postgresql - send package
+    copy:
+      src: "../Shift_Env/files/{{ item.name }}"
+      dest: "{{ pgsq_tmp_dir }}"
+    with_items: pgsq_packages | default("")
+    register: send_task
+    when: installed | changed
+
+  - name: 1-0104-02_postgresql - update package
+    shell: "yum update -y *"
+    args:
+      chdir: "{{ pgsq_tmp_dir }}"
+    when: installed | changed
+
+  - name: 1-0104-02_postgresql - install package
+    yum:
+      name: "{{ send_task.results | join(', ', attribute='dest') }}"
+      state: present
+    when: installed | changed
+  when:
+    - pgsq_packages is defined
+
+- name: 1-0104-02_postgresql - delete tmp dir
+  file:
+    path: '{{ pgsq_tmp_dir }}'
+    state: absent
+
+- name: 1-0104-02_postgresql - create postgresql database directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "postgres"
+    group: "postgres"
+    mode: 0700
+  with_items:
+    - '/var/lib/pgsql/{{ pgsq_version }}'
+    - '/var/lib/pgsql/{{ pgsq_version }}/data'
+
+- name: 1-0104-02_postgresql - modify setting environment "PGDATA" to .bash_profile
+  lineinfile:
+    dest: "/var/lib/pgsql/.bash_profile"
+    line: 'export PGDATA=/var/lib/pgsql/{{ pgsq_version }}/data'
+    regexp: 'export PGDATA'
+
+- name: 1-0104-02_postgresql - modify setting environment "PATH" to .bash_profile
+  lineinfile:
+    dest: "/var/lib/pgsql/.bash_profile"
+    line: 'export PATH=/usr/pgsql-{{ pgsq_version }}/bin/:$PATH'
+
+- name: 1-0104-02_postgresql - modify setting environment "LD_LIBRARY_PATH" to .bash_profile
+  lineinfile:
+    dest: "/var/lib/pgsql/.bash_profile"
+    line: 'export LD_LIBRARY_PATH=/usr/pgsql-{{ pgsq_version }}/lib:$LD_LIBRARY_PATH'
+
+- name: 1-0104-02_postgresql - check postgresql database exists
+  stat:
+    path: "/var/lib/pgsql/{{ pgsq_version }}/data/base"
+  register: is_postgresql_db
+
+- block:
+  - name: 1-0104-02_postgresql - set initdb option "--encoding"
+    set_fact:
+      initdb_option_encoding: '--encoding="{{ pgsq_initdb_option_encoding }}"'
+    when:
+      pgsq_initdb_option_encoding is defined
+
+  - name: 1-0104-02_postgresql - set initdb option "--locale"
+    set_fact:
+      initdb_option_locale: '--locale="{{ pgsq_initdb_option_locale }}"'
+    when:
+      pgsq_initdb_option_locale is defined
+
+  - name: 1-0104-02_postgresql - initialize postgresql database
+    shell: >
+      /usr/pgsql-{{ pgsq_version }}/bin/initdb \
+        --pgdata="/var/lib/pgsql/{{ pgsq_version }}/data" \
+        --username="{{ pgsq_db_user_name }}" {{ initdb_option_encoding | default("") }} {{ initdb_option_locale | default("") }}
+    become: true
+    become_user: "postgres"
+
+  - name: 1-0104-02_postgresql - postgresql service start
+    service:
+      name: "postgresql-{{ pgsq_version }}"
+      state: started
+    when:
+      pgsq_db_user_password is defined
+
+  - name: 1-0104-02_postgresql - set password of db super user
+    shell: psql -U {{ pgsq_db_user_name | default('postgres') }} -c "ALTER ROLE {{ pgsq_db_user_name }} PASSWORD '{{ pgsq_db_user_password }}'"
+    when:
+      pgsq_db_user_password is defined
+  when: 
+    - is_postgresql_db.stat.exists == False
+    - pgsq_server_role is undefined or
+      pgsq_server_role == "master"
+
+- name: 1-0104-02_postgresql - create directory for wal archive
+  file:
+    path: "{{ pgsq_wal_archive_dir }}"
+    owner: "postgres"
+    group: "postgres"
+    state: directory
+  when:
+    - pgsq_wal_archive_dir is defined
+

@@ -1,0 +1,6 @@
+192.168.127.31:
+  operating_system: Linux
+  openjdk:
+    version: 1.7.0
+    install_devel: yes
+

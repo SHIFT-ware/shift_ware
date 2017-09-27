@@ -1,0 +1,19 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+  NETWORK: 
+    hostname: 'target300'
+    domain: 
+      type: 'domain'
+      name: 'test.test'
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+  NETWORK: 
+    hostname: 'target400'
+    domain: 
+      type: 'domain'
+      name: 'test.test'
+

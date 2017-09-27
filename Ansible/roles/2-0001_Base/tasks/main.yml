@@ -1,0 +1,73 @@
+---
+- include: 2-0001-107_PsExecPolicy.yml
+
+- include: 2-0001-075_Teaming.yml
+  when: base_NETWORK.teaming is defined
+
+- include: 2-0001-072_Interface.yml
+  when: base_NETWORK.eth is defined
+
+- include: 2-0001-073_Routing.yml
+  when:
+    - base_NETWORK.default_gw is defined or
+      base_NETWORK.static_routing is defined
+
+- include: 2-0001-079_NameResolve.yml
+  when: base_NETWORK.name_resolve is defined
+
+- include: 2-0001-074_Firewall.yml
+  when: base_NETWORK.firewall is defined
+
+- include: 2-0001-077_IPv6Disable.yml
+  when: base_NETWORK.ipv6 is defined
+
+- include: 2-0001-012_UserGroup.yml
+
+- include: 2-0001-011_User.yml
+
+- include: 2-0001-076_Domain.yml
+  when: base_NETWORK.domain is defined
+
+- include: 2-0001-071_Hostname.yml
+  when: base_NETWORK.hostname is defined
+
+- include: 2-0001-078_DnsSuffix.yml
+  when: base_NETWORK.dns_suffix is defined
+
+- include: 2-0001-095_Feature.yml
+  when: base_ADVANCED.feature is defined
+
+- include: 2-0001-096_Service.yml
+
+- include: 2-0001-051_Directory.yml
+
+- include: 2-0001-102_ErrorReport.yml
+  when: base_ADVANCED.error_report is defined
+
+- include: 2-0001-105_EventLog.yml
+  when: base_ADVANCED.eventlog is defined
+
+- include: 2-0001-002_Memory.yml
+  when: base_BASE.HW.memory is defined
+
+- include: 2-0001-104_Owner.yml
+  when: base_ADVANCED.owner is defined
+
+- include: 2-0001-109_Organization.yml
+  when: base_ADVANCED.organization is defined
+
+- include: 2-0001-098_Rdp.yml
+
+- include: 2-0001-025_RecoverOs.yml
+  when: base_BASE.OSCORE.recover_os is defined
+
+- include: 2-0001-106_Registry.yml
+
+- include: 2-0001-024_Timezone.yml
+  when: base_BASE.OSCORE.timezone is defined
+
+- include: 2-0001-013_Uac.yml
+  when: base_BASE.ID.uac is defined
+
+- include: 2-0001-103_WinUpdate.yml
+  when: base_ADVANCED.windows_update is defined

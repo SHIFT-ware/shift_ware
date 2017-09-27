@@ -1,0 +1,89 @@
+##############################
+# Notice
+# Handlers are run in the order they are listed, 
+# not in the order that they are notified
+##############################
+
+##############################
+# Network Restart
+##############################
+- name: network_service_restart
+  service: >
+    name=network
+    state=restarted
+
+##############################
+# Sshd Restart
+##############################
+- name: sshd_service_restart
+  service: >
+    name=sshd
+    state=restarted
+
+##############################
+# NTP Service Restart
+##############################
+- name: ntpd_restart
+  service: >
+    name=ntpd
+    state=restarted
+
+##############################
+# NTP Service Restart
+##############################
+- name: snmp_restart
+  service: >
+    name=snmpd
+    state=restarted
+
+##############################
+# Server Reboot
+##############################
+- name: server_restart_for_RHEL6
+  command: shutdown -r now
+  when: >
+    ansible_os_family == "RedHat" and
+    ansible_distribution_major_version == "6"
+
+- name: server_restart_for_RHEL7
+  command: shutdown -r
+  when: >
+    ansible_os_family == "RedHat" and
+    ansible_distribution_major_version == "7"
+
+- name: wait_for_SSH_port_down
+  wait_for: >
+    host={{ inventory_hostname }}
+    port=22
+    state=stopped
+  delegate_to: 127.0.0.1
+
+- name: wait_for_SSH_port_up
+  wait_for: >
+    host={{ inventory_hostname }}
+    port=22
+    state=started
+    delay=30
+  delegate_to: 127.0.0.1
+
+##############################
+# Apply Grub config
+##############################
+- name: apply_grub_config
+  shell: grub2-mkconfig -o /boot/grub2/grub.cfg
+  when: >
+    ansible_distribution_major_version == "7"
+
+##############################
+# Apply Sysctl config
+##############################
+- name: apply_sysctl_config
+  shell: sysctl -p
+
+##############################
+# Rsyslog Service Restart
+##############################
+- name: rsyslog_restart
+  service: >
+    name=rsyslog
+    state=restarted

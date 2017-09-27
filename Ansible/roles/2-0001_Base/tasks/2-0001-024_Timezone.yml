@@ -1,0 +1,22 @@
+---
+- name: 2-0001-024_Timezone - define tmp variable
+  set_fact:
+     timezone: "{{ base_BASE.OSCORE.timezone }}"
+
+- name: 2-0001-024_Timezone - check timezone
+  raw: tzutil /g
+  register: ret_pre
+  changed_when: ret_pre.stdout != "{{ timezone }}"
+  always_run: yes
+
+- name: 2-0001-024_Timezone - modify timezone
+  raw: tzutil /s "{{ timezone }}"
+  when: ret_pre | changed
+  always_run: no
+
+- name: 2-0001-024_Timezone - post check timezone
+  raw: tzutil /g
+  register: ret_post
+  failed_when: ret_post.stdout != "{{ timezone }}"
+  when: ret_pre | changed
+  always_run: no

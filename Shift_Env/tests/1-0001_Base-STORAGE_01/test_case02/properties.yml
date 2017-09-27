@@ -1,0 +1,31 @@
+192.168.127.31:
+  connection_hostname: '192.168.127.31'
+  operating_system: 'Linux'
+  BASE: 
+  STORAGE: 
+    mount_point: 
+      - path: '/'
+        device_file_name: '/dev/mapper/VolGroup-lv_root'
+        file_system: 'ext4'
+        size: 17647
+    directory: 
+      - path: '/root/test'
+        owner_user: 'root'
+        owner_group: 'root'
+        permission: 555
+192.168.127.41:
+  connection_hostname: '192.168.127.41'
+  operating_system: 'Linux'
+  BASE: 
+  STORAGE: 
+    mount_point: 
+      - path: '/'
+        device_file_name: '/dev/mapper/rhel-root'
+        file_system: 'xfs'
+        size: 19601
+    directory: 
+      - path: '/root/test'
+        owner_user: 'root'
+        owner_group: 'root'
+        permission: 555
+

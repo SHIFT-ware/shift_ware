@@ -1,0 +1,11 @@
+connection_hostname: '192.168.127.141'
+remote_tmp_dir: 'C:\.shift'
+BASE: 
+NETWORK: 
+  hostname: 'target300'
+  domain: 
+    type: 'domain'
+    name: 'test.test'
+    user: 'Administrator'
+    password: 'p@ssw0rd'
+

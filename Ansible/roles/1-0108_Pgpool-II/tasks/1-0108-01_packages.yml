@@ -1,0 +1,41 @@
+---
+- block:
+  - name: 1-0108-01_packages - check package is installed
+    shell: rpm -qa | grep -q "{{ item.name | regex_replace('\.rpm', '') }}"
+    register: installed
+    changed_when: installed.rc == 1
+    failed_when: installed.rc == 2
+    with_items: pgpool_packages | default("")
+
+  - name: 1-0108-01_packages - create tmp dir
+    file:
+      path: "{{ pgpool_tmp_dir }}"
+      state: directory
+    when: installed | changed
+
+  - name: 1-0108-01_packages - send package
+    copy:
+      src: "../Shift_Env/files/{{ item.name }}"
+      dest: "{{ pgpool_tmp_dir }}"
+    with_items: pgpool_packages | default("")
+    register: send_task
+    when: installed | changed
+
+  - name: 1-0108-01_packages - update package
+    shell: "yum update -y *"
+    args:
+      chdir: "{{ pgpool_tmp_dir }}"
+    when: installed | changed
+
+  - name: 1-0108-01_packages - install package
+    yum:
+      name: "{{ send_task.results | join(', ', attribute='dest') }}"
+      state: present
+    when: installed | changed
+  when: pgpool_packages is defined
+
+- name: 1-0108-01_packages - delete tmp dir
+  file:
+    path: '{{ pgpool_tmp_dir }}'
+    state: absent
+

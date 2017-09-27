@@ -1,0 +1,21 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+  ADVANCED: 
+    feature: 
+      - name: 'SNMP サービス'
+    snmp: 
+      security: 
+        authentication_trap: True
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+  ADVANCED: 
+    feature: 
+      - name: 'SNMP サービス'
+    snmp: 
+      security: 
+        authentication_trap: True
+

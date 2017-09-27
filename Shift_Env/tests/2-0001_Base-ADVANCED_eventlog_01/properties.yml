@@ -1,0 +1,37 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+  ADVANCED: 
+    eventlog: 
+      application: 
+        filepath: 'C:\Windows\system32\winevt\Logs\Application.evtx'
+        type: 'overwrite'
+        maxsize: 2048
+      security: 
+        filepath: 'C:\Windows\system32\winevt\Logs\Security.evtx'
+        type: 'archive'
+        maxsize: 2048
+      system: 
+        filepath: 'C:\Windows\system32\winevt\Logs\System.evtx'
+        type: 'none'
+        maxsize: 2048
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+  ADVANCED: 
+    eventlog: 
+      application: 
+        filepath: 'C:\Windows\system32\winevt\Logs\Application.evtx'
+        type: 'overwrite'
+        maxsize: 2048
+      security: 
+        filepath: 'C:\Windows\system32\winevt\Logs\Security.evtx'
+        type: 'archive'
+        maxsize: 2048
+      system: 
+        filepath: 'C:\Windows\system32\winevt\Logs\System.evtx'
+        type: 'none'
+        maxsize: 2048
+

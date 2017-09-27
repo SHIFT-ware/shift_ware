@@ -1,0 +1,24 @@
+# !CAUTION!
+# Cannot use ansible module in this code, cause by selinux running.
+# So, you can use only raw type module. For example, "raw","command","shell".
+
+- name: CheckSelinuxConfig
+  shell: grep -q ^SELINUX=enforcing /etc/selinux/config
+  register: ret_before
+  failed_when: ret_before.rc not in [ 0 , 1 ] #grep結果が空のとき:1 grep処理が異常のとき:2
+  changed_when: ret_before.rc == 0
+
+- name: ModifySelinuxConfigToDisable
+  shell: sed -i -e 's/^SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+  when: ret_before|changed
+  register: ret
+  changed_when: ret.rc==0
+  failed_when: ret.rc!=0
+  notify:
+    - server_restart_for_RHEL6
+    - server_restart_for_RHEL7
+    - wait_for_SSH_port_down
+    - wait_for_SSH_port_up
+
+- meta: flush_handlers
+# After above handlers , you can use any Ansible modules.

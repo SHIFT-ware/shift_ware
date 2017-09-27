@@ -1,0 +1,25 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+  NETWORK: 
+    firewall: 
+      domain: 
+        enabled_flag: 'True'
+      private: 
+        enabled_flag: 'True'
+      public: 
+        enabled_flag: 'True'
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+  NETWORK: 
+    firewall: 
+      domain: 
+        enabled_flag: 'True'
+      private: 
+        enabled_flag: 'True'
+      public: 
+        enabled_flag: 'True'
+

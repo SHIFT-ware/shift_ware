@@ -1,0 +1,3 @@
+connection_hostname: '192.168.127.31'
+remote_tmp_dir: '~root/.shift'
+Pgpool:

@@ -1,0 +1,10 @@
+connection_hostname: '192.168.127.41'
+remote_tmp_dir: '~root/.shift'
+BASE:
+STORAGE: 
+  directory: 
+    - path: '/root/test'
+      owner_user: 'root'
+      owner_group: 'root'
+      permission: 555
+

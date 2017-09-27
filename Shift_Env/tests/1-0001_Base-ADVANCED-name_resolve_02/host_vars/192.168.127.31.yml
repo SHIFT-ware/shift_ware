@@ -1,0 +1,9 @@
+connection_hostname: '192.168.127.31'
+operating_system: 'Linux'
+BASE:
+  OSCORE:
+    version: '6.5'
+ADVANCED:
+  name_resolve:
+    pri_name_resolve: 'files'
+

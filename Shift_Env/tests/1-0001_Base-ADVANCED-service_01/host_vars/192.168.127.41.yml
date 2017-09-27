@@ -1,0 +1,13 @@
+connection_hostname: '192.168.127.41'
+remote_tmp_dir: '~root/.shift'
+BASE: 
+ADVANCED:
+  service: 
+    - name: 'firewalld'
+      state: False
+      enable: False
+    - name: 'rescue'
+      state: True
+    - name: 'dnsmasq'
+      enable: True
+

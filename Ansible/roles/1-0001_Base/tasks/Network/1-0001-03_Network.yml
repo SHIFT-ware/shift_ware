@@ -1,0 +1,5 @@
+---
+- name: 1-0001-03_Hostname - change hostname
+  hostname: name="{{ base_network.hostname }}"
+  when:
+    - base_network.hostname is defined

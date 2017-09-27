@@ -1,0 +1,11 @@
+[targethost]
+192.168.127.30  ansible_user=Administrator  ansible_ssh_pass=p@ssw0rd
+192.168.127.40  ansible_user=Administrator  ansible_ssh_pass=p@ssw0rd
+
+[targethost:vars]
+ansible_ssh_port = 5986
+ansible_connection = winrm
+
+#全台共通の場合はここに記載
+#ansible_ssh_pass=password
+

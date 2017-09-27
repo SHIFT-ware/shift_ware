@@ -1,0 +1,17 @@
+192.168.127.31:
+  connection_hostname: '192.168.127.31'
+  operating_system: 'Linux'
+  BASE: 
+    HW: 
+      cpu_core_sum: 4
+      cpu_hyper_thread: True
+      mem_size: 3922432
+192.168.127.41:
+  connection_hostname: '192.168.127.41'
+  operating_system: 'Linux'
+  BASE: 
+    HW: 
+      cpu_core_sum: 4
+      cpu_hyper_thread: True
+      mem_size: 4048000
+

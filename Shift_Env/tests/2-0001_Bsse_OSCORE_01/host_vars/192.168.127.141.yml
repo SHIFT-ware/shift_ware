@@ -1,0 +1,14 @@
+connection_hostname: '192.168.127.141'
+remote_tmp_dir: 'C:\.shift'
+BASE: 
+  OSCORE: 
+    timezone: 'Tonga Standard Time'
+    recover_os: 
+      display_os_list_time: 60
+      write_eventlog: False
+      auto_reboot: False
+      dumpfile: 
+        type: 'minimum'
+        path: 'C:\Windows\MEMORY2.DMP'
+        overwrite: False
+

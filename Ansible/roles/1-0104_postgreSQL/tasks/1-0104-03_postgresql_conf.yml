@@ -1,0 +1,15 @@
+---
+- name: 1-0104-03_postgresql_conf - put postgresql.conf
+  copy:
+    src: "../Shift_Env/files/{{ pgsq_config_file }}"
+    dest: "/var/lib/pgsql/{{ pgsq_version }}/data/postgresql.conf"
+  notify: postgresql_service_restart
+  when: pgsq_config_file is defined
+
+- name: 1-0104-03_postgresql_conf - put pg_hba.conf
+  template:
+    src: pg_hba.conf.j2
+    dest: "/var/lib/pgsql/{{ pgsq_version }}/data/pg_hba.conf"
+  notify: postgresql_service_restart
+  when: pgsq_authentication_records is defined
+

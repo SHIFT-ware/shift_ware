@@ -1,0 +1,78 @@
+---
+- name: 2-0001-013_Uac - define tmp variable
+  set_fact:
+     uac: "{{ base_BASE.ID.uac }}"
+     location: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System'
+
+- name: 2-0001-013_Uac - define variable of "high" for powershell
+  set_fact:
+    lua: "1"
+    prompt: "1"
+    consent: "2"
+  when: uac.level == "high"
+
+- name: 2-0001-013_Uac - define variable of "middle" for powershell
+  set_fact:
+    lua: "1"
+    prompt: "1"
+    consent: "5"
+  when: uac.level == "middle"
+
+- name: 2-0001-013_Uac - define variable of "low" for powershell
+  set_fact:
+    lua: "1"
+    prompt: "0"
+    consent: "5"
+  when: uac.level == "low"
+
+- name: 2-0001-013_Uac - define variable of "disabled" for powershell
+  set_fact:
+    lua: "1"
+    prompt: "0"
+    consent: "0"
+  when: uac.level == "disabled"
+
+- name: 2-0001-013_Uac - define variable of "lua_disabled" for powershell
+  set_fact:
+    lua: "0"
+    prompt: "0"
+    consent: "0"
+  when: uac.level == "lua_disabled"
+
+
+- name: 2-0001-013_Uac - create registry path
+  raw: if ( ! ( Test-Path '{{ location }}' )) { New-Item '{{ location }}' -Force }
+  always_run: yes
+
+- name: 2-0001-013_Uac - check registry value
+  raw: (Get-ItemProperty '{{ location }}').'{{ item.property }}'
+  with_items:
+    - property: "EnableLUA"
+      value: "{{ lua }}"
+    - property: "PromptOnSecureDesktop"
+      value: "{{ prompt }}"
+    - property: "ConsentPromptBehaviorAdmin"
+      value: "{{ consent }}"
+  register: ret_pre
+  changed_when: ret_pre.stdout != "{{ item.value }}\r\n"
+  always_run: yes
+
+- name: 2-0001-013_Uac - change registry value
+  raw: Set-ItemProperty '{{ location }}' '{{ item.item.property }}' -Value '{{ item.item.value }}' -Type 'DWord'
+  with_items: ret_pre.results
+  when:
+    - item.changed == true
+  always_run: no
+
+- name: 2-0001-013_Uac - post check registry value
+  raw: (Get-ItemProperty '{{ location }}').'{{ item.property }}'
+  with_items:
+    - property: "EnableLUA"
+      value: "{{ lua }}"
+    - property: "PromptOnSecureDesktop"
+      value: "{{ prompt }}"
+    - property: "ConsentPromptBehaviorAdmin"
+      value: "{{ consent }}"
+  register: ret_post
+  failed_when: ret_post.stdout != "{{ item.value }}\r\n"
+  always_run: no

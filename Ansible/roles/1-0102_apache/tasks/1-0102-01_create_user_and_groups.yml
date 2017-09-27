@@ -1,0 +1,63 @@
+---
+- block:
+  - name: 1-0102-01_create_user_and_groups - check apache user's primary group
+    shell: grep -e "^{{ apac_apache.exec_groups.primary.name }}:" /etc/group
+    failed_when: false
+    changed_when: false
+    register: check_primary_group
+    when: apac_apache.exec_groups.primary.name is defined
+  
+  - name: 1-0102-01_create_user_and_groups - create apache user's primary group
+    group:
+      name: "{{ apac_apache.exec_groups.primary.name }}"
+      gid: "{{ apac_apache.exec_groups.primary.gid | default(omit) }}"
+    when:
+      - not ( check_primary_group | skipped )
+      - check_primary_group.rc != 0 
+
+  - name: 1-0102-01_create_user_and_groups - check apache user's secondary groups
+    shell: grep -e "^{{ item.name }}:" /etc/group
+    failed_when: false
+    changed_when: false
+    register: check_secondary_groups
+    with_items:
+      "{{ apac_apache.exec_groups.secondary | default('') }}"
+    when: item.name is defined
+
+  - name: 1-0102-01_create_user_and_groups - create apache user's secondary group
+    group:
+      name: "{{ item.item.name }}"
+      gid: "{{ item.item.gid | default(omit) }}"
+    with_items:
+      check_secondary_groups.results
+    when:
+      - not ( check_secondary_groups | skipped )
+      - item.rc != 0
+
+  - name: 1-0102-01_create_user_and_groups - check apache user
+    shell: id {{ apac_apache.exec_user.name }}
+    failed_when: false
+    changed_when: false
+    register: check_apache_user
+
+  - name: 1-0102-01_create_user_and_groups - set strings of secondary groups
+    set_fact:
+      sub_groups_str:
+        "{{ apac_apache.exec_groups.secondary | map(attribute='name') | join(',') }}"
+    when:
+      - apac_apache.exec_groups.secondary is defined
+
+  - name: 1-0102-01_create_user_and_groups - create apache user
+    user:
+      name: "{{ apac_apache.exec_user.name }}"
+      uid: "{{ apac_apache.exec_user.uid | default('48') }}"
+      group: "{{ apac_apache.exec_groups.primary.name | default(omit) }}"
+      groups: "{{ sub_groups_str | default(omit) }}"
+      home: "{{ apac_apache.exec_user.home_dir | default('/var/www') }}"
+      shell: "{{ apac_apache.exec_user.shell | default('/sbin/nologin') }}"
+      password: "{{ apac_apache.exec_user.password | password_hash('sha512') }}"
+      state: present 
+    when:
+      - check_apache_user.rc != 0
+  when:
+    - apac_apache.exec_user.name is defined

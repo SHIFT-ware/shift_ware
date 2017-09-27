@@ -1,0 +1,15 @@
+- name: 1-0001-14_Lang - change environment "LANG" for rhel6
+  lineinfile:
+    dest: /etc/sysconfig/i18n
+    regexp: '^LANG'
+    line: "LANG=\"{{ base_base.OSCORE.lang }}\""
+  when:
+    - ansible_distribution_major_version == "6"
+
+- name: 1-0001-14_Lang - change environment "LANG" for rhel7
+  lineinfile:
+    dest: /etc/locale.conf
+    regexp: '^LANG'
+    line: "LANG=\"{{ base_base.OSCORE.lang }}\""
+  when:
+    - ansible_distribution_major_version == "7"

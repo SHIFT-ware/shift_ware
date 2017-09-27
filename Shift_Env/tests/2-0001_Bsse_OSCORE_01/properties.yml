@@ -1,0 +1,35 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+    OSCORE: 
+      systeminfo: 
+        os_name: 'Microsoft Windows Server 2013 Standard'
+      timezone: 'Tonga Standard Time'
+      recover_os: 
+        default_os_version: 'Windows Server 2013'
+        display_os_list_time: 60
+        write_eventlog: False
+        auto_reboot: False
+        dumpfile: 
+          type: 'minimum'
+          path: 'C:\Windows\MEMORY2.DMP'
+          overwrite: False
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+    OSCORE: 
+      systeminfo: 
+        os_name: 'Microsoft Windows Server 2013 Standard'
+      timezone: 'Tonga Standard Time'
+      recover_os: 
+        default_os_version: 'Windows Server 2013'
+        display_os_list_time: 60
+        write_eventlog: False
+        auto_reboot: False
+        dumpfile: 
+          type: 'minimum'
+          path: 'C:\Windows\MEMORY2.DMP'
+          overwrite: False
+

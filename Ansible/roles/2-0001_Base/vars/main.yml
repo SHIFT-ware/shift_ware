@@ -1,0 +1,5 @@
+---
+base_BASE: "{{ BASE | default('') }}"
+base_STORAGE: "{{ STORAGE | default('') }}"
+base_NETWORK: "{{ NETWORK | default('') }}"
+base_ADVANCED: "{{ ADVANCED | default('') }}"

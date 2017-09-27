@@ -1,0 +1,41 @@
+---
+- name: 2-0001-071_Hostname - set tmp variable
+  set_fact:
+    hostname: "{{ base_NETWORK.hostname }}"
+    domain: "{{ base_NETWORK.domain}}"
+
+- name: 2-0001-071_Hostname - check hostname
+  raw: Write-Host -NoNewline (hostname)
+  register: ret_pre
+  changed_when: ret_pre.stdout != "{{ hostname }}"
+  always_run: yes
+  notify:
+    - server_restart_for_Win
+    - wait_for_WinRM_port_down
+    - wait_for_WinRM_port_up
+
+- name: 2-0001-071_Hostname_Domain - set hostname when type is "domain"
+  raw: > 
+    Rename-Computer -NewName '{{ hostname }}' `
+      -DomainCredential (New-Object System.Management.Automation.PsCredential `
+      '{{ domain.name }}\{{ domain.user }}',(ConvertTo-SecureString '{{ domain.password }}' -AsPlainText -Force)) -Force
+  when:
+    - domain.type == "domain"
+    - ret_pre | changed
+  always_run: no
+
+- name: 2-0001-071_Hostname - set hostname when type is "workgroup"
+  raw: Rename-Computer -NewName '{{ hostname }}' -Force
+  when:
+    - domain.type == "workgroup"
+    - ret_pre | changed
+  always_run: no
+
+- meta: flush_handlers
+
+- name: 2-0001-071_Hostname - post check hostname
+  raw: Write-Host -NoNewline (hostname)
+  register: ret_post
+  changed_when: ret_post.stdout != "{{ hostname }}"
+  when: ret_pre | changed
+  always_run: no

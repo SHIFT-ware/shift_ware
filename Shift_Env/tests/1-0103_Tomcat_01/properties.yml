@@ -1,0 +1,134 @@
+192.168.127.31:
+  operating_system: "Linux"
+  Tomcat:
+    state: started
+    install_dir: /usr/local/tomcat
+    connector:
+      http:
+        port: 8080
+        protocol: HTTP/1.1
+        redirectPort: 8443
+        acceptCount: 100
+        connectionTimeout: 20000
+        keepAliveTimeout: 60000
+        maxConnections: 8192
+        maxKeepAliveRequests: 100
+        maxThreads: 200
+        minSpareThreads: 10
+      ajp:
+        port: 8009
+        protocol: AJP/1.3
+        redirectPort: 8443
+        acceptCount: 100
+        connectionTimeout: 60000
+        keepAliveTimeout: 60000
+        maxConnections: 8192
+        maxThreads: 200
+        minSpareThreads: 10
+        enableLookups: true
+    engine:
+      jvmRoute: tomcat01
+      defaultHost: localhost
+      other_parameters:
+        - key: name
+          value: Catalina
+    cluster:
+      channelSendOptions: 6
+      channelStartOptions: 3
+      manager:
+        type: BackupManager
+        notifyListenersOnReplication: "true"
+        mapSendOptions: "6"  
+      receiver:
+        address: 192.168.127.31
+        port: 4000
+        selectorTimeout: 5000
+        maxThreads: 6
+      member:
+        enable_multicast: no
+        members:
+          - host: 192.168.127.41
+            port: 4000
+            domain: tomcat_cluster
+            uniqueId: "{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}"
+#        enable_multicast: yes
+#        members:
+#          - address: 228.0.0.4
+#            port: 45564
+#            frequency: 500
+#            dropTime: 3000
+    envs:
+      catalina_home: /usr/local/tomcat
+      catalina_base: /usr/local/tomcat
+      catalina_out: /usr/local/tomcat/logs/catalina.out
+      java_home: /usr/lib/jvm/jre-1.7.0
+    catalina_opts:
+      server: yes
+      Xms: 256
+      Xmx: 512
+#      MaxMetaspaceSize: 256
+      MaxPermSize: 256
+      PermSize: 128
+      Xss: 256
+      NewSize: 128
+      MaxNewSize: 256
+      TargetSurvivorRatio: 50
+#      MetaspaceSize: 128
+      InitialTenuringThreshold: 0
+      MaxTenuringThreshold: 0
+      SurvivorRatio: 65632
+      UseConcMarkSweepGC: yes
+      UseParNewGC: yes
+      CMSParallelRemarkEnabled: yes
+      CMSConcurrentMTEnabled: yes
+      CMSIncrementalMode: yes
+      CMSIncrementalPacing: yes
+      CMSIncrementalDutyCycleMin: 0
+      CMSIncrementalDutyCycle: 10
+      CMSClassUnloadingEnabled: yes
+      CMSInitiatingOccupancyFraction: 60
+#      UseParallelGC: yes
+#      UseParallelOldGC: yes
+      UseTLAB: yes
+      ResizeTLAB: yes
+      DisableExplicitGC: yes
+      UseCompressedOops: yes
+      UseStringCache: yes
+      UseAdaptiveGCBoundary: yes
+      UseBiasedLocking: yes
+      HeapDumpOnOutOfMemoryError: yes
+      OptimizeStringConcat: yes
+      Xloggc: /usr/local/tomcat/logs/tomcat-gc.log
+      PrintGCDetails: yes
+      PrintGCDateStamps: yes
+    manager:
+      enable: yes
+      user: admin
+      password: p@ssw0rd
+      enable_roles:
+        gui: yes
+        status: yes
+        script_role: yes
+        jmx_role: yes
+    initial_apps:
+      enable: yes
+    init_script:
+      enable: yes
+      service:
+        state: started
+        enabled: yes
+    exec_groups:
+      primary:
+        name: tomcat
+        gid: 1000
+      secondary:
+        - name: test1
+          gid: 1001
+        - name: test2
+          gid: 1002
+    exec_user:
+      name: tomcat
+      uid: 1000
+      home_dir: /usr/local/tomcat
+      shell: /bin/bash
+

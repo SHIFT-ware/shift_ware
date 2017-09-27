@@ -1,0 +1,44 @@
+- name: 1-0001-08_Ntp - install package
+  yum:
+    name: ntp
+    state: present
+  when: base_advanced.timeserver is defined
+
+- name: 1-0001-08_Ntp - start and enable service
+  service:
+    name: 'ntpd'
+    state: 'started'
+    enabled: 'yes'
+  when: base_advanced.timeserver is defined
+
+- name: 1-0001-08_Ntp - register ntp server
+  lineinfile:
+    dest: '/etc/ntp.conf'
+    insertafter: "^# Please consider joining the pool"
+    line: "server {{ item.server }} iburst {% if item.prefer %}prefer{% endif %}"
+    state: present
+  notify: ntpd_restart
+  with_items: base_advanced.timeserver
+  when: base_advanced.timeserver is defined
+
+- name: 1-0001-09_NtpSlew - enable slew mode
+  lineinfile:
+    dest: '/etc/sysconfig/ntpd'
+    regexp: "^OPTIONS*"
+    line: "OPTIONS=\"-x -u ntp:ntp -p /var/run/ntpd.pid -g\""
+  notify: ntpd_restart
+  with_items: base_advanced.timeserver
+  when:
+    - base_advanced.ntp_option is defined
+    - base_advanced.ntp_option.slew == true
+
+- name: 1-0001-09_NtpSlew - disable slew mode
+  lineinfile:
+    dest: '/etc/sysconfig/ntpd'
+    regexp: "^OPTIONS=*"
+    line: "OPTIONS=\"-u ntp:ntp -p /var/run/ntpd.pid -g\""
+  notify: ntpd_restart
+  with_items: base_advanced.timeserver
+  when:
+    - base_advanced.ntp_option is defined
+    - base_advanced.ntp_option.slew == false

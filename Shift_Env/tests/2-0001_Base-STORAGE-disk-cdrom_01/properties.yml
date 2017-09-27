@@ -1,0 +1,35 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+  STORAGE: 
+    disk: 
+      - number: 0
+        partition_style: 'MBR'
+        total_size: 50
+        partition: 
+          - drive_letter: 'C'
+            filesystem: 'NTFS'
+            au_size: 4096
+            size: 50
+            archive: 'False'
+    cdrom: 
+      - drive_letter: 'D'
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+  STORAGE: 
+    disk: 
+      - number: 0
+        partition_style: 'MBR'
+        total_size: 50
+        partition: 
+          - drive_letter: 'C'
+            filesystem: 'NTFS'
+            au_size: 4096
+            size: 50
+            archive: 'False'
+    cdrom: 
+      - drive_letter: 'D'
+

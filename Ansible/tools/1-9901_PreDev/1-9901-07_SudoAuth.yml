@@ -1,0 +1,7 @@
+- name: GrantSudoAuthToUser
+  template: >
+    src="sudoers.d_file.j2"
+    dest="/etc/sudoers.d/shift_tmp"
+    owner=root
+    group=root
+    mode=0440

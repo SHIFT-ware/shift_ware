@@ -1,0 +1,6 @@
+--color
+#--format documentation
+--format ServerspecAuditFormatter
+--require ./formatters/serverspec_audit_formatter.rb
+--require ./spec/spec_helper.rb
+--failure-exit-code 0

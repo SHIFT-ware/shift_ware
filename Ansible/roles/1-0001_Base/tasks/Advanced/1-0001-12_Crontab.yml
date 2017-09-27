@@ -1,0 +1,23 @@
+---
+- name: 1-0001-12_Crontab - install package
+  yum:
+    name: crontabs
+    state: present
+
+- name: 1-0001-12_Crontab - start and enable service
+  service:
+    name: crond
+    state: started
+    enabled: yes
+
+- name: 1-0001-12_Crontab - register cron job
+  cron:
+    name: '{{ item.record.split()[5:] | join(" ") }}'
+    user: '{{ item.usr | default(omit) }}'
+    minute: '{{ item.record.split()[0] }}'
+    hour: '{{ item.record.split()[1] }}'
+    day: '{{ item.record.split()[2] }}'
+    month: '{{ item.record.split()[3] }}'
+    weekday: '{{ item.record.split()[4] }}'
+    job: '{{ item.record.split()[5:] | join(" ") }}'
+  with_items: base_advanced.cron.entry

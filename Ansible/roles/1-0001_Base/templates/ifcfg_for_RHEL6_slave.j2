@@ -1,0 +1,10 @@
+DEVICE={{ item.1.name }}
+TYPE=Ethernet
+ONBOOT=yes
+MASTER={{ item.0.name }}
+SLAVE=yes
+NM_CONTROLLED=yes
+BOOTPROTO=none
+IPV4_FAILURE_FATAL=yes
+IPV6INIT=yes
+NAME="System {{ item.1.name }}"

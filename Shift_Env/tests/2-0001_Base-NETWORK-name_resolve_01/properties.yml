@@ -1,0 +1,23 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+  NETWORK: 
+    name_resolve: 
+      hosts_records: 
+        - ip: '192.168.127.10'
+          hostname: 'target10'
+        - ip: '192.168.127.20'
+          hostname: 'target20'
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+  NETWORK: 
+    name_resolve: 
+      hosts_records: 
+        - ip: '192.168.127.10'
+          hostname: 'target10'
+        - ip: '192.168.127.20'
+          hostname: 'target20'
+

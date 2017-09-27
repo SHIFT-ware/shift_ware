@@ -1,0 +1,31 @@
+connection_hostname: '192.168.127.31'
+remote_tmp_dir: '~root/.shift'
+BASE: 
+  OSCORE: 
+    version: '6.5'
+    lang: 'en_US'
+    keyboard: 
+      keybord_locale: 'us'
+    time: 
+      timezone: 'Asia/Seoul'
+      utc: True
+    runlevel: 5
+    selinux: 'disabled'
+    kdump: 
+      packages: 
+        - name: 'bc-1.06.95-1.el6.x86_64.rpm'
+        - name: 'busybox-1.15.1-20.el6.x86_64.rpm'
+        - name: 'elfutils-libs-0.152-1.el6.x86_64.rpm'
+        - name: 'kexec-tools-2.0.0-273.el6.x86_64.rpm'
+        - name: 'kpartx-0.4.9-72.el6.x86_64.rpm'
+        - name: 'lzo-2.03-3.1.el6.x86_64.rpm'
+        - name: 'mdadm-3.2.6-7.el6.x86_64.rpm'
+        - name: 'snappy-1.1.0-1.el6.x86_64.rpm'
+      service_state: 'running'
+      path: '/var/crash'
+    grub_option: 
+      - key: 'default'
+        value: '0'
+      - key: 'timeout'
+        value: '7'
+

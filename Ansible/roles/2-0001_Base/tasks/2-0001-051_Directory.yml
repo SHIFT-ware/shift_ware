@@ -1,0 +1,30 @@
+---
+- name: 2-0001-051_Directory - set tmp empty variable
+  set_fact:
+     directory: []
+  when: base_STORAGE.directory is undefined
+
+- name: 2-0001-051_Directory - set tmp variable
+  set_fact:
+     directory: "{{ base_STORAGE.directory }}"
+  when: base_STORAGE.directory is defined
+
+- name: 2-0001-051_Directory - create directory
+  win_file: >
+    path="{{ item.path }}"
+    state=directory
+  with_items: directory
+
+- name: 2-0001-051_Directory - set owner of directory
+  raw: powershell "icacls '{{ item.path }}' /setowner '{{ item.owner }}'"
+  with_items: directory
+  when: item.owner is defined
+
+- name: 2-0001-051_Directory - set acl of directory
+  script: shift/set_acl.ps1 '{{ item.0.path }}' '{{ item.1.user }}' '{{ item.1.rights }}' '{{ item.1.inherit | default("") }}' '{{ item.1.type }}'
+  with_subelements:
+    - directory
+    - acl
+    - flags:
+      skip_missing: True
+  changed_when: false

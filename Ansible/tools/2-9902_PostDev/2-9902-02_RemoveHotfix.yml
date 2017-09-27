@@ -1,0 +1,32 @@
+---
+- name: 2-9902-02_RemoveHotfix_pre
+  raw: powershell "if ((Get-HotFix).Length -ne 0){(Get-Hotfix).HotfixID.Contains('KB{{ HOTFIX.ID }}')}"
+  register: ret_pre
+  when:
+    - remove_hotfix == true
+  changed_when: ret_pre.stdout == "True\r\n"
+  always_run: yes
+  notify: 
+    - server_restart_for_Win
+    - wait_for_WinRM_port_down
+    - wait_for_WinRM_port_up
+
+- name: 2-9902-02_RemoveHotfix_remove
+  raw: powershell "wusa.exe /uninstall /KB:{{ HOTFIX.ID }} /quiet /norestart"
+  when:
+    - remove_hotfix == true
+    - ret_pre | changed
+  failed_when: false
+  always_run: no
+
+- meta: flush_handlers
+
+- name: 2-9902-02_RemoveHotfix_post
+  raw: powershell "if ((Get-HotFix).Length -ne 0){(Get-Hotfix).HotfixID.Contains('KB{{ HOTFIX.ID }}')}"
+  when:
+    - remove_hotfix == true
+    - ret_pre | changed
+  register: ret_post
+  failed_when: ret_post.stdout == "True\r\n"
+  always_run: no
+

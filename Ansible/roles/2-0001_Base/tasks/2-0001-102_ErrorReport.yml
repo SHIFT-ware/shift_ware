@@ -1,0 +1,37 @@
+---
+- name: 2-0001-102_ErrorReport - set tmp variable
+  set_fact:
+    error_report: "{{ base_ADVANCED.error_report }}"
+    location: 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting'
+
+- name: 2-0001-102_ErrorReport - set variable "flag" for powershell 0
+  set_fact:
+    flag: "0"
+  when: error_report == "enabled"
+
+- name: 2-0001-102_ErrorReport - set variable "flag" for powershell 1
+  set_fact:
+    flag: "1"
+  when: error_report == "disabled"
+
+- name: 2-0001-102_ErrorReport - create registry path
+  raw: if ( ! ( Test-Path '{{ location }}' )) { New-Item '{{ location }}' -Force }
+  always_run: yes
+
+- name: 2-0001-102_ErrorReport - check registry value
+  raw: (Get-ItemProperty '{{ location }}').Disabled
+  register: ret_pre
+  changed_when: ret_pre.stdout != "{{ flag }}\r\n"
+  always_run: yes
+
+- name: 2-0001-102_ErrorReport - set registry value
+  raw: Set-ItemProperty '{{ location }}' 'Disabled' -Value '{{ flag }}' -Type 'dword'
+  when: ret_pre | changed
+  always_run: no
+
+- name: 2-0001-102_ErrorReport - post check registry value
+  raw: (Get-ItemProperty '{{ location }}').Disabled
+  register: ret_pre
+  when: ret_pre | changed
+  failed_when: ret_pre.stdout != "{{ flag }}\r\n"
+  always_run: no

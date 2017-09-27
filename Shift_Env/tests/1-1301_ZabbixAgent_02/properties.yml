@@ -1,0 +1,12 @@
+192.168.127.31:
+  connection_hostname: '192.168.127.31'
+  operating_system: 'Linux'
+  ZabbixAgent:
+      package:
+          - name: 'zabbix-agent-3.2.6-1.el6.x86_64.rpm'
+192.168.127.41:
+  connection_hostname: '192.168.127.41'
+  operating_system: 'Linux'
+  ZabbixAgent:
+      package:
+          - name: 'zabbix-agent-3.2.6-1.el7.x86_64.rpm'

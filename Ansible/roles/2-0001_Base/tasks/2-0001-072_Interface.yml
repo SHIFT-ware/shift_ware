@@ -1,0 +1,235 @@
+---
+- name: 2-0001-072_Interface - set tmp variable
+  set_fact:
+    eth: "{{ base_NETWORK.eth }}"
+
+- name: 2-0001-072_Interface - check whether static ip address is assigned 
+  raw: >
+    if ((Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).PrefixOrigin -eq 'Manual') { `
+      Write-Host -NoNewline ( `
+        (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).IPAddress + `
+        '_' + `
+        (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).PrefixLength `
+      ) `
+    } `
+    else { `
+      Write-Host -NoNewline 'dhcp' `
+    }
+  with_items: eth
+  register: static_ret_pre
+  changed_when: static_ret_pre.stdout != "{{ item.ipaddress }}_{{ item.prefix }}"
+  when:
+    - item.dhcp is defined 
+    - item.dhcp == false
+  always_run: yes
+  notify: wait_for_WinRM_port_up
+
+- name: 2-0001-072_Interface - check whether dhcp is enabled
+  raw: >
+    if ((Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).PrefixOrigin -eq 'Manual') { `
+      Write-Host -NoNewline ( `
+        (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).IPAddress + `
+        '_' + `
+        (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).PrefixLength `
+      ) `
+    } `
+    else { `
+      Write-Host -NoNewline 'dhcp' `
+    }
+  with_items: eth
+  register: dhcp_ret_pre
+  changed_when: dhcp_ret_pre.stdout != "dhcp"
+  when:
+    - item.dhcp is defined
+    - item.dhcp == true
+  always_run: yes
+  notify: wait_for_WinRM_port_up
+
+- name: 2-0001-072_Interface - change static ip address
+  raw: >
+    Remove-NetIPAddress -InterfaceAlias "{{ item.item.name }}" `
+      -AddressFamily IPv4 `
+      -Confirm:$False ; `
+    New-NetIPAddress `
+      -InterfaceAlias "{{ item.item.name }}" `
+      -AddressFamily IPv4 `
+      -IPAddress "{{ item.item.ipaddress }}" `
+      -PrefixLength "{{ item.item.prefix }}" `
+      -Confirm:$False
+  with_items: static_ret_pre.results
+  when:
+    - item.changed == true
+  always_run: no
+
+- name: 2-0001-072_Interface - enable dhcp
+  raw: Set-NetIPInterface -InterfaceAlias "{{ item.item.name }}" -AddressFamily IPv4 -Dhcp Enabled
+  with_items: dhcp_ret_pre.results
+  when:
+    - item.changed == true
+  always_run: no
+
+- meta: flush_handlers
+
+- name: 2-0001-072_Interface - post check whether static ip address is assigned
+  raw: >
+    if ((Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).PrefixOrigin -eq 'Manual') { `
+      Write-Host -NoNewline ( `
+        (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).IPAddress + `
+        '_' + `
+        (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).PrefixLength `
+      ) `
+    } `
+    else { `
+      Write-Host -NoNewline 'dhcp' `
+    }
+  with_items: eth
+  register: static_ret_post
+  failed_when: static_ret_post.stdout != "{{ item.ipaddress }}_{{ item.prefix }}"
+  when:
+    - item.dhcp is defined
+    - item.dhcp == false
+  always_run: no
+
+- name: 2-0001-072_Interface - post check whether dhcp is enabled
+  raw: >
+    if ((Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).PrefixOrigin -eq 'Manual') { `
+      Write-Host -NoNewline ( `
+        (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).IPAddress + `
+        '_' + `
+        (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).PrefixLength `
+      ) `
+    } `
+    else { `
+      Write-Host -NoNewline 'dhcp' `
+    }
+  with_items: eth
+  register: dhcp_ret_post
+  failed_when: dhcp_ret_post.stdout != "dhcp"
+  when:
+    - item.dhcp is defined
+    - item.dhcp == true
+  always_run: no
+
+
+- name: 2-0001-072_Interface - check netbios mode is dhcp
+  raw: >
+    (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
+      Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).ifIndex}).TcpipNetbiosOptions
+  with_items: eth
+  register: dhcp_ret_pre
+  when: 
+    - item.netbios is defined
+    - item.netbios == "dhcp"
+  changed_when: dhcp_ret_pre.stdout != "0\r\n"
+  always_run: yes
+
+- name: 2-0001-072_Interface - check netbios mode is disabled
+  raw: >
+    (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
+      Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).ifIndex}).TcpipNetbiosOptions
+  with_items: eth
+  register: disabled_ret_pre
+  when:
+    - item.netbios is defined
+    - item.netbios == "disabled"
+  changed_when: disabled_ret_pre.stdout != "1\r\n"
+  always_run: yes
+
+- name: 2-0001-072_Interface - check netbios mode is enabled
+  raw: >
+    (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
+      Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).ifIndex}).TcpipNetbiosOptions
+  with_items: eth
+  register: enabled_ret_pre
+  when:
+    - item.netbios is defined
+    - item.netbios == "enabled"
+  changed_when: enabled_ret_pre.stdout != "2\r\n"
+  always_run: yes
+
+- name: 2-0001-072_Interface - set netbios mode dhcp
+  raw: >
+    (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
+      Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.item.name }}" -AddressFamily IPv4).ifIndex}).SetTcpipNetBios("0")
+  with_items: dhcp_ret_pre.results
+  when: 
+    - item.changed == true
+  always_run: no
+
+- name: 2-0001-072_Interface - set netbios mode disabled
+  raw: >
+    (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
+      Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.item.name }}" -AddressFamily IPv4).ifIndex}).SetTcpipNetBios("1")
+  with_items: disabled_ret_pre.results
+  when:
+    - item.changed == true
+  always_run: no
+
+- name: 2-0001-072_Interface - set netbios mode enabled
+  raw: >
+    (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
+      Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.item.name }}" -AddressFamily IPv4).ifIndex}).SetTcpipNetBios("2")
+  with_items: enabled_ret_pre.results
+  when:
+    - item.changed == true
+  always_run: no
+
+- name: 2-0001-072_Interface - post check netbios mode is dhcp
+  raw: >
+    (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
+      Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).ifIndex}).TcpipNetbiosOptions
+  with_items: eth
+  register: dhcp_ret_post
+  when:
+    - item.netbios is defined
+    - item.netbios == "dhcp"
+  failed_when: dhcp_ret_post.stdout != "0\r\n"
+  always_run: no
+
+- name: 2-0001-072_Interface - post check netbios mode is disabled
+  raw: >
+    (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
+      Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).ifIndex}).TcpipNetbiosOptions
+  with_items: eth
+  register: disabled_ret_post
+  when:
+    - item.netbios is defined
+    - item.netbios == "disabled"
+  failed_when: disabled_ret_post.stdout != "1\r\n"
+  always_run: no
+
+- name: 2-0001-072_Interface - post check netbios mode is enabled
+  raw: >
+    (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
+      Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).ifIndex}).TcpipNetbiosOptions
+  with_items: eth
+  register: enabled_ret_post
+  when:
+    - item.netbios is defined
+    - item.netbios == "enabled"
+  failed_when: enabled_ret_post.stdout != "2\r\n"
+  always_run: no
+
+- name: 2-0001-072_Interface - set nic status disabled
+  raw: >
+    if ( (NetAdapter -Name "{{ item.name }}" ).Status -eq "Up") `
+      { Disable-NetAdapter -Name "{{ item.name }}" -Confirm:$false }else{ Write-Host "OK" -NoNewline }
+  with_items: eth
+  register: result
+  when:
+    - item.status is defined
+    - item.status == "Disabled"
+  changed_when: result.stdout != "OK"
+  failed_when: result.rc != 0
+
+- name: 2-0001-072_Interface - set nic status up
+  raw: >
+    if ( (NetAdapter -Name "{{ item.name }}" ).Status -eq "Disabled") `
+      { Enable-NetAdapter -Name "{{ item.name }}" -Confirm:$false }else{ Write-Host "OK" -NoNewline }
+  with_items: eth
+  register: result
+  when:
+    - item.status is defined
+    - item.status == "Up"
+  changed_when: result.stdout != "OK"
+  failed_when: result.rc != 0

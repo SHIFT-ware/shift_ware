@@ -1,0 +1,42 @@
+---
+- name: 1-9901_PreDev
+  hosts: all
+  become: yes
+  vars_files:
+    - var.yml
+  tasks:
+    - include: 1-9901-01_Selinux.yml
+    - include: 1-9901-02_User.yml
+    - include: 1-9901-07_SudoAuth.yml
+    - include: 1-9901-03_SshKey.yml
+    - include: 1-9901-08_SshConfig.yml
+    - include: 1-9901-04_TmpDir.yml
+
+  handlers:
+    - name: sshd_service_restart
+      service: >
+        name=sshd
+        state=restarted
+    - name: server_restart_for_RHEL6
+      command: shutdown -r now
+      when: >
+        ansible_os_family == "RedHat" and
+        ansible_distribution_major_version == "6"
+    - name: server_restart_for_RHEL7
+      command: shutdown -r
+      when: >
+        ansible_os_family == "RedHat" and
+        ansible_distribution_major_version == "7"
+    - name: wait_for_SSH_port_down # use for monitor server downed
+      wait_for: >
+        host={{ inventory_hostname }}
+        port=22
+        state=stopped
+      delegate_to: 127.0.0.1
+    - name: wait_for_SSH_port_up # use for monitor server upped
+      wait_for: >
+        host={{ inventory_hostname }}
+        port=22
+        state=started
+        delay=30
+      delegate_to: 127.0.0.1

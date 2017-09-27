@@ -1,0 +1,11 @@
+connection_hostname: '192.168.127.141'
+remote_tmp_dir: 'C:\.shift'
+BASE: 
+  HW: 
+    memory: 
+      virtualmemory: 
+        type: 'custom'
+        size: 
+          min: 4096
+          max: 4096
+

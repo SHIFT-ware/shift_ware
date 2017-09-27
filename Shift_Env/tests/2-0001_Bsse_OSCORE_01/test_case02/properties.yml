@@ -1,0 +1,33 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+    OSCORE: 
+      systeminfo: 
+        os_name: 'Microsoft Windows Server 2012 Standard'
+      recover_os: 
+        default_os_version: 'Windows Server 2012'
+        display_os_list_time: 30
+        write_eventlog: True
+        auto_reboot: True
+        dumpfile: 
+          type: 'auto'
+          path: 'C:\Windows\MEMORY.DMP'
+          overwrite: True
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+    OSCORE: 
+      systeminfo: 
+        os_name: 'Microsoft Windows Server 2012 R2 Standard'
+      recover_os: 
+        default_os_version: 'Windows Server 2012 R2'
+        display_os_list_time: 30
+        write_eventlog: True
+        auto_reboot: True
+        dumpfile: 
+          type: 'auto'
+          path: 'C:\Windows\MEMORY.DMP'
+          overwrite: True
+

@@ -1,0 +1,37 @@
+- name: 1-0001-29_Timezone - change timezone for rhel6
+  lineinfile:
+    dest: /etc/sysconfig/clock
+    regexp: '^ZONE'
+    line: "ZONE=\"{{ base_base.OSCORE.time.timezone }}\""
+  when:
+    - base_base.OSCORE.time.timezone is defined
+    - ansible_distribution_major_version == "6"
+
+- name: 1-0001-29_Timezone - change timezone for rhel7
+  file:
+    src: "../usr/share/zoneinfo/{{ base_base.OSCORE.time.timezone }}"
+    path: /etc/localtime
+    state: link
+  when:
+    - base_base.OSCORE.time.timezone is defined
+    - ansible_distribution_major_version == "7"
+
+- block:
+  - name: 1-0001-29_Timezone - change setting to adjust time to UTC
+    lineinfile:
+      dest: /etc/adjtime
+      regexp: '^(LOCAL|UTC)'
+      line: 'UTC'
+    when:
+      - base_base.OSCORE.time.utc == True
+  
+  - name: 1-0001-29_Timezone - change setting to adjust time to LOCAL
+    lineinfile:
+      dest: /etc/adjtime
+      regexp: '^(LOCAL|UTC)'
+      line: 'LOCAL'
+    when:
+      - base_base.OSCORE.time.utc == False
+  when:
+    - base_base.OSCORE.time.utc is defined
+

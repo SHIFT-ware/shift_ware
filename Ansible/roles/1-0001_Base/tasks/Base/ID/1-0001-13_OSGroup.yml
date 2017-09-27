@@ -1,0 +1,7 @@
+---
+- name: 1-0001-13_OSGroup - modify group
+  group:
+    name: '{{ item.name }}'
+    gid: '{{ item.gid | default(omit) }}'
+    state: 'present'
+  with_items: base_base.ID.user_group

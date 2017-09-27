@@ -1,0 +1,19 @@
+- name: add .ssh/ to remote
+  file: >
+    path="{{ l9901_remote_ssh_dir.path }}"
+    owner="{{ l9901_remote_ssh_dir.owner }}"
+    group="{{ l9901_remote_ssh_dir.group }}"
+    state=directory
+    mode=700
+
+- name: gen ssh-key on local
+  shell: >
+    creates='~{{ l9901_local_user.name }}/.ssh/id_rsa_shift'
+    ssh-keygen -f ~{{ l9901_local_user.name }}/.ssh/id_rsa_shift -t rsa -N ""
+  delegate_to: 127.0.0.1
+  run_once: True
+
+- name: set pubkey in authroized_key
+  authorized_key:
+    user: "{{ l9901_remote_user.name }}"
+    key:  "{{ lookup( 'file' , '~'+l9901_local_user.name+'/.ssh/id_rsa_shift.pub') }}"

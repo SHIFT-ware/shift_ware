@@ -1,0 +1,17 @@
+---
+- name: check_tomcat_service_exists
+  shell: chkconfig --list tomcat
+  changed_when: false
+  failed_when: false
+  register: check_tomcat_service
+
+- name: restart_tomcat_service
+  service:
+    name: tomcat
+    state: restarted
+  when: check_tomcat_service.rc == 0
+
+- name: restart_tomcat_process
+  shell: cd {{ tomc_tomcat.install_dir }}/bin && ./shutdown.sh && nohup ./startup.sh
+  when: check_tomcat_service.rc != 0
+

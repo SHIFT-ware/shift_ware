@@ -1,0 +1,51 @@
+connection_hostname: '192.168.127.31'
+remote_tmp_dir: '~root/.shift'
+PostgreSQL:
+  packages:
+    - name: 'postgresql94-server-9.4.10-1PGDG.rhel6.x86_64.rpm'
+    - name: 'postgresql94-9.4.10-1PGDG.rhel6.x86_64.rpm'
+    - name: 'postgresql94-libs-9.4.10-1PGDG.rhel6.x86_64.rpm'
+    - name: 'postgresql94-contrib-9.4.10-1PGDG.rhel6.x86_64.rpm'
+    - name: 'postgresql94-devel-9.4.10-1PGDG.rhel6.x86_64.rpm'
+    - name: 'postgresql94-docs-9.4.10-1PGDG.rhel6.x86_64.rpm'
+    - name: 'libxslt-1.1.26-2.el6_3.1.x86_64.rpm'
+  state: started
+  enabled: yes
+  exec_groups:
+    primary:
+      gid: 1000
+    secondary:
+      - name: 'test1'
+        gid: 1001
+      - name: 'test2'
+        gid: 1002
+  exec_user:
+    uid: 1000
+    shell: '/bin/bash'
+    password: 'password'
+  db_user:
+    name: 'postgres'
+    password: 'postgres'
+  version: '9.4'
+  wal_archive_dir: /var/lib/pgsql/wal_archive
+  initdb_option:
+    encoding: 'UTF-8'
+    locale: 'C'
+  postgresql_conf:
+    conf_file: 'postgresql_single.conf'
+  authentication:
+    records:
+      - type: 'local'
+        database: 'all'
+        user: 'all'
+        method: 'trust'
+      - type: 'host'
+        database: 'all'
+        user: 'all'
+        address: '192.168.127.0/24'
+        method: 'md5'
+      - type: 'host'
+        database: 'replication'
+        user: 'replication'
+        address: '192.168.127.0/24'
+        method: 'md5'

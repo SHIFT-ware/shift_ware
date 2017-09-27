@@ -1,0 +1,12 @@
+### ANSIBLE SETTING ###
+remote_tmp_dir: 'C:\.shift'
+
+### SERVERSPEC SETTING ###
+disable_spec_setting: true
+
+### HOTFIX SETTING ###
+# windows2012用hotfix<http://docs.ansible.com/ansible/intro_windows.html#windows-system-prep>
+remove_hotfix: true
+HOTFIX:
+  ID: "2842230"
+  FILE: "Windows8-RT-KB2842230-x64"

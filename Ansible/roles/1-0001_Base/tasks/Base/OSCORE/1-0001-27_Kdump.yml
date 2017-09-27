@@ -1,0 +1,25 @@
+- name: 1-0001-27_Kdump - install package
+  yum:
+    name: kexec-tools
+    state: present
+
+- name: 1-0001-27_Kdump - change dump file path
+  lineinfile:
+    dest: '/etc/kdump.conf'
+    regexp: "^path "
+    line: "path {{ base_base.OSCORE.kdump.path }}"
+
+- name: 1-0001-27_Kdump - start service
+  service:
+    name: kdump
+    state: started
+  when:
+    - base_base.OSCORE.kdump.service_state == "running"
+
+- name: 1-0001-27_Kdump - stop service
+  service:
+    name: kdump
+    state: stopped
+  when:
+    - base_base.OSCORE.kdump.service_state == "stop"
+

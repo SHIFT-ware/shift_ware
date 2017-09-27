@@ -1,0 +1,21 @@
+---
+ansible_ssh_user: root
+ansible_become_pass: "{{ ansible_ssh_pass }}"
+
+l9901_remote_user: #接続に使うターゲット/リモートユーザ
+  name: "shift"
+  uid: 751
+  group: "users"
+
+l9901_remote_ssh_dir:
+  path: "~{{ l9901_remote_user.name }}/.ssh"
+  owner: "{{ l9901_remote_user.name }}"
+  group: "{{ l9901_remote_user.group }}"
+
+l9901_local_user:  #接続元/ローカルユーザ
+  name: "root"
+
+l9901_remote_tmp_dir: #SHIFTで必要な際に利用するリモートの一時ディレクトリ
+  path: "~{{ l9901_remote_user.name }}/.shift"
+  owner: "{{ l9901_remote_user.name }}"
+

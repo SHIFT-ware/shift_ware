@@ -1,0 +1,57 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+  NETWORK: 
+    teaming: 
+      - name: 'team1'
+        mode: 'SwitchIndependent'
+        lb_mode: 'TransportPorts'
+        physical_member: 
+          - name: 'イーサネット 2'
+            mode: 'Active'
+          - name: 'イーサネット 3'
+            mode: 'Standby'
+        logical_member: 
+          - name: 'teamnic1'
+          - name: 'teamnic2'
+            vlan_id: 10
+      - name: 'team2'
+        mode: 'Static'
+        lb_mode: 'HyperVPort'
+        physical_member: 
+          - name: 'イーサネット 4'
+            mode: 'Active'
+          - name: 'イーサネット 5'
+            mode: 'Active'
+        logical_member: 
+          - name: 'teamnic3'
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+  NETWORK: 
+    teaming: 
+      - name: 'team1'
+        mode: 'SwitchIndependent'
+        lb_mode: 'TransportPorts'
+        physical_member: 
+          - name: 'イーサネット 2'
+            mode: 'Active'
+          - name: 'イーサネット 3'
+            mode: 'Standby'
+        logical_member: 
+          - name: 'teamnic1'
+          - name: 'teamnic2'
+            vlan_id: 10
+      - name: 'team2'
+        mode: 'Static'
+        lb_mode: 'HyperVPort'
+        physical_member: 
+          - name: 'イーサネット 4'
+            mode: 'Active'
+          - name: 'イーサネット 5'
+            mode: 'Active'
+        logical_member: 
+          - name: 'teamnic3'
+

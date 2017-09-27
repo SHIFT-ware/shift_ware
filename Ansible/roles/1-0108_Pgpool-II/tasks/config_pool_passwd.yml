@@ -1,0 +1,16 @@
+---
+- name: config_pool_passwd - touch pool_passwd
+  shell: touch /etc/pgpool-II/pool_passwd
+  args:
+    creates: /etc/pgpool-II/pool_passwd
+
+- name: config_pool_passwd - create string to generate pool_passwd entry
+  set_fact:
+    md5_str: "{{ item.password }}{{ item.name }}"
+
+- name: config_pool_passwd - configure pool_passwd
+  lineinfile:
+    dest: /etc/pgpool-II/pool_passwd
+    line: "{{ item.name }}:md5{{ md5_str | hash('md5') }}"
+  notify: pgpool_service_restart
+

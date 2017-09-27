@@ -1,0 +1,42 @@
+# Define list of workers that will be used
+# for mapping requests
+
+{% set worker_list = apac_apache.mod_jk.linked_ap_servers | map(attribute='jvmroute')|join(',') %}
+{% if apac_apache.mod_jk.linked_ap_servers | length > 1  %}
+{% set worker_list = worker_list + ",loadbalancer,status" %}
+{% else %}
+{% set worker_list = worker_list + ",status" %}
+{% endif %}
+worker.list={{ worker_list }}
+
+# Define Template
+worker.template.port={{ apac_apache.mod_jk.common_params.ajp_port | default("8009") }}
+worker.template.type=ajp13
+worker.template.ping_mode=A
+{% if apac_apache.mod_jk.common_params.socket_timeout is defined %}
+worker.template.socket_timeout={{ apac_apache.mod_jk.common_params.socket_timeout }}
+{% endif %}
+worker.template.socket_keepalive={{ apac_apache.mod_jk.common_params.socket_keepalive | default("False") }}
+worker.template.connection_pool_size={{ apac_apache.mod_jk.common_params.connection_pool_size | default("200") }}
+worker.template.connection_pool_minsize={{ apac_apache.mod_jk.common_params.connection_pool_minsize | default("0") }}
+worker.template.connection_pool_timeout={{ apac_apache.mod_jk.common_params.connection_pool_timeout | default("60") }}
+
+{% for ap in  apac_apache.mod_jk.linked_ap_servers %}
+worker.{{ ap.jvmroute }}.reference=worker.template
+worker.{{ ap.jvmroute }}.host={{ ap.host }}
+worker.{{ ap.jvmroute }}.lbfactor={{ ap.weight | default("1") }}
+{% endfor %}
+
+{% if apac_apache.mod_jk.linked_ap_servers | length > 1 %}
+worker.loadbalancer.type=lb
+worker.loadbalancer.balance_workers={{ apac_apache.mod_jk.linked_ap_servers|map(attribute='jvmroute')|join(',') }}
+{% if apac_apache.mod_jk.loadbalance is undefined or apac_apache.mod_jk.loadbalance.sticky_session is undefined or apac_apache.mod_jk.loadbalance.sticky_session %}
+worker.loadbalancer.sticky_session=true
+{% else %}
+worker.loadbalancer.sticky_session=false
+{% endif %}
+{% endif %}
+
+# Status worker for managing
+worker.status.type=status
+

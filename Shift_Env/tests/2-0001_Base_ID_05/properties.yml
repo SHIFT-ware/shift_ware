@@ -1,0 +1,15 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+    ID: 
+      uac: 
+        level: 'high'
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+    ID: 
+      uac: 
+        level: 'high'
+

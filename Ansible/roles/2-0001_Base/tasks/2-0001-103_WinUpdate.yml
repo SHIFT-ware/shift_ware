@@ -1,0 +1,48 @@
+---
+- name: 2-0001-103_WinUpdate - set tmp variable
+  set_fact:
+    windows_update: "{{ base_ADVANCED.windows_update }}"
+    location: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update'
+
+- name: 2-0001-103_WinUpdate - set variable "flag" for powershell 4
+  set_fact:
+    flag: "4"
+  when: windows_update == "autoinstall"
+
+- name: 2-0001-103_WinUpdate - set variable "flag" for powershell 3
+  set_fact:
+    flag: "3"
+  when: windows_update == "downloadonly"
+
+- name: 2-0001-103_WinUpdate - set variable "flag" for powershell 2
+  set_fact:
+    flag: "2"
+  when: windows_update == "checkonly"
+
+- name: 2-0001-103_WinUpdate - set variable "flag" for powershell 1
+  set_fact:
+    flag: "1"
+  when: windows_update == "disabled"
+
+- name: 2-0001-103_WinUpdate - create registry path
+  raw: if ( ! ( Test-Path '{{ location }}' ) ) { New-Item '{{ location }}' -Force }
+  always_run: yes
+
+- name: 2-0001-103_WinUpdate - check registry value
+  raw: (Get-ItemProperty '{{ location }}').AUOptions
+  register: ret_pre
+  changed_when: ret_pre.stdout != "{{ flag }}\r\n"
+  always_run: yes
+
+- name: 2-0001-103_WinUpdate - set registry value
+  raw: Set-ItemProperty '{{ location }}' AUOptions -Value '{{ flag }}' -Type DWord
+  when: ret_pre | changed
+  always_run: no
+
+- name: 2-0001-103_WinUpdate - post check registry value
+  raw: (Get-ItemProperty '{{ location }}').AUOptions
+  register: ret_post
+  failed_when: ret_post.stdout != "{{ flag }}\r\n"
+  when: ret_pre | changed
+  always_run: no
+

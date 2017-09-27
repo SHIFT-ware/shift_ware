@@ -1,0 +1,28 @@
+---
+- name: 2-9902_PostDev
+  hosts: all
+  remote_user: Administrator
+  vars_files:
+    - var.yml
+  tasks:
+    - include: 2-9902-01_RemoveTmp.yml
+    - include: 2-9902-02_RemoveHotfix.yml
+      when: ansible_distribution_version | match("6\.2.*")
+  handlers:
+    - name: server_restart_for_Win
+      raw: powershell "Restart-Computer -Force"
+
+    - name: wait_for_WinRM_port_down
+      wait_for: >
+        host={{ inventory_hostname }}
+        port=5986
+        state=stopped
+      delegate_to: 127.0.0.1
+
+    - name: wait_for_WinRM_port_up
+      wait_for: >
+        host={{ inventory_hostname }}
+        port=5986
+        state=started
+        delay=30
+      delegate_to: 127.0.0.1

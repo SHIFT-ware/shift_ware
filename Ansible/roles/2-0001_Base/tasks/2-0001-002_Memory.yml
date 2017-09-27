@@ -1,0 +1,50 @@
+---
+- name: 2-0001-002_Memory - set tmp variable
+  set_fact:
+    virtualmemory: "{{ base_BASE.HW.memory.virtualmemory }}"
+    location: 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management'
+
+- name: 2-0001-002_Memory - set variable "data" when type is "auto" 
+  set_fact:
+    data: '?:\pagefile.sys'
+  when: virtualmemory.type == "auto"
+
+- name: 2-0001-002_Memory - set variable "data" when type is "custom"
+  set_fact:
+    data: 'c:\pagefile.sys {{ virtualmemory.size.min }} {{ virtualmemory.size.max }}'
+  when: virtualmemory.type == "custom"
+
+- name: 2-0001-002_Memory - set variable "data" when type is "system"
+  set_fact:
+    data: 'c:\pagefile.sys 0 0'
+  when: virtualmemory.type == "system"
+
+- name: 2-0001-002_Memory - set variable "data" when type is "none"
+  set_fact:
+    data: ''
+  when: virtualmemory.type == "none"
+
+- name: 2-0001-002_Memory - check registry value
+  raw: (Get-ItemProperty '{{ location }}').PagingFiles
+  register: ret_pre
+  changed_when: ret_pre.stdout != '{{ data }}\r\n'
+  always_run: yes
+  notify:
+    - server_restart_for_Win
+    - wait_for_WinRM_port_down
+    - wait_for_WinRM_port_up
+
+- name: 2-0001-002_Memory - set registry value
+  raw: Set-ItemProperty '{{ location }}' 'PagingFiles' -Value '{{ data }}' -Type 'MultiString'
+  when:
+    - ret_pre | changed
+  always_run: no
+
+- name: 2-0001-002_Memory - post check registry value
+  raw: (Get-ItemProperty '{{ location }}').PagingFiles
+  register: ret_post
+  when:
+    - ret_pre | changed
+  failed_when: ret_post.stdout != '{{ data }}\r\n'
+  always_run: no
+

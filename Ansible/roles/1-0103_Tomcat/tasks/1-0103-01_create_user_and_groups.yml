@@ -1,0 +1,64 @@
+---
+- block:
+  - name: 1-0103-01_create_user_and_groups - check tomcat user's primary group
+    shell: grep -e "^{{ tomc_tomcat.exec_groups.primary.name }}:" /etc/group
+    failed_when: false
+    changed_when: false
+    register: check_primary_group
+    when: tomc_tomcat.exec_groups.primary.name is defined
+  
+  - name: 1-0103-01_create_user_and_groups - create tomcat user's primary group
+    group:
+      name: "{{ tomc_tomcat.exec_groups.primary.name }}"
+      gid: "{{ tomc_tomcat.exec_groups.primary.gid | default(omit) }}"
+    when:
+      - not ( check_primary_group | skipped )
+      - check_primary_group.rc != 0 
+
+  - name: 1-0103-01_create_user_and_groups - check tomcat user's secondary groups
+    shell: grep -e "^{{ item.name }}:" /etc/group
+    failed_when: false
+    changed_when: false
+    register: check_secondary_groups
+    with_items:
+      "{{ tomc_tomcat.exec_groups.secondary | default('') }}"
+    when: item.name is defined
+
+  - name: 1-0103-01_create_user_and_groups - create tomcat user's secondary group
+    group:
+      name: "{{ item.item.name }}"
+      gid: "{{ item.item.gid | default(omit) }}"
+    with_items:
+      check_secondary_groups.results
+    when:
+      - not ( check_secondary_groups | skipped )
+      - item.rc != 0
+
+  - name: 1-0103-01_create_user_and_groups - check tomcat user
+    shell: id {{ tomc_tomcat.exec_user.name }}
+    failed_when: false
+    changed_when: false
+    register: check_tomcat_user
+
+  - name: 1-0103-01_create_user_and_groups - set strings of secondary groups
+    set_fact:
+      sub_groups_str:
+        "{{ tomc_tomcat.exec_groups.secondary | map(attribute='name') | join(',') }}"
+    when:
+      - tomc_tomcat.exec_groups.secondary is defined
+
+  - name: 1-0103-01_create_user_and_groups - create tomcat user
+    user:
+      name: "{{ tomc_tomcat.exec_user.name }}"
+      uid: "{{ tomc_tomcat.exec_user.uid | default(omit) }}"
+      group: "{{ tomc_tomcat.exec_groups.primary.name | default(omit) }}"
+      groups: "{{ sub_groups_str | default(omit) }}"
+      home: "{{ tomc_tomcat.exec_user.home_dir | default(omit) }}"
+      shell: "{{ tomc_tomcat.exec_user.shell | default(omit) }}"
+      password: "{{ tomc_tomcat.exec_user.password | password_hash('sha512') }}"
+      state: present 
+    when:
+      - check_tomcat_user.rc != 0
+  when:
+    - tomc_tomcat.exec_user.name is defined
+

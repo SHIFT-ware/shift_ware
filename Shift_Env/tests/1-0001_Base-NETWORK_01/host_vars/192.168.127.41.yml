@@ -1,0 +1,18 @@
+connection_hostname: '192.168.127.41'
+remote_tmp_dir: '~root/.shift'
+BASE: 
+NETWORK: 
+  hostname: 'target41'
+  interface: 
+    - name: 'ens192'
+      ip_addr: '10.10.10.11/24'
+  bonding_interface: 
+    - name: 'bond0'
+      member_interface: 
+        - name: 'ens193'
+        - name: 'ens224'
+  static_routing: 
+    - dest: '10.10.11.0/24'
+      if: 'ens192'
+      gw: '10.10.10.254'
+

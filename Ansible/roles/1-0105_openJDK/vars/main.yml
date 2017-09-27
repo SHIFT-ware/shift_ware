@@ -1,0 +1,3 @@
+openjdk_tmp_dir: "{{ remote_tmp_dir }}/{{ role_name }}"
+
+openjdk_packages: "{{ openjdk.packages }}"

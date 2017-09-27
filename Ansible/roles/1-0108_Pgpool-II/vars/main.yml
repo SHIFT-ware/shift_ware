@@ -1,0 +1,18 @@
+pgpool_tmp_dir: "{{ remote_tmp_dir }}/{{ role_name }}"
+
+pgpool_packages: "{{ Pgpool.packages }}"
+pgpool_state: "{{ Pgpool.state }}"
+pgpool_enabled: "{{ Pgpool.enabled }}"
+pgpool_exec_groups_primary_name: "{{ Pgpool.exec_groups.primary.name }}"
+pgpool_exec_groups_primary_gid: "{{ Pgpool.exec_groups.primary.gid | default(omit) }}"
+pgpool_exec_groups_secondary: "{{ Pgpool.exec_groups.secondary }}"
+pgpool_exec_user_name: "{{ Pgpool.exec_user.name }}"
+pgpool_exec_user_uid: "{{ Pgpool.exec_user.uid | default(omit) }}"
+pgpool_exec_user_home_dir: "{{ Pgpool.exec_user.home_dir | default(omit) }}"
+pgpool_exec_user_shell: "{{ Pgpool.exec_user.shell | default(omit) }}"
+pgpool_exec_user_password: "{{ Pgpool.exec_user.password }}"
+
+pgpool_config_filename: "{{ Pgpool.config.filename }}"
+pgpool_pcp_users: "{{ Pgpool.pcp_users }}"
+pgpool_pool_passwd: "{{ Pgpool.pool_passwd }}"
+pgpool_pool_hba: "{{ Pgpool.pool_hba }}"

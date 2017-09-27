@@ -1,0 +1,81 @@
+---
+- name: 2-0001-076_Domain - set tmp variable "domain"
+  set_fact:
+     domain: "{{ base_NETWORK.domain }}"
+
+- name: 2-0001-076_Domain - set tmp variable "domain_flg" true
+  set_fact:
+    domain_flg: 'True'
+  when: domain.type == "domain"
+
+- name: 2-0001-076_Domain - set tmp variable "domain_flg" false
+  set_fact:
+    domain_flg: 'False'
+  when: domain.type == "workgroup"
+
+- name: 2-0001-076_Domain - check assigned to a domain
+  raw: (Get-WMIObject Win32_ComputerSystem).PartOfDomain
+  register: ret_pre1
+  changed_when: ret_pre1.stdout != "{{ domain_flg }}\r\n"
+  always_run: yes
+  notify:
+    - server_restart_for_Win
+    - wait_for_WinRM_port_down
+    - wait_for_WinRM_port_up
+
+- name: 2-0001-076_Domain - check domain or workgroup name
+  raw: (Get-WMIObject Win32_ComputerSystem).Domain
+  register: ret_pre2
+  changed_when: ret_pre2.stdout != "{{ domain.name }}\r\n"
+  always_run: yes
+  notify:
+    - server_restart_for_Win
+    - wait_for_WinRM_port_down
+    - wait_for_WinRM_port_up
+
+- name: 2-0001-076_Domain - assign to the domain
+  raw: >
+    Add-Computer -DomainName '{{ domain.name }}' `
+      -Credential (New-Object System.Management.Automation.PsCredential '{{ domain.name }}\{{ domain.user }}' , `
+      (ConvertTo-SecureString '{{ domain.password | e }}' -AsPlainText -Force)) -Force
+  register: result
+  when:
+    - domain.type == "domain"
+    - ret_pre1 | changed or ret_pre2 | changed
+  until: result.rc == 0
+  retries: 10
+  delay: "{{ 30 | random(step=5) }}"
+  always_run: no
+
+- name: 2-0001-076_Domain - assign to the workgroup
+  raw: >
+    Add-Computer -WorkgroupName '{{ domain.name }}' `
+      -Credential (New-Object System.Management.Automation.PsCredential '{{ domain.user }}', `
+      (ConvertTo-SecureString '{{ domain.password}}' -AsPlainText -Force)) -Force
+  when:
+    - domain.type == "workgroup"
+    - ret_pre1 | changed or ret_pre2 | changed
+  retries: 10
+  delay: "{{ 30 | random(step=5) }}"
+  always_run: no
+
+- meta: flush_handlers
+
+- name: 2-0001-076_Domain - post check assigned to a domain
+  raw: (Get-WMIObject Win32_ComputerSystem).PartOfDomain
+  register: ret_post1
+  failed_when: ret_post1.stdout != "{{ domain_flg }}\r\n"
+  when:
+    - ret_pre1 | changed or
+      ret_pre2 | changed
+  always_run: no
+
+- name: 2-0001-076_Domain - post check domain or workgroup name
+  raw: (Get-WMIObject Win32_ComputerSystem).Domain
+  register: ret_post2
+  changed_when: ret_post2.stdout != "{{ domain.name }}\r\n"
+  when:
+    - ret_pre1 | changed or
+      ret_pre2 | changed
+  always_run: no
+

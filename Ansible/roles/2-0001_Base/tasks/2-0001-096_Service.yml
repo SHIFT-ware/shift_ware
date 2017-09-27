@@ -1,0 +1,35 @@
+---
+- name: 2-0001-096_Service - define empty tmp variable
+  set_fact:
+    service: []
+  when: base_ADVANCED.service is undefined
+
+- name: 2-0001-096_Service - set tmp variable
+  set_fact:
+    service: "{{ base_ADVANCED.service }}"
+  when: base_ADVANCED.service is defined
+
+- name: 2-0001-096_Service - change start mode of service
+  win_service:
+    name: "{{ item.name }}"
+    start_mode: "{{ item.start_mode }}"
+  with_items: service
+  when: item.start_mode is defined
+
+- name: 2-0001-096_Service - start service
+  win_service:
+    name: "{{ item.name }}"
+    state: started
+  with_items: service
+  when:
+    - item.state is defined
+    - item.state == true
+
+- name: 2-0001-096_Service - stop service
+  win_service:
+    name: "{{ item.name }}"
+    state: stopped
+  with_items: service
+  when:
+    - item.state is defined
+    - item.state == false

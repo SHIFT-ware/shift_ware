@@ -1,0 +1,35 @@
+---
+- name: create install dir
+  file:
+    path: "{{ l0106_install_path }}"
+    state: directory
+
+- name: put CA script
+  template:
+    src: CA.j2
+    dest: /etc/pki/tls/misc/CA
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: setting openssl conf
+  template:
+    src: openssl.cnf.j2
+    dest: /etc/pki/tls/openssl.cnf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: create CA
+  shell: /etc/pki/tls/misc/CA -newca
+  args:
+    creates: "{{ l0106_install_path }}/private/{{ l0106_ca_cert.private_key_filename }}"
+  environment:
+    catop: "{{ l0106_install_path }}"
+
+- name: create der format cert
+  shell: >
+    openssl x509 -inform pem -in {{ l0106_install_path }}/{{ l0106_ca_cert.pem_filename }} \
+       -outform der -out {{ l0106_install_path }}/{{ l0106_ca_cert.der_filename }}
+  args:
+    creates: "{{ l0106_install_path }}/{{ l0106_ca_cert.der_filename }}"

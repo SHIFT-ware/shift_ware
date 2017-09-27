@@ -1,0 +1,35 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+  STORAGE: 
+    disk: 
+      - number: 1
+        partition_style: 'GPT'
+        total_size: 5
+        partition: 
+          - drive_letter: 'D'
+            filesystem: 'FAT12'
+            au_size: 40960
+            size: 5
+            archive: 'True'
+    cdrom: 
+      - drive_letter: 'G'
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+  STORAGE: 
+    disk: 
+      - number: 1
+        partition_style: 'GPT'
+        total_size: 5
+        partition: 
+          - drive_letter: 'D'
+            filesystem: 'FAT12'
+            au_size: 40960
+            size: 5
+            archive: 'True'
+    cdrom: 
+      - drive_letter: 'G'
+

@@ -1,0 +1,43 @@
+192.168.127.31:
+  connection_hostname: '192.168.127.31'
+  operating_system: 'Linux'
+  PrivateCA: 
+    install_path: '/etc/pki/CA'
+    ca_cert: 
+      pem_filename: 'cacert.pem'
+      der_filename: 'cacert.crt'
+      csr_validity_term: 1095
+      distinguished_name: 
+        country: 'JP'
+        state: 'Tokyo'
+        locality_name: 'Shinjuku'
+        organization: 'TIS inc.'
+        unit_name: 'IT Infrastructure Technology SBU.'
+        common_name: 'sample@example.com'
+        email: 'sample@tis.co.jp'
+      private_key_filename: 'cakey.pem'
+      private_key_length: 2048
+      private_key_passphrase: 'passphrase'
+      hash_algorithm: 'sha256'
+192.168.127.41:
+  connection_hostname: '192.168.127.41'
+  operating_system: 'Linux'
+  PrivateCA: 
+    install_path: '/etc/pki/CA'
+    ca_cert: 
+      pem_filename: 'cacert.pem'
+      der_filename: 'cacert.crt'
+      csr_validity_term: 1095
+      distinguished_name: 
+        country: 'JP'
+        state: 'Tokyo'
+        locality_name: 'Shinjuku'
+        organization: 'TIS inc.'
+        unit_name: 'IT Infrastructure Technology SBU.'
+        common_name: 'sample@example.com'
+        email: 'sample@tis.co.jp'
+      private_key_filename: 'cakey.pem'
+      private_key_length: 2048
+      private_key_passphrase: 'passphrase'
+      hash_algorithm: 'sha256'
+

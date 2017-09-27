@@ -1,0 +1,39 @@
+192.168.127.31:
+  connection_hostname: '192.168.127.31'
+  operating_system: 'Linux'
+  PostgreSQL:
+    state: started
+    enabled: yes
+    exec_groups:
+      primary:
+        gid: 1000
+      secondary:
+        - name: test1
+          gid: 1001
+        - name: test2
+          gid: 1002
+    exec_user:
+      uid: 1000
+      home_dir: /var/lib/pgsql
+      shell: /bin/bash
+    version: '9.4'
+    log_dir: '/var/lib/pgsql/9.4/pg_log'
+    wal_archive_dir: /var/lib/pgsql/wal_archive
+    postgresql_conf:
+      conf_file_md5: '3252349fc4a2e1edaeb13fac3373142a'
+    authentication:
+      records:
+      - type: 'local'
+        database: 'all'
+        user: 'all'
+        method: 'trust'
+      - type: 'host'
+        database: 'all'
+        user: 'all'
+        address: '192.168.127.0/24'
+        method: 'md5'
+      - type: 'host'
+        database: 'replication'
+        user: 'replication'
+        address: '192.168.127.0/24'
+        method: 'md5'

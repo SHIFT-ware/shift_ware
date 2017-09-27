@@ -1,0 +1,14 @@
+- name: sshd_config
+  lineinfile: >
+    dest='/etc/ssh/sshd_config'
+    regexp={{ item.regexp }}
+    line={{ item.line }}
+    state=present
+  register: ret_1_9902_08_SshConfig
+  with_items:
+    - regexp: '^#?\s*RSAAuthentication\s'
+      line: '#RSAAuthentication yes'
+    - regexp: '^#?\s*PubkeyAuthentication\s'
+      line: '#PubkeyAuthentication yes'
+    - regexp: '^#?\s*AuthorizedKeysFile\s'
+      line: '#AuthorizedKeysFile     .ssh/authorized_keys'

@@ -1,0 +1,162 @@
+remote_tmp_dir: /root/.shift
+
+Tomcat:
+  state: started
+  install_dir: /usr/local/tomcat
+  tarball: apache-tomcat-7.0.75.tar.gz
+  connector:
+    http:
+      address: 0.0.0.0
+      port: 8080
+      protocol: HTTP/1.1
+      redirectPort: 8443
+      acceptCount: 100
+      connectionTimeout: 20000
+      keepAliveTimeout: 60000
+      maxConnections: 8192
+      maxKeepAliveRequests: 100
+      maxThreads: 200
+      minSpareThreads: 10
+    ajp:
+      address: 0.0.0.0
+      port: 8009
+      protocol: AJP/1.3
+      redirectPort: 8443
+      acceptCount: 100
+      connectionTimeout: 60000
+      keepAliveTimeout: 60000
+      maxConnections: 8192
+      maxThreads: 200
+      minSpareThreads: 10
+      enableLookups: true
+  engine:
+    jvmRoute: tomcat02
+    defaultHost: localhost
+  cluster:
+    channelSendOptions: 6
+    channelStartOptions: 3
+    manager:
+      type: BackupManager
+      notifyListenersOnReplication: "true"
+      mapSendOptions: "6"
+    receiver:
+      address: 192.168.127.31
+      port: 4000
+      selectorTimeout: 5000
+      maxThreads: 6
+    member:
+#      enable_multicast: no
+#      members:
+#        - host: 192.168.127.41
+#          port: 4000
+#          domain: tomcat_cluster
+#          uniqueId: "{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}"
+      enable_multicast: yes
+      members:
+        - address: 228.0.0.4
+          port: 45564
+          frequency: 500
+          dropTime: 3000
+  envs:
+    catalina_home: /usr/local/tomcat
+    catalina_base: /usr/local/tomcat
+    catalina_out: /usr/local/tomcat/logs/catalina.out
+    java_home: /usr/lib/jvm/jre-1.8.0
+  catalina_opts:
+    server: yes
+    Xms: 256
+    Xmx: 512
+    MaxMetaspaceSize: 256
+#    MaxPermSize: 256
+#    PermSize: 128
+    Xss: 256
+    NewSize: 128
+    MaxNewSize: 256
+    TargetSurvivorRatio: 50
+    MetaspaceSize: 128
+    InitialTenuringThreshold: 0
+    MaxTenuringThreshold: 0
+    SurvivorRatio: 65632
+#    UseConcMarkSweepGC: yes
+#    UseParNewGC: yes
+#    CMSParallelRemarkEnabled: yes
+#    CMSConcurrentMTEnabled: yes
+#    CMSIncrementalMode: yes
+#    CMSIncrementalPacing: yes
+#    CMSIncrementalDutyCycleMin: 0
+#    CMSIncrementalDutyCycle: 10
+#    CMSClassUnloadingEnabled: yes
+#    CMSInitiatingOccupancyFraction: 60
+    UseParallelGC: yes
+    UseParallelOldGC: yes
+    UseTLAB: yes
+    ResizeTLAB: yes
+    DisableExplicitGC: yes
+    UseCompressedOops: yes
+    UseStringCache: yes
+    UseAdaptiveGCBoundary: yes
+    UseBiasedLocking: yes
+    HeapDumpOnOutOfMemoryError: yes
+    OptimizeStringConcat: yes
+    Xloggc: /usr/local/tomcat/logs/tomcat-gc.log
+    PrintGCDetails: yes
+    PrintGCDateStamps: yes
+  manager:
+    enable: no 
+    user: admin
+    password: p@ssw0rd
+    enable_roles:
+      gui: yes
+      status: yes
+      script_role: yes
+      jmx_role: yes
+  initial_apps:
+    enable: no
+  init_script:
+    enable: yes
+    service:
+      state: started
+      enabled: yes
+  exec_groups:
+    primary:
+      name: tomcat
+      gid: 1000
+    secondary:
+      - name: test1
+        gid: 1001
+      - name: test2
+        gid: 1002
+  exec_user:
+    name: tomcat
+    uid: 1000
+    home_dir: /home/tomcat
+    shell: /bin/bash
+    password: p@ssw0rd
+openjdk:
+  packages:
+    - name: "alsa-lib-1.0.22-3.el6.x86_64.rpm"
+    - name: "fontconfig-2.8.0-5.el6.x86_64.rpm"
+    - name: "freetype-2.3.11-15.el6_6.1.x86_64.rpm"
+    - name: "giflib-4.1.6-3.1.el6.x86_64.rpm"
+    - name: "java-1.8.0-openjdk-1.8.0.45-35.b13.el6.x86_64.rpm"
+    - name: "java-1.8.0-openjdk-devel-1.8.0.45-35.b13.el6.x86_64.rpm"
+    - name: "java-1.8.0-openjdk-headless-1.8.0.45-35.b13.el6.x86_64.rpm"
+    - name: "jpackage-utils-1.7.5-3.14.el6.noarch.rpm"
+    - name: "libfontenc-1.0.5-2.el6.x86_64.rpm"
+    - name: "libICE-1.0.6-1.el6.x86_64.rpm"
+    - name: "libjpeg-turbo-1.2.1-3.el6_5.x86_64.rpm"
+    - name: "libpng-1.2.49-1.el6_2.x86_64.rpm"
+    - name: "libSM-1.2.1-2.el6.x86_64.rpm"
+    - name: "libX11-1.6.0-6.el6.x86_64.rpm"
+    - name: "libX11-common-1.6.0-6.el6.noarch.rpm"
+    - name: "libXau-1.0.6-4.el6.x86_64.rpm"
+    - name: "libxcb-1.9.1-3.el6.x86_64.rpm"
+    - name: "libXext-1.3.2-2.1.el6.x86_64.rpm"
+    - name: "libXfont-1.4.5-4.el6_6.x86_64.rpm"
+    - name: "libXi-1.7.2-2.2.el6.x86_64.rpm"
+    - name: "libXrender-0.9.8-2.1.el6.x86_64.rpm"
+    - name: "libXtst-1.2.2-2.1.el6.x86_64.rpm"
+    - name: "ttmkfdir-3.0.9-32.1.el6.x86_64.rpm"
+    - name: "tzdata-java-2015e-1.el6.noarch.rpm"
+    - name: "xorg-x11-fonts-Type1-7.2-11.el6.noarch.rpm"
+    - name: "xorg-x11-font-utils-7.2-11.el6.x86_64.rpm"

@@ -1,0 +1,13 @@
+---
+- name: 1-0001-02_Interface - set nic for rhel6
+  template:
+    src: 'ifcfg_for_RHEL6.j2'
+    dest: '/etc/sysconfig/network-scripts/ifcfg-{{ item.name }}'
+    follow: no
+    force: yes
+    owner: root
+    group: root
+    mode: 0644
+  with_items: base_network.interface
+  notify: network_service_restart
+

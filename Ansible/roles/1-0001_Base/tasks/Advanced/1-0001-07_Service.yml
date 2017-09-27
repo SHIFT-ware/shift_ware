@@ -1,0 +1,28 @@
+# main task
+- name: 1-0001-07_Service - change state and enabled
+  service:
+    name: "{{ item.name }}"
+    state: "{{ item.state | regex_replace('True', 'started') | regex_replace('False', 'stopped') }}"
+    enabled: "{{ item.enable }}"
+  with_items: base_advanced.service
+  when:
+    - item.state is defined
+    - item.enable is defined
+
+- name: 1-0001-07_Service - change state only
+  service:
+    name: "{{ item.name }}"
+    state: "{{ item.state | regex_replace('True', 'started') | regex_replace('False', 'stopped') }}"
+  with_items: base_advanced.service
+  when:
+    - item.state is defined
+    - item.enable is undefined
+
+- name: 1-0001-07_Service - change enabled only
+  service: 
+    name: "{{ item.name }}"
+    enabled: "{{ item.enable }}"
+  with_items: base_advanced.service
+  when:
+    - item.state is undefined
+    - item.enable is defined

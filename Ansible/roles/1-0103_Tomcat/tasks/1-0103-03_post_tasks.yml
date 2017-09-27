@@ -1,0 +1,41 @@
+- meta: flush_handlers
+
+- block:
+  - name: 1-0103-03_post_tasks - change tomcat service state
+    service:
+      name: tomcat
+      state: "{{ tomc_tomcat.init_script.service.state }}"
+    when:
+      - tomc_tomcat.init_script.service.state is defined
+  
+  - name: 1-0103-03_post_tasks - change auto_starting setting of tomcat service
+    service:
+      name: tomcat
+      enabled: "{{ tomc_tomcat.init_script.service.enabled }}"
+    when:
+      - tomc_tomcat.init_script.service.enabled is defined
+  when:
+    - tomc_tomcat.init_script.enable is defined
+    - tomc_tomcat.init_script.enable == true
+
+- block:
+  - name: 1-0103-03_post_tasks - check tomcat process
+    shell: ps -ef | grep java | grep -v grep
+    changed_when: false
+    failed_when: false
+    register: check_tomcat_process
+
+  - name: 1-0103-03_post_tasks - start tomcat
+    shell: cd {{ tomc_tomcat.install_dir }}/bin && nohup ./startup.sh
+    when:
+      - check_tomcat_process.rc != 0
+      - tomc_tomcat.state == "started"
+
+  - name: 1-0103-03_post_tasks - stop tomcat
+    shell: cd {{ tomc_tomcat.install_dir }}/bin && ./shutdown.sh
+    when:
+      - check_tomcat_process.rc == 0
+      - tomc_tomcat.state == "stopped"
+  when:
+    - tomc_tomcat.init_script.enable is defined
+    - tomc_tomcat.init_script.enable == false

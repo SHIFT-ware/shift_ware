@@ -1,0 +1,31 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+    ID: 
+      user: 
+        - name: 'testuser'
+          groups: 'Testgroup'
+          account_disabled: False
+          user_cannot_change_password: True
+          password_never_expires: True
+      group: 
+        - name: 'Testgroup'
+      uac: 
+        level: 'low'
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+    ID: 
+      user: 
+        - name: 'testuser'
+          groups: 'Testgroup'
+          account_disabled: False
+          user_cannot_change_password: True
+          password_never_expires: True
+      group: 
+        - name: 'Testgroup'
+      uac: 
+        level: 'low'
+

@@ -1,0 +1,32 @@
+---
+- name: 1-0001-37_SystemRunLevel - change runlevel for rhel6
+  lineinfile:
+    dest: '/etc/inittab'
+    state: present
+    regexp: "^id:"
+    line: "id:{{ base_base.OSCORE.runlevel }}:initdefault:"
+  when:
+    - ansible_distribution_major_version == "6"
+  notify:
+    - server_restart_for_RHEL6
+    - wait_for_SSH_port_down
+    - wait_for_SSH_port_up
+
+- block:
+  - name: 1-0001-37_SystemRunLevel - check default target for rhel7
+    shell: systemctl get-default
+    register: ret
+    changed_when: False
+  
+  - name: 1-0001-37_SystemRunLevel - set tmp variable "runlevel_target"
+    set_fact:
+      runlevel_target: ["poweroff", "rescue", "multi-user", "multi-user", "multi-user", "graphical", "reboot"]
+  
+  - name: 1-0001-37_SystemRunLevel - set default target for rhel7
+    shell: "systemctl set-default {{ runlevel_target[base_base.OSCORE.runlevel] }}.target"
+    when: ret.stdout != "{{ runlevel_target[base_base.OSCORE.runlevel] }}.target"
+    notify:
+      - server_restart_for_RHEL7
+      - wait_for_SSH_port_down
+      - wait_for_SSH_port_up
+  when: ansible_distribution_major_version == "7"

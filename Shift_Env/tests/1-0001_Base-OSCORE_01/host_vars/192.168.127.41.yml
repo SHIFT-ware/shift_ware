@@ -1,0 +1,24 @@
+connection_hostname: '192.168.127.41'
+remote_tmp_dir: '~root/.shift'
+BASE: 
+  OSCORE: 
+    version: '7.1'
+    lang: 'en_US'
+    keyboard: 
+      keybord_locale: 'us'
+    time: 
+      timezone: 'Asia/Seoul'
+      utc: True
+    runlevel: 5
+    selinux: 'disabled'
+    kdump: 
+      packages: 
+        - name: 'kexec-tools-2.0.7-19.el7.x86_64.rpm'
+      service_state: 'running'
+      path: '/var/crash'
+    grub_option: 
+      - key: 'GRUB_DEFAULT'
+        value: 'saved'
+      - key: 'GRUB_TIMEOUT'
+        value: '7'
+

@@ -1,0 +1,11 @@
+connection_hostname: '192.168.127.41'
+remote_tmp_dir: '~root/.shift'
+BASE: 
+ADVANCED:
+  logrotate_basic_option: 
+    cycle: 'daily'
+    rotate_num: 10
+    create: True
+    add_date: True
+    compress: True
+

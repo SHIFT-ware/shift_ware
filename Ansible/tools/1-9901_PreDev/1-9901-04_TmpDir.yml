@@ -1,0 +1,7 @@
+
+- name: create temporary dir for shift
+  file: >
+    path="{{ l9901_remote_tmp_dir.path }}"
+    owner="{{ l9901_remote_tmp_dir.owner }}"
+    mode=755
+    state=directory

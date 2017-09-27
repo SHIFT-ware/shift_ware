@@ -1,0 +1,22 @@
+connection_hostname: '192.168.127.151'
+remote_tmp_dir: 'C:\.shift'
+ZabbixAgent: 
+  install_path: 'C:\Program Files (x86)\ZabbixAgent'
+  installer: 'zabbix_agentd.exe'
+  files: 
+    - name: 'zabbix_sender.exe'
+    - name: 'zabbix_get.exe'
+  config: 
+    logfile: 'c:\zabbix_agentd.log'
+    enableremotecommands: 0
+    server: '192.168.0.1'
+    listenport: 10050
+    serveractive: '192.168.0.1:10050'
+    hostnameitem: 'system.hostname'
+    timeout: 3
+    include: 
+      - path: 'c:\test.txt'
+      - path: 'c:\test2.txt'
+  service: 
+    state: 'started'
+    start_mode: 'auto'

@@ -1,0 +1,7 @@
+- name: DeleteTmpDir
+  file: >
+    path={{ l9902_remote_tmp_dir.path }}
+    state=absent
+  register: ret_1_9902_04_TmpDir
+
+

@@ -1,0 +1,12 @@
+192.168.127.31:
+  connection_hostname: '192.168.127.31'
+  operating_system: 'Linux'
+  BASE: 
+    HW: 
+      cpu_core_sum: 1
+192.168.127.41:
+  connection_hostname: '192.168.127.41'
+  operating_system: 'Linux'
+  BASE: 
+    HW: 
+      cpu_core_sum: 1

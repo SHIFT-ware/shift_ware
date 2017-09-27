@@ -1,0 +1,31 @@
+---
+- name: 2-0001-107_PsExecPolicy - set tmp variable
+  set_fact:
+     psexecpolicy: "{{ base_ADVANCED.psexecpolicy }}"
+  when: base_ADVANCED.psexecpolicy is defined
+
+- name: 2-0001-107_PsExecPolicy - check execution policy
+  raw: Get-ExecutionPolicy -Scope LocalMachine
+  register: ret_pre
+  when: 
+    - psexecpolicy is defined
+  changed_when: ret_pre.stdout != "{{ psexecpolicy }}\r\n"
+  always_run: yes
+
+- name: 2-0001-107_PsExecPolicy - set execution policy
+  raw: Set-ExecutionPolicy {{ psexecpolicy }} -Scope LocalMachine -Force
+  when:
+    - psexecpolicy is defined
+    - ret_pre | changed
+  failed_when: false
+  always_run: no
+
+- name: 2-0001-107_PsExecPolicy - post check execution policy
+  raw: Get-ExecutionPolicy -Scope LocalMachine
+  register: ret_post
+  when:
+    - psexecpolicy is defined
+    - ret_pre | changed
+  failed_when: ret_post.stdout != "{{ psexecpolicy }}\r\n"
+  always_run: no
+

@@ -1,0 +1,17 @@
+- name: Notify_to_delete_keys
+  debug:
+    msg: id_rsa_shift and id_rsa_shift.pub will be deleted.
+  when:
+    not (ret_1_9902_01_Selinux   | failed) and
+    not (ret_1_9902_02_User      | failed) and
+    not (ret_1_9902_04_TmpDir    | failed) and
+    not (ret_1_9902_07_SudoAuth  | failed) and
+    not (ret_1_9902_08_SshConfig | failed)
+  changed_when:
+    not (ret_1_9902_01_Selinux   | failed) and
+    not (ret_1_9902_02_User      | failed) and
+    not (ret_1_9902_04_TmpDir    | failed) and
+    not (ret_1_9902_07_SudoAuth  | failed) and
+    not (ret_1_9902_08_SshConfig | failed)
+  notify: 
+    - remove_ssh-key_from_local

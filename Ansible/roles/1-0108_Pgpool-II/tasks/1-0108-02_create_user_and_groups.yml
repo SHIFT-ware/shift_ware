@@ -1,0 +1,68 @@
+---
+- block:
+  - name: 1-0108-02_create_user_and_groups - check pgpool user's primary group
+    shell: grep -e "^{{ pgpool_exec_groups_primary_name }}:" /etc/group
+    failed_when: false
+    changed_when: false
+    register: check_primary_group
+    when: pgpool_exec_groups_primary_name is defined
+  
+  - name: 1-0108-02_create_user_and_groups - create pgpool user's primary group
+    group:
+      name: "{{ pgpool_exec_groups_primary_name }}"
+      gid: "{{ pgpool_exec_groups_primary_gid }}"
+    when:
+      - not ( check_primary_group | skipped )
+      - check_primary_group.rc != 0 
+
+  - name: 1-0108-02_create_user_and_groups - check pgpool user's secondary groups
+    shell: grep -e "^{{ item.name }}:" /etc/group
+    failed_when: false
+    changed_when: false
+    register: check_secondary_groups
+    with_items:
+      "{{ pgpool_exec_groups_secondary | default('') }}"
+    when: item.name is defined
+
+  - name: 1-0108-02_create_user_and_groups - create pgpool user's secondary group
+    group:
+      name: "{{ item.item.name }}"
+      gid: "{{ item.item.gid | default(omit) }}"
+    with_items:
+      check_secondary_groups.results
+    when:
+      - not ( check_secondary_groups | skipped )
+      - item.rc != 0
+
+  - name: 1-0108-02_create_user_and_groups - check pgpool user
+    shell: id {{ pgpool_exec_user_name }}
+    failed_when: false
+    changed_when: false
+    register: check_pgpool_user
+
+  - name: 1-0108-02_create_user_and_groups - set strings of secondary groups
+    set_fact:
+      sub_groups_str:
+        "{{ pgpool_exec_groups_secondary | map(attribute='name') | join(',') }}"
+    when: pgpool_exec_groups_secondary is defined
+
+  - name: 1-0108-02_create_user_and_groups - create pgpool user
+    user:
+      name: "{{ pgpool_exec_user_name }}"
+      uid: "{{ pgpool_exec_user_uid }}"
+      group: "{{ pgpool_exec_groups_primary_name }}"
+      groups: "{{ sub_groups_str | default(omit) }}"
+      home: "{{ pgpool_exec_user_home_dir }}"
+      shell: "{{ pgpool_exec_user_shell }}"
+      password: "{{ pgpool_exec_user_password | password_hash('sha512') }}"
+      state: present 
+    when: check_pgpool_user.rc != 0
+
+  - name: 1-0108-02_create_user_and_groups - set exec user to init script
+    lineinfile:
+      dest: /etc/init.d/pgpool
+      line: "PGPOOLUSER={{ pgpool_exec_user_name }}"
+      regexp: "^PGPOOLUSER=.*"
+    notify: pgpool_service_restart
+  when: pgpool_exec_user_name is defined
+

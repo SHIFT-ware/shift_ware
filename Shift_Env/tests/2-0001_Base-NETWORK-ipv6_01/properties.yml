@@ -1,0 +1,27 @@
+192.168.127.141:
+  connection_hostname: '192.168.127.141'
+  operating_system: 'Windows'
+  BASE: 
+  NETWORK: 
+    ipv6: 
+      nvspbind_path: 'C:\.shift\nvspbind.exe'
+      registry: 'disabled'
+      nic_property: 'disabled'
+      netsh_command: 
+        isatap_if: 'disabled'
+        sixtofour_if: 'disabled'
+        teredo_if: 'disabled'
+192.168.127.151:
+  connection_hostname: '192.168.127.151'
+  operating_system: 'Windows'
+  BASE: 
+  NETWORK: 
+    ipv6: 
+      nvspbind_path: 'C:\.shift\nvspbind.exe'
+      registry: 'disabled'
+      nic_property: 'disabled'
+      netsh_command: 
+        isatap_if: 'disabled'
+        sixtofour_if: 'disabled'
+        teredo_if: 'disabled'
+

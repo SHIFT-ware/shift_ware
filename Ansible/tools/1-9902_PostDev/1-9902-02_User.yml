@@ -1,0 +1,7 @@
+- name: OsUser
+  user: >
+    name="{{ l9902_remote_user.name }}"
+    remove=yes
+    force=yes
+    state=absent
+  register: ret_1_9902_02_User
