@@ -41,65 +41,65 @@
   roles:
     - 1-0108_Pgpool-II
 
-- name: 1-0201_RedHatSatellite
-  hosts: 1-0201_RedHatSatellite_GROUP
-  become: yes
-  roles: 
-    - 1-0201_RedHatSatellite
-
-- name: 1-0401_JP1Agents
-  hosts: 1-0401_JP1Agents_GROUP
-  become: yes
-  roles: 
-    - 1-0401_JP1Agents
-
-- name: 1-0501_OracleClient
-  hosts: 1-0501_OracleClient_GROUP
-  become: yes
-  roles: 
-    - 1-0501_OracleClient
-
-- name: 1-0502_OracleJRE
-  hosts: 1-0502_OracleJRE_GROUP
-  become: yes
-  roles:
-    - 1-0502_OracleJRE
-
-- name: 1-0701_LogstorageAgent
-  hosts: 1-0701_LogstorageAgent_GROUP
-  become: yes
-  roles: 
-    - 1-0701_LogstorageAgent
-
-- name: 1-0801_DynatraceAgent
-  hosts: 1-0801_DynatraceAgent_GROUP
-  become: yes
-  roles: 
-    - 1-0801_DynatraceAgent
-
-- name: 1-0901_DeepSecurityAgent
-  hosts: 1-0901_DeepSecurityAgent_GROUP
-  become: yes
-  roles: 
-    - 1-0901_DeepSecurityAgent
-
-- name: 1-1001_UnixAgentForLDAPManager
-  hosts: 1-1001_UnixAgentForLDAPManager_GROUP
-  become: yes
-  roles: 
-    - 1-1001_UnixAgentForLDAPManager
-
-- name: 1-1101_ES1Acquire
-  hosts: 1-1101_ES1Acquire_GROUP
-  become: yes
-  roles: 
-    - 1-1101_ES1Acquire
-
-- name: 1-1102_ES1Logscn
-  hosts: 1-1102_ES1Logscn_GROUP
-  become: yes
-  roles: 
-    - 1-1102_ES1Logscn
+#- name: 1-0201_RedHatSatellite
+#  hosts: 1-0201_RedHatSatellite_GROUP
+#  become: yes
+#  roles: 
+#    - 1-0201_RedHatSatellite
+#
+#- name: 1-0401_JP1Agents
+#  hosts: 1-0401_JP1Agents_GROUP
+#  become: yes
+#  roles: 
+#    - 1-0401_JP1Agents
+#
+#- name: 1-0501_OracleClient
+#  hosts: 1-0501_OracleClient_GROUP
+#  become: yes
+#  roles: 
+#    - 1-0501_OracleClient
+#
+#- name: 1-0502_OracleJRE
+#  hosts: 1-0502_OracleJRE_GROUP
+#  become: yes
+#  roles:
+#    - 1-0502_OracleJRE
+#
+#- name: 1-0701_LogstorageAgent
+#  hosts: 1-0701_LogstorageAgent_GROUP
+#  become: yes
+#  roles: 
+#    - 1-0701_LogstorageAgent
+#
+#- name: 1-0801_DynatraceAgent
+#  hosts: 1-0801_DynatraceAgent_GROUP
+#  become: yes
+#  roles: 
+#    - 1-0801_DynatraceAgent
+#
+#- name: 1-0901_DeepSecurityAgent
+#  hosts: 1-0901_DeepSecurityAgent_GROUP
+#  become: yes
+#  roles: 
+#    - 1-0901_DeepSecurityAgent
+#
+#- name: 1-1001_UnixAgentForLDAPManager
+#  hosts: 1-1001_UnixAgentForLDAPManager_GROUP
+#  become: yes
+#  roles: 
+#    - 1-1001_UnixAgentForLDAPManager
+#
+#- name: 1-1101_ES1Acquire
+#  hosts: 1-1101_ES1Acquire_GROUP
+#  become: yes
+#  roles: 
+#    - 1-1101_ES1Acquire
+#
+#- name: 1-1102_ES1Logscn
+#  hosts: 1-1102_ES1Logscn_GROUP
+#  become: yes
+#  roles: 
+#    - 1-1102_ES1Logscn
 
 - name: 1-1301_ZabbixAgent
   hosts: 1-1301_ZabbixAgent_GROUP
@@ -113,62 +113,62 @@
   roles: 
     - 2-0001_Base
 
-- name: 2-0101_Cygwin
-  hosts: 2-0101_Cygwin_GROUP
-  remote_user: Administrator
-  roles: 
-    - 2-0101_Cygwin
-
-- name: 2-0401_JP1Agents
-  hosts: 2-0401_JP1Agents_GROUP
-  remote_user: Administrator
-  roles: 
-    - 2-0401_JP1Agents
-
-- name: 2-0501_OracleClient
-  hosts: 2-0501_OracleClient_GROUP
-  remote_user: Administrator
-  roles: 
-    - 2-0501_OracleClient
-
-- name: 2-0701_LogstorageAgent
-  hosts: 2-0701_LogstorageAgent_GROUP
-  remote_user: Administrator
-  roles: 
-    - 2-0701_LogstorageAgent
-
-- name: 2-0901_DeepSecurityAgent
-  hosts: 2-0901_DeepSecurityAgent_GROUP
-  remote_user: Administrator
-  roles: 
-    - 2-0901_DeepSecurityAgent
-
-- name: 2-1002_LDAPManagerWindowsAgent
-  hosts: 2-1002_LDAPManagerWindowsAgent_GROUP
-  remote_user: Administrator
-  roles: 
-    - 2-1002_LDAPManagerWindowsAgent
-
-- name: 2-1101_ES1Acquire
-  hosts: 2-1101_ES1Acquire_GROUP
-  remote_user: Administrator
-  roles: 
-    - 2-1101_ES1Acquire
-
-- name: 2-1102_ES1Logscn
-  hosts: 2-1102_ES1Logscn_GROUP
-  remote_user: Administrator
-  roles: 
-    - 2-1102_ES1Logscn
-
-- name: 2-1201_HinemosAgent
-  hosts: 2-1201_HinemosAgent_GROUP
-  remote_user: Administrator
-  roles:
-    - 2-1201_HinemosAgent
-
-- name: 2-1301_ZabbixAgent
-  hosts: 2-1301_ZabbixAgent_GROUP
-  remote_user: Administrator
-  roles:
-    - 2-1301_ZabbixAgent
+#- name: 2-0101_Cygwin
+#  hosts: 2-0101_Cygwin_GROUP
+#  remote_user: Administrator
+#  roles: 
+#    - 2-0101_Cygwin
+#
+#- name: 2-0401_JP1Agents
+#  hosts: 2-0401_JP1Agents_GROUP
+#  remote_user: Administrator
+#  roles: 
+#    - 2-0401_JP1Agents
+#
+#- name: 2-0501_OracleClient
+#  hosts: 2-0501_OracleClient_GROUP
+#  remote_user: Administrator
+#  roles: 
+#    - 2-0501_OracleClient
+#
+#- name: 2-0701_LogstorageAgent
+#  hosts: 2-0701_LogstorageAgent_GROUP
+#  remote_user: Administrator
+#  roles: 
+#    - 2-0701_LogstorageAgent
+#
+#- name: 2-0901_DeepSecurityAgent
+#  hosts: 2-0901_DeepSecurityAgent_GROUP
+#  remote_user: Administrator
+#  roles: 
+#    - 2-0901_DeepSecurityAgent
+#
+#- name: 2-1002_LDAPManagerWindowsAgent
+#  hosts: 2-1002_LDAPManagerWindowsAgent_GROUP
+#  remote_user: Administrator
+#  roles: 
+#    - 2-1002_LDAPManagerWindowsAgent
+#
+#- name: 2-1101_ES1Acquire
+#  hosts: 2-1101_ES1Acquire_GROUP
+#  remote_user: Administrator
+#  roles: 
+#    - 2-1101_ES1Acquire
+#
+#- name: 2-1102_ES1Logscn
+#  hosts: 2-1102_ES1Logscn_GROUP
+#  remote_user: Administrator
+#  roles: 
+#    - 2-1102_ES1Logscn
+#
+#- name: 2-1201_HinemosAgent
+#  hosts: 2-1201_HinemosAgent_GROUP
+#  remote_user: Administrator
+#  roles:
+#    - 2-1201_HinemosAgent
+#
+#- name: 2-1301_ZabbixAgent
+#  hosts: 2-1301_ZabbixAgent_GROUP
+#  remote_user: Administrator
+#  roles:
+#    - 2-1301_ZabbixAgent
