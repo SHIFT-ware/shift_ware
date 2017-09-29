@@ -1,0 +1,29 @@
+- :name: 192.168.127.100
+  :roles:
+     - 1-0001_Base
+     - 1-0102_apache
+     - 1-0103_Tomcat
+     - 1-0104_postgreSQL
+     - 1-0105_openJDK
+     - 1-0106_PrivateCA
+     - 1-0108_Pgpool-II
+     - 1-1301_ZabbixAgent
+  :conn_user: root
+  :conn_password: p@ssw0rd
+- :name: 192.168.127.101
+  :roles:
+     - 1-0001_Base
+     - 1-0106_PrivateCA
+     - 1-1301_ZabbixAgent
+  :conn_user: root
+  :conn_password: p@ssw0rd
+- :name: 192.168.127.110
+  :roles:
+     - 2-0001_Base
+  :conn_user: Administrator
+  :conn_password: p@ssw0rd
+- :name: 192.168.127.111
+  :roles:
+     - 2-0001_Base
+  :conn_user: Administrator
+  :conn_password: p@ssw0rd
