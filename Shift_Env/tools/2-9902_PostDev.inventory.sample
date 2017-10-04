@@ -4,6 +4,7 @@
 [targethost:vars]
 ansible_ssh_port = 5986
 ansible_connection = winrm
+ansible_winrm_server_cert_validation = ignore
 
 #全台共通の場合はここに記載
 #ansible_ssh_pass=password
