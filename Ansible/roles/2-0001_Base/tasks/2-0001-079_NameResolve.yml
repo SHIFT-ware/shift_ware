@@ -31,6 +31,5 @@
     dest: 'C:\windows\system32\drivers\etc\hosts'
     regexp: '^#?\s*{{ item.ip | regex_escape() }}\s'
     line: "{{ item.ip }} {{ item.hostname }}"
-    encoding: shift-jis
   with_items: name_resolve.hosts_records
 

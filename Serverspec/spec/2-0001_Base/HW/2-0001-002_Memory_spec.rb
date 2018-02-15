@@ -30,8 +30,8 @@ describe ("002-Memory") do
         end
 
         begin
-          max_size = property[:BASE][:HW][:memory][:virtualmemory][:size][:max]
-          min_size = property[:BASE][:HW][:memory][:virtualmemory][:size][:min]
+          max_size = property[:BASE][:HW][:memory][:virtualmemory][:size][:min]
+          min_size = property[:BASE][:HW][:memory][:virtualmemory][:size][:max]
         rescue
           next
         end
