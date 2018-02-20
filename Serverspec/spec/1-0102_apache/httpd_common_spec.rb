@@ -292,7 +292,7 @@ describe ("1-0102_apache(common)") do
 
   describe file('/etc/httpd/conf/extra/httpd-languages.conf') do
     utf8 = property[:apache][:is_default_charset_utf8] rescue nil
-    describe ("中でAddDefaultCharsetにUTF-8が指定されていること"), utf8 == true do
+    describe ("中でAddDefaultCharsetにUTF-8が指定されていること"), :if => utf8 == true do
       it { should contain("^AddDefaultCharset \s*UTF-8\s*$") }
     end
 
