@@ -1,0 +1,31 @@
+---
+- name: 1-9911_RepofileRemove
+  hosts: all
+  become: yes
+  tasks:
+    - name: delete repo file
+      file:
+        path: /etc/yum.repos.d/shift.repo
+        state: "absent"
+  
+    - name: check rescue dir
+      stat:
+        path: /etc/yum.repos.d/shift_rescue
+      register: reg_rescue_dir
+  
+    - name: check rescue dir contents
+      shell: ls -l /etc/yum.repos.d/shift_rescue
+      register: reg_rescue_contents
+      when: reg_rescue_dir.stat.exists
+  
+    - name: recover original repo files
+      shell: mv /etc/yum.repos.d/shift_rescue/* /etc/yum.repos.d
+      when:
+       - reg_rescue_dir.stat.exists
+       - reg_rescue_contents is defined
+       - reg_rescue_contents.stdout != ""
+  
+    - name: delete rescue dir
+      file:
+        path: /etc/yum.repos.d/shift_rescue
+        state: absent

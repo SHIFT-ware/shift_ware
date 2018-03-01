@@ -1,0 +1,60 @@
+---
+- name: 1-9908_RepoUp
+  hosts: all
+  become: yes
+  vars_files:
+    - var.yml
+  tasks: 
+    - name: create remote tmp dir
+      file:
+        path: "{{ l9908_remote_tmp_dir }}/1-9908_RepoUp"
+        recurse: yes
+        state: directory
+    
+    - name: copy packages
+      copy:
+        src: "{{ item }}"
+        dest: "{{ l9908_remote_tmp_dir }}/1-9908_RepoUp"
+      with_fileglob: "../../../Shift_Env/files/shift/yum_repo/*.rpm"
+      register: reg_copy_packages
+    
+    - name: install packages
+      yum:
+        name: "{{ reg_copy_packages.results | join(', ', attribute='dest') }}"
+        state: "installed"
+        disablerepo: "*"
+    
+    - name: create repository dir
+      file:
+        path: "{{ l9908_repository_dir }}"
+        recurse: yes
+        state: directory
+    
+    - name: send packages to repository dir
+      copy:
+        src: "{{ item }}"
+        dest: "{{ l9908_repository_dir }}"
+      with_fileglob: "../../../Shift_Env/files/shift/yum_repo/packages/*.rpm"
+      register: reg_send_packages
+    
+    - block:
+      - name: delete old repodata
+        file:
+          path: "{{ l9908_repository_dir }}/repodata"
+          state: "absent" 
+     
+      - name: exec createrepo
+        shell: "createrepo {{ l9908_repository_dir }}"
+      when: reg_send_packages | changed
+
+    - name: check http server is running
+      shell: ps -ef | grep SimpleHTTPServer | grep -v grep
+      changed_when: false
+      failed_when: false
+      register: reg_check_running
+    
+    - name: start http server
+      shell: "nohup python -m SimpleHTTPServer 80 < /dev/null > /dev/null 2>&1 & sleep 1"
+      args:
+        chdir: "{{ l9908_repository_dir }}"
+      when: reg_check_running.rc != 0

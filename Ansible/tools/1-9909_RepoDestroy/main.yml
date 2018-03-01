@@ -1,0 +1,36 @@
+---
+- name: 1-9909_RepoDestroy
+  hosts: all
+  become: yes
+  vars_files:
+    - var.yml
+    - ../1-9908_RepoUp/var.yml
+  tasks:
+    - name: check pid of http server
+      shell: ps -ef | grep SimpleHTTPServer | grep -v grep | awk '{ print $2 }'
+      changed_when: false
+      failed_when: false
+      register: reg_check_pid
+
+    - name: stop http server
+      shell: kill "{{ reg_check_pid.stdout }}"
+      when: reg_check_pid.stdout != ""
+
+    - name: delete repository dir
+      file:
+        path: "{{ l9909_repository_dir }}"
+        state: "absent"
+
+    - name: remove createrepo package
+      yum:
+        name: createrepo
+        state: absent
+      when:
+        - l9909_remove_createrepo is defined
+        - l9909_remove_createrepo
+
+    - name: delete remote tmp dir of 1-9908_RepoUp tool
+      file:
+        path: "{{ l9909_remote_tmp_dir }}/1-9908_RepoUp"
+        state: "absent"
+
