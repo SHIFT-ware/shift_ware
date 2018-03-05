@@ -11,3 +11,5 @@ SHIFT wareの概観を知りたい方はトップサイトをご覧になるの�
 SHIFT wareの詳細な使い方やその他の情報はWikiにまとめられています。
 * [Wiki](https://github.com/SHIFT-ware/shift_ware/wiki)
 
+# CI_TEST
+1
