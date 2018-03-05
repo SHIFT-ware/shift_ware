@@ -1,3 +1,4 @@
+# test
 describe("001-CPUテスト") do
   begin
     cpu_core_sum = property[:BASE][:HW][:cpu_core_sum]
