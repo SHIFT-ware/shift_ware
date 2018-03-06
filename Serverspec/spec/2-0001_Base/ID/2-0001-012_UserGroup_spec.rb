@@ -1,3 +1,4 @@
+#test
 describe ("012-UserGroup")do
   begin
     groups = Array(property[:BASE][:ID][:group])

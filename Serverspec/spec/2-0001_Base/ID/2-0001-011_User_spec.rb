@@ -1,3 +1,4 @@
+# test
 describe ("011-OSユーザ") do
   begin
     users = Array(property[:BASE][:ID][:user])
