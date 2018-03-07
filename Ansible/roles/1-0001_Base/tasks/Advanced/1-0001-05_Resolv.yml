@@ -11,42 +11,42 @@
   notify: network_service_restart
   when:
     - ansible_distribution_major_version == "6"
-    - base_advanced.name_resolve.name_server is defined or
-      base_advanced.name_resolve.dns_suffix is defined
+    - base_advanced | has_nested_keys('name_resolve', 'name_server') or
+      base_advanced | has_nested_keys('name_resolve', 'dns_suffix')
 
 - name: 1-0001-05_Resolv - check target interface to change dns server for rhel7
   shell: nmcli -f ipv4.dns c s {{ item.interface }} | grep {{ item.server }} >/dev/null 2>&1 || echo {{ item.interface }}
-  with_items: base_advanced.name_resolve.name_server
+  with_items: "{{ base_advanced.name_resolve.name_server }}"
   register: dns_settings
   changed_when: false
   when:
-    - base_advanced.name_resolve.name_server is defined
+    - base_advanced | has_nested_keys('name_resolve' 'name_server')
     - ansible_distribution_major_version == "7"
 
 - name: 1-0001-05_Resolv - change dns server for rhel7
   shell: nmcli c m {{ item.stdout }} ipv4.dns {{ item.item.server }}
   notify: network_service_restart
-  with_items: dns_settings.results
+  with_items: "{{ dns_settings.results }}"
   when:
-    - base_advanced.name_resolve.name_server is defined
+    - base_advanced | has_nested_keys('name_resolve', 'name_server')
     - ansible_distribution_major_version == "7"
     - item.stdout != ''
 
 - name: 1-0001-05_Resolv - check target interface to change dns suffix for rhel7
   shell: nmcli -f ipv4.dns-search c s {{ item.interface }} | grep {{ item.suffix }} >/dev/null 2>&1 || echo {{ item.interface }}
-  with_items: base_advanced.name_resolve.dns_suffix
+  with_items: "{{ base_advanced.name_resolve.dns_suffix }}"
   register: suffix_settings
   changed_when: false
   when:
-    - base_advanced.name_resolve.dns_suffix is defined
+    - base_advanced | has_nested_keys('name_resolve', 'dns_suffix')
     - ansible_distribution_major_version == "7"
 
 - name: 1-0001-05_Resolv - change dns suffix for rhel7
   shell: nmcli c m {{ item.stdout }} ipv4.dns-search {{ item.item.suffix }}
   notify: network_service_restart
-  with_items: suffix_settings.results
+  with_items: "{{ suffix_settings.results }}"
   when:
-    - base_advanced.name_resolve.dns_suffix is defined
+    - base_advanced | has_nested_keys('name_resolve', 'dns_suffix')
     - ansible_distribution_major_version == "7"
     - item.stdout != ''
 
