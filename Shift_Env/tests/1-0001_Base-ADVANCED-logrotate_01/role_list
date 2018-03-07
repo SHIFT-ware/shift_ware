@@ -1,1 +1,2 @@
-1-0001_Base
+Ansible/roles/1-0001_Base/tasks/Advanced/1-0001-17_Logrotate.yml
+Serverspec/spec/1-0001_Base/Advanced/1-0001-094_Logrotate_spec.rb
