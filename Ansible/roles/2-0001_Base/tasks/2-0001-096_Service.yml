@@ -2,25 +2,25 @@
 - name: 2-0001-096_Service - define empty tmp variable
   set_fact:
     service: []
-  when: base_ADVANCED.service is undefined
+  when: not base_ADVANCED | has_nested_keys('service')
 
 - name: 2-0001-096_Service - set tmp variable
   set_fact:
     service: "{{ base_ADVANCED.service }}"
-  when: base_ADVANCED.service is defined
+  when: base_ADVANCED | has_nested_keys('service')
 
 - name: 2-0001-096_Service - change start mode of service
   win_service:
     name: "{{ item.name }}"
     start_mode: "{{ item.start_mode }}"
-  with_items: service
-  when: item.start_mode is defined
+  with_items: "{{ service }}"
+  when: item | has_nested_keys('start_mode')
 
 - name: 2-0001-096_Service - start service
   win_service:
     name: "{{ item.name }}"
     state: started
-  with_items: service
+  with_items: "{{ service }}"
   when:
     - item.state is defined
     - item.state == true
@@ -29,7 +29,7 @@
   win_service:
     name: "{{ item.name }}"
     state: stopped
-  with_items: service
+  with_items: "{{ service }}"
   when:
     - item.state is defined
     - item.state == false
