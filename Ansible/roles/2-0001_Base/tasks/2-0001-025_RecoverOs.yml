@@ -3,83 +3,83 @@
   set_fact:
      recover_os: "{{ base_BASE.OSCORE.recover_os }}"
      location: 'HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl'
-  when: base_BASE.OSCORE.recover_os is defined
+  when: base_BASE | has_nested_keys('OSCORE', 'recover_os')
 
 - name: 2-0001-025_RecoverOs - set variable "write_eventlog_flg" for powershell 1
   set_fact:
     write_eventlog_flg: "1"
   when:
-    - recover_os.write_eventlog is defined
+    - recover_os | has_nested_keys('write_eventlog')
     - recover_os.write_eventlog == true
 
 - name: 2-0001-025_RecoverOs - set variable "write_eventlog_flg" for powershell 0
   set_fact:
     write_eventlog_flg: "0"
   when:
-    - recover_os.write_eventlog is defined
+    - recover_os | has_nested_keys('write_eventlog')
     - recover_os.write_eventlog == false
 
 - name: 2-0001-025_RecoverOs - set variable "auto_reboot_flg" for powershell 1
   set_fact:
     auto_reboot_flg: "1"
   when:
-    - recover_os.auto_reboot is defined
+    - recover_os | has_nested_keys('auto_reboot')
     - recover_os.auto_reboot == true
 
 - name: 2-0001-025_RecoverOs - set variable "auto_reboot_flg" for powershell 0
   set_fact:
     auto_reboot_flg: "0"
   when:
-    - recover_os.auto_reboot is defined
+    - recover_os | has_nested_keys('auto_reboot')
     - recover_os.auto_reboot == false
 
 - name: 2-0001-025_RecoverOs - set variable "type_flg" for powershell 0
   set_fact:
     type_flg: "0"
   when:
-    - recover_os.dumpfile.type is defined
+    - recover_os | has_nested_keys('dumpfile', 'type')
     - recover_os.dumpfile.type == "none"
 
 - name: 2-0001-025_RecoverOs - set variable "type_flg" for powershell 1
   set_fact:
     type_flg: "1"
   when:
-    - recover_os.dumpfile.type is defined
+    - recover_os | has_nested_keys('dumpfile', 'type')
     - recover_os.dumpfile.type == "minimum"
 
 - name: 2-0001-025_RecoverOs - set variable "type_flg" for powershell 2
   set_fact:
     type_flg: "2"
   when:
-    - recover_os.dumpfile.type is defined
+    - recover_os | has_nested_keys('dumpfile', 'type')
     - recover_os.dumpfile.type == "kernel"
 
 - name: 2-0001-025_RecoverOs - set variable "type_flg" for powershell 3
   set_fact:
     type_flg: "3"
   when:
-    - recover_os.dumpfile.type is defined
+    - recover_os | has_nested_keys('dumpfile', 'type')
     - recover_os.dumpfile.type == "full"
 
 - name: 2-0001-025_RecoverOs - set variable "type_flg" for powershell 7
   set_fact:
     type_flg: "7"
   when:
-    - recover_os.dumpfile.type is defined
+    - recover_os | has_nested_keys('dumpfile', 'type')
     - recover_os.dumpfile.type == "auto"
 
 - name: 2-0001-025_RecoverOs - set variable "overwrite_flg" for powershell 1
   set_fact:
     overwrite_flg: "1"
   when:
-    - recover_os.dumpfile.overwrite is defined
+    - recover_os | has_nested_keys('dumpfile', 'overwrite')
     - recover_os.dumpfile.overwrite == true
 
 - name: 2-0001-025_RecoverOs - set variable "overwrite_flg" for powershell 0
   set_fact:
     overwrite_flg: "0"
   when:
-    - recover_os.dumpfile.overwrite is defined
+    - recover_os | has_nested_keys('dumpfile', 'overwrite')
     - recover_os.dumpfile.overwrite == false
 
 
