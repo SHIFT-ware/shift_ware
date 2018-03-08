@@ -83,12 +83,12 @@
     - recover_os.dumpfile.overwrite == false
 
 
-- name: 2-0001-025_RecoverOs - create registry path
-  raw: if ( ! ( Test-Path '{{ location }}' )) { New-Item '{{ location }}' -Force }
-  always_run: yes
 
-- name: 2-0001-025_RecoverOs - check registry value
-  raw: (Get-ItemProperty '{{ location }}').'{{ item.property }}'
+- name: 2-0001-025_RecoverOs - set registry 
+  win_regedit:
+    path: "{{ location }}"
+    name: "{{ item.property }}"
+    data: "{{ item.type }}"
   with_items:
     - property: "LogEvent"
       value: "{{ write_eventlog_flg | default('') }}"
@@ -105,63 +105,3 @@
     - property: "Overwrite"
       value: "{{ overwrite_flg | default('') }}"
       type: "dword"
-  when:
-    - item.value != ""
-  register: ret_pre
-  changed_when: ret_pre.stdout != "{{ item.value }}\r\n"
-  always_run: yes
-
-- name: 2-0001-025_RecoverOs - set registry value
-  raw: Set-ItemProperty '{{ location }}' '{{ item.item.property }}' -Value '{{ item.item.value }}' -Type '{{ item.item.type }}'
-  with_items: "{{ ret_pre.results }}"
-  when: item.changed == true
-  always_run: no
-
-- name: 2-0001-025_RecoverOs - post check registry value
-  raw: (Get-ItemProperty '{{ location }}').'{{ item.property }}'
-  with_items:
-    - property: "LogEvent"
-      value: "{{ write_eventlog_flg | default('') }}"
-      type: "dword"
-    - property: "AutoReboot"
-      value: "{{ auto_reboot_flg | default('') }}"
-      type: "dword"
-    - property: "CrashDumpEnabled"
-      value: "{{ type_flg | default('') }}"
-      type: "dword"
-    - property: "DumpFile"
-      value: "{{ recover_os.dumpfile.path | default('') }}"
-      type: "ExpandString"
-    - property: "Overwrite"
-      value: "{{ overwrite_flg | default('') }}"
-      type: "dword"
-  when:
-    - item.value != ""
-  register: ret_post
-  failed_when: ret_post.stdout != "{{ item.value }}\r\n"
-  changed_when: False
-  always_run: no
-
-- name: 2-0001-025_RecoverOs - check parameter of time to display os list
-  raw: bcdedit /enum BOOTMGR
-  register: ret_pre
-  when: recover_os.display_os_list_time is defined
-  changed_when: not ret_pre.stdout | search("\r\ntimeout\s+{{ recover_os.display_os_list_time }}\r\n")
-  always_run: yes
-
-- name: 2-0001-025_RecoverOs - set parameter of time to display os list
-  raw: bcdedit /timeout "{{ recover_os.display_os_list_time }}"
-  when:
-    - recover_os.display_os_list_time is defined
-    - ret_pre | changed
-  always_run: no
-
-- name: 2-0001-025_RecoverOs - post check parameter of time to display os list
-  raw: bcdedit /enum BOOTMGR
-  register: ret_post
-  when:
-    - recover_os.display_os_list_time is defined
-    - ret_pre | changed
-  failed_when: not ret_post.stdout | search("\r\ntimeout\s+{{ recover_os.display_os_list_time }}\r\n")
-  always_run: no
-
