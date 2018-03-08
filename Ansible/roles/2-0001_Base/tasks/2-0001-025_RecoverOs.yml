@@ -113,7 +113,7 @@
 
 - name: 2-0001-025_RecoverOs - set registry value
   raw: Set-ItemProperty '{{ location }}' '{{ item.item.property }}' -Value '{{ item.item.value }}' -Type '{{ item.item.type }}'
-  with_items: ret_pre.results
+  with_items: "{{ ret_pre.results }}"
   when: item.changed == true
   always_run: no
 
