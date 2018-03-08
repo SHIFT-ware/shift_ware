@@ -139,6 +139,7 @@
     - item.value != ""
   register: ret_post
   failed_when: ret_post.stdout != "{{ item.value }}\r\n"
+  changed_when: False
   always_run: no
 
 - name: 2-0001-025_RecoverOs - check parameter of time to display os list
