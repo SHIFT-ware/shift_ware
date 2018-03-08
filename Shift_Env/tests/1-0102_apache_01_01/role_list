@@ -1,1 +1,5 @@
-1-0102_apache
+Ansible/roles/1-0102_apache/tasks/1-0102-05_install_mod_jk2.4.yml
+Ansible/roles/1-0102_apache/tasks/1-0102-07_post_tasks.yml
+Ansible/roles/1-0102_apache/tasks/1-0102-01_create_user_and_groups.yml
+Ansible/roles/1-0102_apache/tasks/1-0102-04_install_httpd2.4.yml
+Ansible/roles/1-0102_apache/tasks/1-0102-06_install_vhosts2.4.yml
