@@ -24,7 +24,7 @@
   script: shift/set_acl.ps1 '{{ item.0.path }}' '{{ item.1.user }}' '{{ item.1.rights }}' '{{ item.1.inherit | default("") }}' '{{ item.1.type }}'
   with_subelements:
     - "{{ directory }}"
-    - "{{ acl }}"
+    - acl
     - flags:
       skip_missing: True
   changed_when: false
