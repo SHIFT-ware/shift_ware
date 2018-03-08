@@ -128,4 +128,4 @@
     - recover_os | has_nested_keys('display_os_list_time')
     - ret_pre | changed
   failed_when: not ret_post.stdout | search("\r\ntimeout\s+{{ recover_os.display_os_list_time }}\r\n")
-always_run: no
+  always_run: no
