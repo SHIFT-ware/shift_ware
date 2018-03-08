@@ -88,7 +88,8 @@
   win_regedit:
     path: "{{ location }}"
     name: "{{ item.property }}"
-    data: "{{ item.type }}"
+    data: "{{ item.value }}"
+    type: "{{ item.type }}"
   with_items:
     - property: "LogEvent"
       value: "{{ write_eventlog_flg | default('') }}"
