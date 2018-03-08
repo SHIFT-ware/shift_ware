@@ -18,7 +18,7 @@
   raw: (Get-ItemProperty 'Registry::{{ item.0.key }}').'{{ item.1.name }}'
   with_subelements:
     - "{{ registry }}"
-    - "{{ value }}"
+    - value
   register: ret_pre
   changed_when: ret_pre.stdout != "{{ item.1.data }}\r\n"
   always_run: yes
