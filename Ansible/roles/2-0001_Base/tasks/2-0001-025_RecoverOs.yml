@@ -83,7 +83,6 @@
     - recover_os.dumpfile.overwrite == false
 
 
-
 - name: 2-0001-025_RecoverOs - set registry 
   win_regedit:
     path: "{{ location }}"
@@ -106,3 +105,27 @@
     - property: "Overwrite"
       value: "{{ overwrite_flg | default('') }}"
       type: "dword"
+
+
+- name: 2-0001-025_RecoverOs - check parameter of time to display os list
+  raw: bcdedit /enum BOOTMGR
+  register: ret_pre
+  when: recover_os | has_nested_keys('display_os_list_time')
+  changed_when: not ret_pre.stdout | search("\r\ntimeout\s+{{ recover_os.display_os_list_time }}\r\n")
+  always_run: yes
+
+- name: 2-0001-025_RecoverOs - set parameter of time to display os list
+  raw: bcdedit /timeout "{{ recover_os.display_os_list_time }}"
+  when:
+    - recover_os | has_nested_keys('display_os_list_time')
+    - ret_pre | changed
+  always_run: no
+
+- name: 2-0001-025_RecoverOs - post check parameter of time to display os list
+  raw: bcdedit /enum BOOTMGR
+  register: ret_post
+  when:
+    - recover_os | has_nested_keys('display_os_list_time')
+    - ret_pre | changed
+  failed_when: not ret_post.stdout | search("\r\ntimeout\s+{{ recover_os.display_os_list_time }}\r\n")
+always_run: no
