@@ -48,3 +48,482 @@
     - name: Public
       enable: "{{ firewall.public.enabled_flag }}"
 
+- block:
+  - name: 2-0001-074_Firewall - check DefaultInboundAction setting of firewall domain
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).DefaultInboundAction
+    register: ret_in_act_pre
+    changed_when: ret_in_act_pre.stdout != "{{ firewall.domain.inbound }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set DefaultInboundAction setting of firewall domain
+      raw: Set-NetFirewallProfile -Name Domain -DefaultInboundAction '{{ firewall.domain.inbound }}'
+
+    - name: 2-0001-074_Firewall - post check DefaultInboundAction setting of firewall domain
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).DefaultInboundAction
+      register: ret_in_act_post
+      failed_when: ret_in_act_post.stdout != "{{ firewall.domain.inbound }}"
+    always_run: no
+    when: ret_in_act_pre | changed
+
+  when: firewall.domain.inbound is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check DefaultOutboundAction setting of firewall domain
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).DefaultOutboundAction
+    register: ret_ot_act_pre
+    changed_when: ret_ot_act_pre.stdout != "{{ firewall.domain.outbound }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set DefaultOutboundAction setting of firewall domain
+      raw: Set-NetFirewallProfile -Name Domain -DefaultOutboundAction '{{ firewall.domain.outbound }}'
+
+    - name: 2-0001-074_Firewall - post check DefaultOutboundAction setting of firewall domain
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).DefaultOutboundAction
+      register: ret_ot_act_post
+      failed_when: ret_ot_act_post.stdout != "{{ firewall.domain.outbound }}"
+    always_run: no
+    when: ret_ot_act_pre | changed
+
+  when: firewall.domain.outbound is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check NotifyOnListen setting of firewall domain
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).NotifyOnListen
+    register: ret_config_notify_pre
+    changed_when: ret_config_notify_pre.stdout != "{{ firewall.domain.config.notify }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set NotifyOnListen setting of firewall domain
+      raw: Set-NetFirewallProfile -Name Domain -NotifyOnListen '{{ firewall.domain.config.notify }}'
+
+    - name: 2-0001-074_Firewall - post check NotifyOnListen setting of firewall domain
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).NotifyOnListen
+      register: ret_config_notify_post
+      failed_when: ret_config_notify_post.stdout != "{{ firewall.domain.config.notify }}"
+    always_run: no
+    when: ret_config_notify_pre | changed
+
+  when: firewall.domain.config.notify is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check AllowUnicastResponseToMulticast setting of firewall domain
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).AllowUnicastResponseToMulticast
+    register: ret_config_unicast_pre
+    changed_when: ret_config_unicast_pre.stdout != "{{ firewall.domain.config.unicast }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set AllowUnicastResponseToMulticast setting of firewall domain
+      raw: Set-NetFirewallProfile -Name Domain -AllowUnicastResponseToMulticast '{{ firewall.domain.config.unicast }}'
+
+    - name: 2-0001-074_Firewall - post check AllowUnicastResponseToMulticast setting of firewall domain
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).AllowUnicastResponseToMulticast
+      register: ret_config_unicast_post
+      failed_when: ret_config_unicast_post.stdout != "{{ firewall.domain.config.unicast }}"
+    always_run: no
+    when: ret_config_unicast_pre | changed
+
+  when: firewall.domain.config.unicast is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check LogFileName setting of firewall domain
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).LogFileName
+    register: ret_log_name_pre
+    changed_when: ret_log_name_pre.stdout != "{{ firewall.domain.log.name }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set LogFileName setting of firewall domain
+      raw: Set-NetFirewallProfile -Name Domain -LogFileName '{{ firewall.domain.log.name }}'
+
+    - name: 2-0001-074_Firewall - post check LogFileName setting of firewall domain
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).LogFileName
+      register: ret_log_name_post
+      failed_when: ret_log_name_post.stdout != "{{ firewall.domain.log.name }}"
+    always_run: no
+    when: ret_log_name_pre | changed
+
+  when: firewall.domain.log.name is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check LogMaxSizeKilobytes setting of firewall domain
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).LogMaxSizeKilobytes
+    register: ret_log_size_pre
+    changed_when: ret_log_size_pre.stdout != "{{ firewall.domain.log.size }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set LogMaxSizeKilobytes setting of firewall domain
+      raw: Set-NetFirewallProfile -Name Domain -LogMaxSizeKilobytes '{{ firewall.domain.log.size }}'
+
+    - name: 2-0001-074_Firewall - post check LogMaxSizeKilobytes setting of firewall domain
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).LogMaxSizeKilobytes
+      register: ret_log_size_post
+      failed_when: ret_log_size_post.stdout != "{{ firewall.domain.log.size }}"
+    always_run: no
+    when: ret_log_size_pre | changed
+
+  when: firewall.domain.log.size is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check LogBlocked setting of firewall domain
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).LogBlocked
+    register: ret_logblocked_pre
+    changed_when: ret_logblocked_pre.stdout != "{{ firewall.domain.log.logblock }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set LogBlocked setting of firewall domain
+      raw: Set-NetFirewallProfile -Name Domain -LogBlocked '{{ firewall.domain.log.logblock }}'
+
+    - name: 2-0001-074_Firewall - post check LogBlocked setting of firewall domain
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).LogBlocked
+      register: ret_logblocked_post
+      failed_when: ret_logblocked_post.stdout != "{{ firewall.domain.log.logblock }}"
+    always_run: no
+    when: ret_logblocked_pre | changed
+
+  when: firewall.domain.log.logblock is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check LogAllowed setting of firewall domain
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).LogAllowed
+    register: ret_logallowed_pre
+    changed_when: ret_logallowed_pre.stdout != "{{ firewall.domain.log.logallow }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set LogAllowed setting of firewall domain
+      raw: Set-NetFirewallProfile -Name Domain -LogAllowed '{{ firewall.domain.log.logallow }}'
+
+    - name: 2-0001-074_Firewall - post check LogAllowed setting of firewall domain
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Domain).LogAllowed
+      register: ret_logallowed_post
+      failed_when: ret_logallowed_post.stdout != "{{ firewall.domain.log.logallow }}"
+    always_run: no
+    when: ret_logallowed_pre | changed
+
+  when: firewall.domain.log.logallow is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check DefaultInboundAction setting of firewall private
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).DefaultInboundAction
+    register: ret_in_act_pre
+    changed_when: ret_in_act_pre.stdout != "{{ firewall.private.inbound }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set DefaultInboundAction setting of firewall private
+      raw: Set-NetFirewallProfile -Name Private -DefaultInboundAction '{{ firewall.private.inbound }}'
+
+    - name: 2-0001-074_Firewall - post check DefaultInboundAction setting of firewall private
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).DefaultInboundAction
+      register: ret_in_act_post
+      failed_when: ret_in_act_post.stdout != "{{ firewall.private.inbound }}"
+    always_run: no
+    when: ret_in_act_pre | changed
+
+  when: firewall.private.inbound is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check DefaultOutboundAction setting of firewall private
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).DefaultOutboundAction
+    register: ret_ot_act_pre
+    changed_when: ret_ot_act_pre.stdout != "{{ firewall.private.outbound }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set DefaultOutboundAction setting of firewall private
+      raw: Set-NetFirewallProfile -Name Private -DefaultOutboundAction '{{ firewall.private.outbound }}'
+
+    - name: 2-0001-074_Firewall - post check DefaultOutboundAction setting of firewall private
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).DefaultOutboundAction
+      register: ret_ot_act_post
+      failed_when: ret_ot_act_post.stdout != "{{ firewall.private.outbound }}"
+    always_run: no
+    when: ret_ot_act_pre | changed
+
+  when: firewall.private.outbound is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check NotifyOnListen setting of firewall private
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).NotifyOnListen
+    register: ret_config_notify_pre
+    changed_when: ret_config_notify_pre.stdout != "{{ firewall.private.config.notify }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set NotifyOnListen setting of firewall private
+      raw: Set-NetFirewallProfile -Name Private -NotifyOnListen '{{ firewall.private.config.notify }}'
+
+    - name: 2-0001-074_Firewall - post check NotifyOnListen setting of firewall private
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).NotifyOnListen
+      register: ret_config_notify_post
+      failed_when: ret_config_notify_post.stdout != "{{ firewall.private.config.notify }}"
+    always_run: no
+    when: ret_config_notify_pre | changed
+
+  when: firewall.private.config.notify is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check AllowUnicastResponseToMulticast setting of firewall private
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).AllowUnicastResponseToMulticast
+    register: ret_config_unicast_pre
+    changed_when: ret_config_unicast_pre.stdout != "{{ firewall.private.config.unicast }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set AllowUnicastResponseToMulticast setting of firewall private
+      raw: Set-NetFirewallProfile -Name Private -AllowUnicastResponseToMulticast '{{ firewall.private.config.unicast }}'
+
+    - name: 2-0001-074_Firewall - post check AllowUnicastResponseToMulticast setting of firewall private
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).AllowUnicastResponseToMulticast
+      register: ret_config_unicast_post
+      failed_when: ret_config_unicast_post.stdout != "{{ firewall.private.config.unicast }}"
+    always_run: no
+    when: ret_config_unicast_pre | changed
+
+  when: firewall.private.config.unicast is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check LogFileName setting of firewall private
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).LogFileName
+    register: ret_log_name_pre
+    changed_when: ret_log_name_pre.stdout != "{{ firewall.private.log.name }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set LogFileName setting of firewall private
+      raw: Set-NetFirewallProfile -Name Private -LogFileName '{{ firewall.private.log.name }}'
+
+    - name: 2-0001-074_Firewall - post check LogFileName setting of firewall private
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).LogFileName
+      register: ret_log_name_post
+      failed_when: ret_log_name_post.stdout != "{{ firewall.private.log.name }}"
+    always_run: no
+    when: ret_log_name_pre | changed
+
+  when: firewall.private.log.name is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check LogMaxSizeKilobytes setting of firewall private
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).LogMaxSizeKilobytes
+    register: ret_log_size_pre
+    changed_when: ret_log_size_pre.stdout != "{{ firewall.private.log.size }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set LogMaxSizeKilobytes setting of firewall private
+      raw: Set-NetFirewallProfile -Name Private -LogMaxSizeKilobytes '{{ firewall.private.log.size }}'
+
+    - name: 2-0001-074_Firewall - post check LogMaxSizeKilobytes setting of firewall private
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).LogMaxSizeKilobytes
+      register: ret_log_size_post
+      failed_when: ret_log_size_post.stdout != "{{ firewall.private.log.size }}"
+    always_run: no
+    when: ret_log_size_pre | changed
+
+  when: firewall.private.log.size is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check LogBlocked setting of firewall private
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).LogBlocked
+    register: ret_logblocked_pre
+    changed_when: ret_logblocked_pre.stdout != "{{ firewall.private.log.logblock }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set LogBlocked setting of firewall private
+      raw: Set-NetFirewallProfile -Name Private -LogBlocked '{{ firewall.private.log.logblock }}'
+
+    - name: 2-0001-074_Firewall - post check LogBlocked setting of firewall private
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).LogBlocked
+      register: ret_logblocked_post
+      failed_when: ret_logblocked_post.stdout != "{{ firewall.private.log.logblock }}"
+    always_run: no
+    when: ret_logblocked_pre | changed
+
+  when: firewall.private.log.logblock is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check LogAllowed setting of firewall private
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).LogAllowed
+    register: ret_logallowed_pre
+    changed_when: ret_logallowed_pre.stdout != "{{ firewall.private.log.logallow }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set LogAllowed setting of firewall private
+      raw: Set-NetFirewallProfile -Name Private -LogAllowed '{{ firewall.private.log.logallow }}'
+
+    - name: 2-0001-074_Firewall - post check LogAllowed setting of firewall private
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Private).LogAllowed
+      register: ret_logallowed_post
+      failed_when: ret_logallowed_post.stdout != "{{ firewall.private.log.logallow }}"
+    always_run: no
+    when: ret_logallowed_pre | changed
+
+  when: firewall.private.log.logallow is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check DefaultInboundAction setting of firewall public
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).DefaultInboundAction
+    register: ret_in_act_pre
+    changed_when: ret_in_act_pre.stdout != "{{ firewall.public.inbound }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set DefaultInboundAction setting of firewall public
+      raw: Set-NetFirewallProfile -Name Public -DefaultInboundAction '{{ firewall.public.inbound }}'
+
+    - name: 2-0001-074_Firewall - post check DefaultInboundAction setting of firewall public
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).DefaultInboundAction
+      register: ret_in_act_post
+      failed_when: ret_in_act_post.stdout != "{{ firewall.public.inbound }}"
+    always_run: no
+    when: ret_in_act_pre | changed
+
+  when: firewall.public.inbound is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check DefaultOutboundAction setting of firewall public
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).DefaultOutboundAction
+    register: ret_ot_act_pre
+    changed_when: ret_ot_act_pre.stdout != "{{ firewall.public.outbound }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set DefaultOutboundAction setting of firewall public
+      raw: Set-NetFirewallProfile -Name Public -DefaultOutboundAction '{{ firewall.public.outbound }}'
+
+    - name: 2-0001-074_Firewall - post check DefaultOutboundAction setting of firewall public
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).DefaultOutboundAction
+      register: ret_ot_act_post
+      failed_when: ret_ot_act_post.stdout != "{{ firewall.public.outbound }}"
+    always_run: no
+    when: ret_ot_act_pre | changed
+
+  when: firewall.public.outbound is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check NotifyOnListen setting of firewall public
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).NotifyOnListen
+    register: ret_config_notify_pre
+    changed_when: ret_config_notify_pre.stdout != "{{ firewall.public.config.notify }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set NotifyOnListen setting of firewall public
+      raw: Set-NetFirewallProfile -Name Public -NotifyOnListen '{{ firewall.public.config.notify }}'
+
+    - name: 2-0001-074_Firewall - post check NotifyOnListen setting of firewall public
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).NotifyOnListen
+      register: ret_config_notify_post
+      failed_when: ret_config_notify_post.stdout != "{{ firewall.public.config.notify }}"
+    always_run: no
+    when: ret_config_notify_pre | changed
+
+  when: firewall.public.config.notify is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check AllowUnicastResponseToMulticast setting of firewall public
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).AllowUnicastResponseToMulticast
+    register: ret_config_unicast_pre
+    changed_when: ret_config_unicast_pre.stdout != "{{ firewall.public.config.unicast }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set AllowUnicastResponseToMulticast setting of firewall public
+      raw: Set-NetFirewallProfile -Name Public -AllowUnicastResponseToMulticast '{{ firewall.public.config.unicast }}'
+
+    - name: 2-0001-074_Firewall - post check AllowUnicastResponseToMulticast setting of firewall public
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).AllowUnicastResponseToMulticast
+      register: ret_config_unicast_post
+      failed_when: ret_config_unicast_post.stdout != "{{ firewall.public.config.unicast }}"
+    always_run: no
+    when: ret_config_unicast_pre | changed
+
+  when: firewall.public.config.unicast is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check LogFileName setting of firewall public
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).LogFileName
+    register: ret_log_name_pre
+    changed_when: ret_log_name_pre.stdout != "{{ firewall.public.log.name }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set LogFileName setting of firewall public
+      raw: Set-NetFirewallProfile -Name Public -LogFileName '{{ firewall.public.log.name }}'
+
+    - name: 2-0001-074_Firewall - post check LogFileName setting of firewall public
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).LogFileName
+      register: ret_log_name_post
+      failed_when: ret_log_name_post.stdout != "{{ firewall.public.log.name }}"
+    always_run: no
+    when: ret_log_name_pre | changed
+
+  when: firewall.public.log.name is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check LogMaxSizeKilobytes setting of firewall public
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).LogMaxSizeKilobytes
+    register: ret_log_size_pre
+    changed_when: ret_log_size_pre.stdout != "{{ firewall.public.log.size }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set LogMaxSizeKilobytes setting of firewall public
+      raw: Set-NetFirewallProfile -Name Public -LogMaxSizeKilobytes '{{ firewall.public.log.size }}'
+
+    - name: 2-0001-074_Firewall - post check LogMaxSizeKilobytes setting of firewall public
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).LogMaxSizeKilobytes
+      register: ret_log_size_post
+      failed_when: ret_log_size_post.stdout != "{{ firewall.public.log.size }}"
+    always_run: no
+    when: ret_log_size_pre | changed
+
+  when: firewall.public.log.size is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check LogBlocked setting of firewall public
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).LogBlocked
+    register: ret_logblocked_pre
+    changed_when: ret_logblocked_pre.stdout != "{{ firewall.public.log.logblock }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set LogBlocked setting of firewall public
+      raw: Set-NetFirewallProfile -Name Public -LogBlocked '{{ firewall.public.log.logblock }}'
+
+    - name: 2-0001-074_Firewall - post check LogBlocked setting of firewall public
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).LogBlocked
+      register: ret_logblocked_post
+      failed_when: ret_logblocked_post.stdout != "{{ firewall.public.log.logblock }}"
+    always_run: no
+    when: ret_logblocked_pre | changed
+
+  when: firewall.public.log.logblock is defined
+
+- block:
+  - name: 2-0001-074_Firewall - check LogAllowed setting of firewall public
+    raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).LogAllowed
+    register: ret_logallowed_pre
+    changed_when: ret_logallowed_pre.stdout != "{{ firewall.public.log.logallow }}"
+    always_run: yes
+
+  - block:
+    - name: 2-0001-074_Firewall - set LogAllowed setting of firewall public
+      raw: Set-NetFirewallProfile -Name Public -LogAllowed '{{ firewall.public.log.logallow }}'
+
+    - name: 2-0001-074_Firewall - post check LogAllowed setting of firewall public
+      raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name Public).LogAllowed
+      register: ret_logallowed_post
+      failed_when: ret_logallowed_post.stdout != "{{ firewall.public.log.logallow }}"
+    always_run: no
+    when: ret_logallowed_pre | changed
+
+  when: firewall.public.log.logallow is defined

@@ -12,8 +12,10 @@
 - name: 2-0001-011_User - modify user
   win_user:
     name: "{{ item.name }}"
+    description: "{{ item.description | default(omit) }}"
     groups: "{{ item.groups | default(omit) }}"
     password: "{{ item.password | default(omit) }}"
+    password_expired: "{{ item.password_expired | default(omit) }}"
     account_disabled: "{{ item.account_disabled | default(omit) }}"
     password_never_expires: "{{ item.password_never_expires | default(omit) }}"
     user_cannot_change_password: "{{ item.user_cannot_change_password | default(omit) }}"
