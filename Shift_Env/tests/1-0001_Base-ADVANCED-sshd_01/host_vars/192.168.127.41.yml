@@ -1,0 +1,6 @@
+connection_hostname: '192.168.127.41'
+remote_tmp_dir: '~root/.shift'
+ADVANCED: 
+  sshd: 
+    permit_root_login: False
+    password_auth: False
