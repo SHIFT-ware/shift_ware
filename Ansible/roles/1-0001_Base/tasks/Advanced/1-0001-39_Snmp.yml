@@ -17,7 +17,7 @@
     line: "com2sec {{ item.sec_name }}  {{ item.source }}  {{ item.community }}"
     state: present
   notify: snmp_restart
-  with_items: base_advanced.snmpd.sec | default([])
+  with_items: "{{ base_advanced.snmpd.sec | default([]) }}"
 
 - name: 1-0001-39_Snmp - set trap
   lineinfile:
@@ -26,5 +26,5 @@
     line: "trapsink {{ item.server }}  {{ item.community }}  {{ item.port }}"
     state: present
   notify: snmp_restart
-  with_items: base_advanced.snmpd.trap | default([])
+  with_items: "{{ base_advanced.snmpd.trap | default([]) }}"
                                                                                              
