@@ -4,4 +4,4 @@
     name: '{{ item.name }}'
     gid: '{{ item.gid | default(omit) }}'
     state: 'present'
-  with_items: base_base.ID.user_group
+  with_items: "{{ base_base.ID.user_group }}"
