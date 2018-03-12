@@ -6,20 +6,20 @@
 - name: 1-0001-38_InterfaceNmcli - check connection exists
   shell: nmcli connection show '{{ item.name }}'
   register: ret_pre
-  with_items: interface
+  with_items: "{{ interface }}"
   changed_when: ret_pre.rc != 0
   failed_when: false
   notify: network_service_restart
 
 - name: 1-0001-38_InterfaceNmcli - create connection
   shell: nmcli connection add type Ethernet ifname '{{ item.item.name }}' con-name '{{ item.item.name }}'
-  with_items: ret_pre.results
+  with_items: "{{ ret_pre.results }}"
   when: item.changed == true
 
 - name: 1-0001-38_InterfaceNmcli - post check connection exists
   shell: nmcli connection show '{{ item.item.name }}'
   register: ret_post
-  with_items: ret_pre.results 
+  with_items: "{{ ret_pre.results }}" 
   changed_when: false
   failed_when: ret_post.rc != 0
   when: item.changed == true
@@ -27,14 +27,14 @@
 - name: 1-0001-38_InterfaceNmcli - check ip address
   shell: nmcli -f IP4.ADDRESS device show '{{ item.name }}' | awk '{print $2;}' | grep '{{ item.ip_addr }}'
   register: ret_pre
-  with_items: interface
+  with_items: "{{ interface }}"
   changed_when: ret_pre.stdout == ""
   failed_when: false
   notify: network_service_restart
 
 - name: 1-0001-38_InterfaceNmcli - set ip address
   shell: nmcli connection modify '{{ item.item.name }}' ipv4.method manual ipv4.addresses '{{ item.item.ip_addr }}' connection.autoconnect 'yes'
-  with_items: ret_pre.results
+  with_items: "{{ ret_pre.results }}"
   when: item.changed == true
 
 - meta: flush_handlers
@@ -42,7 +42,7 @@
 - name: 1-0001-38_InterfaceNmcli - post check ip address
   shell: nmcli -f IP4.ADDRESS device show '{{ item.item.name }}' | awk '{print $2;}' | grep '{{ item.item.ip_addr }}' || echo "NG"
   register: ret_post
-  with_items: ret_pre.results
+  with_items: "{{ ret_pre.results }}"
   changed_when: false
   failed_when: ret_post.stdout  == "NG"
   when: item.changed == true
