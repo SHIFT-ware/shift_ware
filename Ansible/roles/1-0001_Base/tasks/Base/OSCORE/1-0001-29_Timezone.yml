@@ -4,7 +4,7 @@
     regexp: '^ZONE'
     line: "ZONE=\"{{ base_base.OSCORE.time.timezone }}\""
   when:
-    - base_base.OSCORE.time.timezone is defined
+    - base_base | has_nested_keys('OSCORE', 'time.timezone')
     - ansible_distribution_major_version == "6"
 
 - name: 1-0001-29_Timezone - change timezone for rhel7
@@ -13,7 +13,7 @@
     path: /etc/localtime
     state: link
   when:
-    - base_base.OSCORE.time.timezone is defined
+    - base_base | has_nested_keys('OSCORE', 'time.timezone')
     - ansible_distribution_major_version == "7"
 
 - block:
@@ -33,5 +33,5 @@
     when:
       - base_base.OSCORE.time.utc == False
   when:
-    - base_base.OSCORE.time.utc is defined
+    - base_base | has_nested_keys('OSCORE', 'time', 'utc')
 

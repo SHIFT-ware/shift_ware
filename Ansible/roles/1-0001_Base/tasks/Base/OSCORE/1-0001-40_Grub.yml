@@ -4,7 +4,7 @@
     dest: /etc/grub.conf
     regexp: '^{{ item.key }}'
     line: '{{ item.key }}={{ item.value }}'
-  with_items: base_base.OSCORE.grub_option
+  with_items: "{{ base_base.OSCORE.grub_option }}"
   when:
     - ansible_distribution_major_version == "6"
 
@@ -13,7 +13,7 @@
     dest: /etc/default/grub 
     regexp: '{{ item.key }}.*'
     replace: '{{ item.key }}={{ item.value }}'
-  with_items: base_base.OSCORE.grub_option
+  with_items: "{{ base_base.OSCORE.grub_option }}"
   when:
     - ansible_distribution_major_version == "7"
   notify:
