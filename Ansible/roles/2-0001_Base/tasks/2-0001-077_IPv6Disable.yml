@@ -6,6 +6,8 @@
 
 - name: 2-0001-077_IPv6Disable - create registry path
   raw: if ( ! ( Test-Path '{{ location }}' )) { New-Item '{{ location }}' -Force }
+  register: create_registry_path
+  changed_when: create_registry_path.stdout != ""
   always_run: yes
 
 - name: 2-0001-077_IPv6Disable - check registry value
