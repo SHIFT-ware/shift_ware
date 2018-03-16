@@ -9,6 +9,7 @@
 ##############################
 - name: server_restart_for_Win
   raw: powershell "Restart-Computer -Force"
+  changed_when: false
 
 - name: wait_for_WinRM_port_down
   wait_for: >
