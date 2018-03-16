@@ -5,7 +5,7 @@
 
 - name: 2-0001-079_NameResolve - check disignation of dns server
   raw: (Get-DnsClientServerAddress -InterfaceAlias "{{ name_resolve.dns_server.nic_name}}" -AddressFamily IPv4).ServerAddresses
-  with_items: name_resolve.dns_server.server
+  with_items: "{{ name_resolve.dns_server.server }}"
   register: ret_pre
   changed_when: not ret_pre.stdout | search('(^|\r\n){{ item.ip }}(\r\n|$)')
   always_run: yes
@@ -19,7 +19,7 @@
 
 - name: 2-0001-079_NameResolve - post check disignation of dns server
   raw: (Get-DnsClientServerAddress -InterfaceAlias "{{ name_resolve.dns_server.nic_name}}" -AddressFamily IPv4).ServerAddresses
-  with_items: name_resolve.dns_server.server
+  with_items: "{{ name_resolve.dns_server.server }}"
   register: ret_post
   when: ret_pre | changed
   failed_when: not ret_post.stdout | search('(^|\r\n){{ item.ip }}(\r\n|$)')
@@ -31,5 +31,5 @@
     dest: 'C:\windows\system32\drivers\etc\hosts'
     regexp: '^#?\s*{{ item.ip | regex_escape() }}\s'
     line: "{{ item.ip }} {{ item.hostname }}"
-  with_items: name_resolve.hosts_records
+  with_items: "{{ name_resolve.hosts_records }}"
 

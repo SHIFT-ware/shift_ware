@@ -15,7 +15,7 @@
     else { `
       Write-Host -NoNewline 'dhcp' `
     }
-  with_items: eth
+  with_items: "{{ eth }}"
   register: static_ret_pre
   changed_when: static_ret_pre.stdout != "{{ item.ipaddress }}_{{ item.prefix }}"
   when:
@@ -36,7 +36,7 @@
     else { `
       Write-Host -NoNewline 'dhcp' `
     }
-  with_items: eth
+  with_items: "{{ eth }}"
   register: dhcp_ret_pre
   changed_when: dhcp_ret_pre.stdout != "dhcp"
   when:
@@ -56,14 +56,14 @@
       -IPAddress "{{ item.item.ipaddress }}" `
       -PrefixLength "{{ item.item.prefix }}" `
       -Confirm:$False
-  with_items: static_ret_pre.results
+  with_items: "{{ static_ret_pre.results }}"
   when:
     - item.changed == true
   always_run: no
 
 - name: 2-0001-072_Interface - enable dhcp
   raw: Set-NetIPInterface -InterfaceAlias "{{ item.item.name }}" -AddressFamily IPv4 -Dhcp Enabled
-  with_items: dhcp_ret_pre.results
+  with_items: "{{ dhcp_ret_pre.results }}"
   when:
     - item.changed == true
   always_run: no
@@ -82,7 +82,7 @@
     else { `
       Write-Host -NoNewline 'dhcp' `
     }
-  with_items: eth
+  with_items: "{{ eth }}"
   register: static_ret_post
   failed_when: static_ret_post.stdout != "{{ item.ipaddress }}_{{ item.prefix }}"
   when:
@@ -102,7 +102,7 @@
     else { `
       Write-Host -NoNewline 'dhcp' `
     }
-  with_items: eth
+  with_items: "{{ eth }}"
   register: dhcp_ret_post
   failed_when: dhcp_ret_post.stdout != "dhcp"
   when:
@@ -115,7 +115,7 @@
   raw: >
     (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
       Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).ifIndex}).TcpipNetbiosOptions
-  with_items: eth
+  with_items: "{{ eth }}"
   register: dhcp_ret_pre
   when: 
     - item.netbios is defined
@@ -127,7 +127,7 @@
   raw: >
     (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
       Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).ifIndex}).TcpipNetbiosOptions
-  with_items: eth
+  with_items: "{{ eth }}"
   register: disabled_ret_pre
   when:
     - item.netbios is defined
@@ -139,7 +139,7 @@
   raw: >
     (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
       Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).ifIndex}).TcpipNetbiosOptions
-  with_items: eth
+  with_items: "{{ eth }}"
   register: enabled_ret_pre
   when:
     - item.netbios is defined
@@ -151,7 +151,7 @@
   raw: >
     (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
       Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.item.name }}" -AddressFamily IPv4).ifIndex}).SetTcpipNetBios("0")
-  with_items: dhcp_ret_pre.results
+  with_items: "{{ dhcp_ret_pre.results }}"
   when: 
     - item.changed == true
   always_run: no
@@ -160,7 +160,7 @@
   raw: >
     (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
       Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.item.name }}" -AddressFamily IPv4).ifIndex}).SetTcpipNetBios("1")
-  with_items: disabled_ret_pre.results
+  with_items: "{{ disabled_ret_pre.results }}"
   when:
     - item.changed == true
   always_run: no
@@ -169,7 +169,7 @@
   raw: >
     (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
       Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.item.name }}" -AddressFamily IPv4).ifIndex}).SetTcpipNetBios("2")
-  with_items: enabled_ret_pre.results
+  with_items: "{{ enabled_ret_pre.results }}"
   when:
     - item.changed == true
   always_run: no
@@ -178,7 +178,7 @@
   raw: >
     (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
       Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).ifIndex}).TcpipNetbiosOptions
-  with_items: eth
+  with_items: "{{ eth }}"
   register: dhcp_ret_post
   when:
     - item.netbios is defined
@@ -190,7 +190,7 @@
   raw: >
     (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
       Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).ifIndex}).TcpipNetbiosOptions
-  with_items: eth
+  with_items: "{{ eth }}"
   register: disabled_ret_post
   when:
     - item.netbios is defined
@@ -202,7 +202,7 @@
   raw: >
     (Get-WMIObject -Class Win32_NetworkAdapterConfiguration | `
       Where-Object {$_.InterfaceIndex -eq (Get-NetIPAddress -InterfaceAlias "{{ item.name }}" -AddressFamily IPv4).ifIndex}).TcpipNetbiosOptions
-  with_items: eth
+  with_items: "{{ eth }}"
   register: enabled_ret_post
   when:
     - item.netbios is defined
@@ -214,7 +214,7 @@
   raw: >
     if ( (NetAdapter -Name "{{ item.name }}" ).Status -eq "Up") `
       { Disable-NetAdapter -Name "{{ item.name }}" -Confirm:$false }else{ Write-Host "OK" -NoNewline }
-  with_items: eth
+  with_items: "{{ eth }}"
   register: result
   when:
     - item.status is defined
@@ -226,7 +226,7 @@
   raw: >
     if ( (NetAdapter -Name "{{ item.name }}" ).Status -eq "Disabled") `
       { Enable-NetAdapter -Name "{{ item.name }}" -Confirm:$false }else{ Write-Host "OK" -NoNewline }
-  with_items: eth
+  with_items: "{{ eth }}"
   register: result
   when:
     - item.status is defined

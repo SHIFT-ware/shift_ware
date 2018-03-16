@@ -5,7 +5,7 @@
 
 - name: 2-0001-075_Teaming - check team exists
   raw: (Get-NetLbfoTeam).Name
-  with_items: teaming
+  with_items: "{{ teaming }}"
   register: ret_pre
   changed_when: not ret_pre.stdout | search('(^|\r\n){{ item.name }}(\r\n|$)')
   always_run: yes
@@ -15,14 +15,14 @@
     New-NetLbfoTeam -Name '{{ item.item.name }}' -TeamMembers ('{{ item.item.physical_member | join(",", attribute="name") }}'.Split(',')) `
       -TeamNicName '{{ item.item.logical_member.0.name }}' -TeamingMode '{{ item.item.mode }}' -LoadBalancingAlgorithm '{{ item.item.lb_mode }}' `
       -Confirm:$False
-  with_items: ret_pre.results
+  with_items: "{{ ret_pre.results }}"
   when:
     - item.changed == true
   always_run: no
 
 - name: 2-0001-075_Teaming - post check team exists
   raw: (Get-NetLbfoTeam).Name
-  with_items: teaming
+  with_items: "{{ teaming }}"
   register: ret_post
   failed_when: not ret_post.stdout | search("(^|\r\n){{ item.name }}(\r\n|$)")
   always_run: no
@@ -38,7 +38,7 @@
 
 - name: 2-0001-075_Teaming - add team logical member
   raw: Add-NetLbfoTeamNic -Team '{{ item.item.0.name }}' -VlanID '{{ item.item.1.vlan_id }}' -Name '{{ item.item.1.name }}' -Confirm:$False
-  with_items: ret_pre.results
+  with_items: "{{ ret_pre.results }}"
   when:
     - item.changed == true
   always_run: no
@@ -63,7 +63,7 @@
 
 - name: 2-0001-075_Teaming - add team physical member
   raw: Set-NetLbfoTeamMember -Team '{{ item.item.0.name }}' -AdministrativeMode '{{ item.item.1.mode }}' -Name '{{ item.item.1.name }}' -Confirm:$False
-  with_items: ret_pre.results
+  with_items: "{{ ret_pre.results }}"
   when:
     - item.changed == true
   always_run: no

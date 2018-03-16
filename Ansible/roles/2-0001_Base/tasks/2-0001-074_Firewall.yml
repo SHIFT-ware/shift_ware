@@ -7,9 +7,9 @@
   fail:
     msg: "required params is not defined"
   when:
-    - firewall.domain.enabled_flag is not defined or
-      firewall.private.enabled_flag is not defined or
-      firewall.public.enabled_flag is not defined
+    - not firewall | has_nested_keys('domain', 'enabled_flag') or
+      not firewall | has_nested_keys('private', 'enabled_flag')  or
+      not firewall | has_nested_keys('public', 'enabled_flag')
 
 - name: 2-0001-074_Firewall - check firewall enabled status
   raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name '{{ item.name }}').Enabled

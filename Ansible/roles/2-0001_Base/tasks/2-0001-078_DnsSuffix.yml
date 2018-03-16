@@ -19,7 +19,7 @@
   - name: 2-0001-078_DnsSuffix - push data "property" to "properties" to prepare changing dns suffix
     set_fact:
       properties: "{{ properties + property }}"
-  when: dns_suffix.primary.fqdn is defined
+  when: dns_suffix | has_nested_keys('primary', 'fqdn')
 
 - block:
   - name: 2-0001-078_DnsSuffix - set tmp variable "property" to prepare changing registry value "SyncDomainWithMembership" to 1
@@ -35,7 +35,7 @@
   - name: 2-0001-078_DnsSuffix - push data "property" to "properties" to prepare changing registry value "SyncDomainWithMembership"
     set_fact:
       properties: "{{ properties + property }}"
-  when: dns_suffix.primary.change_when_domain_membership_changed is defined
+  when: dns_suffix | has_nested_keys('primary', 'change_when_domain_membership_changed')
 
 - name: 2-0001-078_DnsSuffix - create registry path
   raw: if ( ! ( Test-Path '{{ location }}' )) { New-Item '{{ location }}' -Force }
