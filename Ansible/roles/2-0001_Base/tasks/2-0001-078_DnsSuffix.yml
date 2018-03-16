@@ -43,7 +43,7 @@
 
 - name: 2-0001-078_DnsSuffix - check registry value
   raw: (Get-ItemProperty '{{ location }}').'{{ item.property }}'
-  with_items: properties
+  with_items: "{{ properties }}"
   register: ret_pre
   changed_when: ret_pre.stdout != "{{ item.data }}\r\n"
   notify:
@@ -54,14 +54,14 @@
 
 - name: 2-0001-078_DnsSuffix - set registry value
   raw: Set-ItemProperty '{{ location }}' '{{ item.item.property }}' -Value '{{ item.item.data }}' -Type '{{ item.item.type }}'
-  with_items: ret_pre.results
+  with_items: "{{ ret_pre.results }}"
   when:
     - item.changed == true
   always_run: no
 
 - name: 2-0001-078_DnsSuffix - post check registry value
   raw: (Get-ItemProperty '{{ location }}').'{{ item.property }}'
-  with_items: properties
+  with_items: "{{ properties }}"
   register: ret_post
   changed_when: ret_post.stdout != "{{ item.data }}\r\n"
   always_run: no
