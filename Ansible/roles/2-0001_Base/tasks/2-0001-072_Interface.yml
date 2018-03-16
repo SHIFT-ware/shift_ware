@@ -85,6 +85,7 @@
   with_items: "{{ eth }}"
   register: static_ret_post
   failed_when: static_ret_post.stdout != "{{ item.ipaddress }}_{{ item.prefix }}"
+  changed_when: false
   when:
     - item.dhcp is defined
     - item.dhcp == false
@@ -105,6 +106,7 @@
   with_items: "{{ eth }}"
   register: dhcp_ret_post
   failed_when: dhcp_ret_post.stdout != "dhcp"
+  changed_when: false
   when:
     - item.dhcp is defined
     - item.dhcp == true
@@ -184,6 +186,7 @@
     - item.netbios is defined
     - item.netbios == "dhcp"
   failed_when: dhcp_ret_post.stdout != "0\r\n"
+  changed_when: false
   always_run: no
 
 - name: 2-0001-072_Interface - post check netbios mode is disabled
@@ -196,6 +199,7 @@
     - item.netbios is defined
     - item.netbios == "disabled"
   failed_when: disabled_ret_post.stdout != "1\r\n"
+  changed_when: false
   always_run: no
 
 - name: 2-0001-072_Interface - post check netbios mode is enabled
@@ -208,6 +212,7 @@
     - item.netbios is defined
     - item.netbios == "enabled"
   failed_when: enabled_ret_post.stdout != "2\r\n"
+  changed_when: false
   always_run: no
 
 - name: 2-0001-072_Interface - set nic status disabled

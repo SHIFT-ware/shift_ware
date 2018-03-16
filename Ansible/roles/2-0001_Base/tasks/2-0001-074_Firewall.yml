@@ -27,6 +27,7 @@
 - name: 2-0001-074_Firewall - set firewall enabled status
   raw: Set-NetFirewallProfile -Name '{{ item.name }}' -Enabled '{{ item.enable }}'
   always_run: no
+  when: ret_pre.stdout != "{{ item.enable }}"
   with_items:
     - name: Domain
       enable: "{{ firewall.domain.enabled_flag }}"
@@ -40,6 +41,7 @@
   register: ret_post
   failed_when: ret_post.stdout != "{{ item.enable }}"
   always_run: no
+  when: ret_pre.stdout != "{{ item.enable }}"
   with_items:
     - name: Domain
       enable: "{{ firewall.domain.enabled_flag }}"
