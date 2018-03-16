@@ -30,7 +30,7 @@
 - name: 2-0001-075_Teaming - check team logical member exists
   raw: (Get-NetLbfoTeamNic -Team '{{ item.0.name }}').Name
   with_subelements:
-    - teaming
+    - "{{ teaming }}"
     - logical_member
   register: ret_pre
   changed_when: not ret_pre.stdout | search('(^|\r\n){{ item.1.name }}(\r\n|$)')
@@ -46,7 +46,7 @@
 - name: 2-0001-075_Teaming - post check team logical member exists
   raw: (Get-NetLbfoTeamNic -Team '{{ item.0.name }}').Name
   with_subelements:
-    - teaming
+    - "{{ teaming }}"
     - logical_member
   register: ret_post
   failed_when: not ret_post.stdout | search('(^|\r\n){{ item.1.name }}(\r\n|$)')
@@ -55,7 +55,7 @@
 - name: 2-0001-075_Teaming - check team physical member exists
   raw: (Get-NetLbfoTeamMember -Team '{{ item.0.name }}' -Name '{{ item.1.name }}').AdministrativeMode
   with_subelements:
-    - teaming
+    - "{{ teaming }}"
     - physical_member
   register: ret_pre
   changed_when: ret_pre.stdout != '{{ item.1.mode }}\r\n'
@@ -71,7 +71,7 @@
 - name: 2-0001-075_Teaming - post check team physical member exists
   raw: (Get-NetLbfoTeamMember -Team '{{ item.0.name }}' -Name '{{ item.1.name }}').AdministrativeMode
   with_subelements:
-    - teaming
+    - "{{ teaming }}"
     - physical_member
   register: ret_post
   failed_when: ret_post.stdout != '{{ item.1.mode }}\r\n'
