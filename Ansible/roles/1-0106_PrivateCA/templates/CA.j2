@@ -61,7 +61,7 @@ usage() {
 if [ -z "$OPENSSL" ]; then OPENSSL=openssl; fi
 
 if [ -z "$DAYS" ] ; then DAYS="-days 365" ; fi	# 1 year
-CADAYS="-days {{ l0106_ca_cert.csr_validity_term }}"
+CADAYS="-days {{ prca_privateca.ca_cert.csr_validity_term }}"
 REQ="$OPENSSL req $SSLEAY_CONFIG"
 CA="$OPENSSL ca $SSLEAY_CONFIG"
 VERIFY="$OPENSSL verify"
@@ -69,9 +69,9 @@ X509="$OPENSSL x509"
 PKCS12="openssl pkcs12"
 
 if [ -z "$CATOP" ] ; then CATOP=/etc/pki/CA ; fi
-CAKEY=./{{ l0106_ca_cert.private_key_filename }}
-CAREQ=./{{ l0106_ca_cert.csr_filename }}
-CACERT=./{{ l0106_ca_cert.pem_filename }}
+CAKEY=./{{ prca_privateca.ca_cert.private_key_filename }}
+CAREQ=./{{ prca_privateca.ca_cert.csr_filename }}
+CACERT=./{{ prca_privateca.ca_cert.pem_filename }}
 
 RET=0
 
@@ -129,11 +129,11 @@ case $1 in
 	else
 	    echo "Making CA certificate ..."
 	    $REQ -new -keyout ${CATOP}/private/$CAKEY \
-			   -out ${CATOP}/$CAREQ -{{ l0106_ca_cert.hash_algorithm }} -newkey rsa:{{ l0106_ca_cert.private_key_length }} \
-                           -batch -passout pass:{{ l0106_ca_cert.private_key_passphrase }}
+			   -out ${CATOP}/$CAREQ -{{ prca_privateca.ca_cert.hash_algorithm }} -newkey rsa:{{ prca_privateca.ca_cert.private_key_length }} \
+                           -batch -passout pass:{{ prca_privateca.ca_cert.private_key_passphrase }}
 	    $CA -create_serial -out ${CATOP}/$CACERT $CADAYS -batch \
 			   -keyfile ${CATOP}/private/$CAKEY -selfsign \
-                           -passin pass:{{ l0106_ca_cert.private_key_passphrase }} \
+                           -passin pass:{{ prca_privateca.ca_cert.private_key_passphrase }} \
 			   -extensions v3_ca \
 			   -infiles ${CATOP}/$CAREQ
 	    RET=$?
