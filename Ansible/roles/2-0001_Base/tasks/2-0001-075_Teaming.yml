@@ -25,6 +25,7 @@
   with_items: "{{ teaming }}"
   register: ret_post
   failed_when: not ret_post.stdout | search("(^|\r\n){{ item.name }}(\r\n|$)")
+  changed_when: false
   always_run: no
 
 - name: 2-0001-075_Teaming - check team logical member exists
@@ -76,5 +77,6 @@
     - physical_member
   register: ret_post
   failed_when: ret_post.stdout != '{{ item.1.mode }}\r\n'
+  changed_when: false
   always_run: no
 
