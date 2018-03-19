@@ -3,14 +3,21 @@
   set_fact:
     feature: "{{ base_ADVANCED.feature }}"
 
+- name: 2-0001-095_Feature - check feature is installed
+  raw: (Get-WindowsFeature | Where-Object {$_.Path -eq "{{ item.name }}"}).Installed
+  changed_when: false
+  failed_when: false
+  register: reg_check_feature
+  with_items: "{{ feature }}"
+
 - name: 2-0001-095_Feature - install feature
-  raw: (Get-WindowsFeature | Where-Object {$_.Path -eq "{{ item.name }}"} | Install-WindowsFeature -IncludeAllSubFeature -IncludeManagementTools).Success
-  with_items: feature
+  raw: (Get-WindowsFeature | Where-Object {$_.Path -eq "{{ item.item.name }}"} | Install-WindowsFeature -IncludeAllSubFeature -IncludeManagementTools).Success
   notify: 
-    - server_restart_for_Win
-    - wait_for_WinRM_port_down
-    - wait_for_WinRM_port_up
-  register: ret
-  failed_when: ret.stdout != "True\r\n"
+  - server_restart_for_Win
+  - wait_for_WinRM_port_down
+  - wait_for_WinRM_port_up
+  with_items: "{{ reg_check_feature.results }}"
+  when: item.stdout == "False\r\n"
 
 - meta: flush_handlers
+
