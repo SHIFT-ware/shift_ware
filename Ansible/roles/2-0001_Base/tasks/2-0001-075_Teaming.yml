@@ -50,6 +50,7 @@
     - logical_member
   register: ret_post
   failed_when: not ret_post.stdout | search('(^|\r\n){{ item.1.name }}(\r\n|$)')
+  changed_when: false
   always_run: no
 
 - name: 2-0001-075_Teaming - check team physical member exists
