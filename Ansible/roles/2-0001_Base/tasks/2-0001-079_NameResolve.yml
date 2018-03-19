@@ -9,6 +9,7 @@
   register: ret_pre
   changed_when: not ret_pre.stdout | search('(^|\r\n){{ item.ip }}(\r\n|$)')
   always_run: yes
+  when: name_resolve | has_nested_keys('dns_server', 'server')
 
 - name: 2-0001-079_NameResolve - set disignation of dns server
   raw: >
@@ -32,4 +33,5 @@
     regexp: '^#?\s*{{ item.ip | regex_escape() }}\s'
     line: "{{ item.ip }} {{ item.hostname }}"
   with_items: "{{ name_resolve.hosts_records }}"
+  when: name_resolve | has_nested_keys('hosts_records')
 
