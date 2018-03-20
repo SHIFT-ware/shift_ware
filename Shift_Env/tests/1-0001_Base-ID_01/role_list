@@ -1,1 +1,3 @@
-1-0001_Base
+Ansible/roles/1-0001_Base/tasks/Base/ID/1-0001-24_OSUser.yml
+Ansible/roles/1-0001_Base/tasks/Base/ID/1-0001-13_OSGroup.yml
+Ansible/roles/1-0001_Base/tasks/Base/ID/1-0001-16_PasswordRules.yml
