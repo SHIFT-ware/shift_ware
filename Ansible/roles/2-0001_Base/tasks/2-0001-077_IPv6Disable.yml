@@ -6,13 +6,15 @@
 
 - name: 2-0001-077_IPv6Disable - create registry path
   raw: if ( ! ( Test-Path '{{ location }}' )) { New-Item '{{ location }}' -Force }
+  register: create_registry_path
+  changed_when: create_registry_path.stdout != ""
   always_run: yes
 
 - name: 2-0001-077_IPv6Disable - check registry value
   raw: (Get-ItemProperty '{{ location }}').DisabledComponents
   register: ret_pre
   when:
-    - ipv6.registry is defined
+    - ipv6 | has_nested_keys('registry')
     - ipv6.registry == 'disabled'
   changed_when: ret_pre.stdout != "255\r\n"
   always_run: yes
@@ -20,7 +22,7 @@
 - name: 2-0001-077_IPv6Disable - set registry value
   raw: Set-ItemProperty '{{ location }}' 'DisabledComponents' -Value '255' -Type 'dword'
   when:
-    - ipv6.registry is defined
+    - ipv6 | has_nested_keys('registry')
     - ret_pre | changed
   always_run: no
 
@@ -28,7 +30,7 @@
   raw: (Get-ItemProperty '{{ location }}').DisabledComponents
   register: ret_post
   when:
-    - ipv6.registry is defined
+    - ipv6 | has_nested_keys('registry')
     - ipv6.registry == 'disabled'
     - ret_pre | changed
   changed_when: ret_pre.stdout != "255\r\n"
@@ -37,7 +39,7 @@
 - name: 2-0001-077_IPv6Disable - check ms_tcpip6 parameter
   raw: '{{ ipv6.nvspbind_path }} | Select-String "ms_tcpip6 "'
   when:
-    - ipv6.nic_property is defined
+    - ipv6 | has_nested_keys('nic_property')
     - ipv6.nic_property == 'disabled'
   register: ret_pre
   changed_when: >
@@ -48,7 +50,7 @@
 - name: 2-0001-077_IPv6Disable - set ms_tcpip6 parameter disabled for all nics
   raw: '{{ ipv6.nvspbind_path }} /d * ms_tcpip6'
   when:
-    - ipv6.nic_property is defined
+    - ipv6 | has_nested_keys('nic_property')
     - ipv6.nic_property == 'disabled'
     - ret_pre | changed
   failed_when: False
@@ -57,7 +59,7 @@
 - name: 2-0001-077_IPv6Disable - post check ms_tcpip6 parameter
   raw: '{{ ipv6.nvspbind_path }} | Select-String "ms_tcpip6 "'
   when:
-    - ipv6.nic_property is defined
+    - ipv6 | has_nested_keys('nic_property')
     - ipv6.nic_property == 'disabled'
     - ret_pre | changed
   register: ret_post
@@ -69,7 +71,7 @@
 - name: 2-0001-077_IPv6Disable - check isatap parameter
   raw: netsh interface ipv6 show interface
   when:
-    - ipv6.netsh_command.isatap_if is defined
+    - ipv6 | has_nested_keys('netsh_command', 'isatap_if')
     - ipv6.netsh_command.isatap_if == 'disabled'
   register: ret_pre
   changed_when: >
@@ -79,7 +81,7 @@
 - name: 2-0001-077_IPv6Disable - set isatap parameter disabled
   raw: netsh interface ipv6 isatap set state disabled
   when:
-    - ipv6.netsh_command.isatap_if is defined
+    - ipv6 | has_nested_keys('netsh_command', 'isatap_if')
     - ipv6.netsh_command.isatap_if == 'disabled'
     - ret_pre | changed
   always_run: no
@@ -87,7 +89,7 @@
 - name: 2-0001-077_IPv6Disable - post check isatap parameter
   raw: netsh interface ipv6 show interface
   when:
-    - ipv6.netsh_command.isatap_if is defined
+    - ipv6 | has_nested_keys('netsh_command', 'isatap_if')
     - ipv6.netsh_command.isatap_if == 'disabled'
     - ret_pre | changed
   register: ret_post
@@ -98,7 +100,7 @@
 - name: 2-0001-077_IPv6Disable - check 6to4 parameter
   raw: netsh interface ipv6 show interface
   when:
-    - ipv6.netsh_command.sixtofour_if is defined
+    - ipv6 | has_nested_keys('netsh_command', 'sixtofour_if')
     - ipv6.netsh_command.sixtofour_if == 'disabled'
   register: ret_pre
   changed_when: >
@@ -108,7 +110,7 @@
 - name: 2-0001-077_IPv6Disable - set 6to4 parameter disabled
   raw: netsh interface ipv6 6to4 set state disabled
   when:
-    - ipv6.netsh_command.sixtofour_if is defined
+    - ipv6 | has_nested_keys('netsh_command', 'sixtofour_if')
     - ipv6.netsh_command.sixtofour_if == 'disabled'
     - ret_pre | changed
   always_run: no
@@ -116,7 +118,7 @@
 - name: 2-0001-077_IPv6Disable - post check 6to4 parameter
   raw: netsh interface ipv6 show interface
   when:
-    - ipv6.netsh_command.sixtofour_if is defined
+    - ipv6 | has_nested_keys('netsh_command', 'sixtofour_if')
     - ipv6.netsh_command.sixtofour_if == 'disabled'
     - ret_pre | changed
   register: ret_post
@@ -127,7 +129,7 @@
 - name: 2-0001-077_IPv6Disable - check teredo parameter
   raw: netsh interface ipv6 show interface
   when:
-    - ipv6.netsh_command.teredo_if is defined
+    - ipv6 | has_nested_keys('netsh_command', 'teredo_if')
     - ipv6.netsh_command.teredo_if == 'disabled'
   register: ret_pre
   changed_when: >
@@ -137,7 +139,7 @@
 - name: 2-0001-077_IPv6Disable - set teredo parameter disabled
   raw: netsh interface teredo set state disabled
   when:
-    - ipv6.netsh_command.teredo_if is defined
+    - ipv6 | has_nested_keys('netsh_command', 'teredo_if')
     - ipv6.netsh_command.teredo_if == 'disabled'
     - ret_pre | changed
   always_run: no
@@ -145,7 +147,7 @@
 - name: 2-0001-077_IPv6Disable - post check teredo parameter
   raw: netsh interface ipv6 show interface
   when:
-    - ipv6.netsh_command.teredo_if is defined
+    - ipv6 | has_nested_keys('netsh_command', 'teredo_if')
     - ipv6.netsh_command.teredo_if == 'disabled'
     - ret_pre | changed
   register: ret_post

@@ -7,9 +7,9 @@
   fail:
     msg: "required params is not defined"
   when:
-    - firewall.domain.enabled_flag is not defined or
-      firewall.private.enabled_flag is not defined or
-      firewall.public.enabled_flag is not defined
+    - not firewall | has_nested_keys('domain', 'enabled_flag') or
+      not firewall | has_nested_keys('private', 'enabled_flag')  or
+      not firewall | has_nested_keys('public', 'enabled_flag')
 
 - name: 2-0001-074_Firewall - check firewall enabled status
   raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name '{{ item.name }}').Enabled
@@ -25,26 +25,16 @@
       enable: "{{ firewall.public.enabled_flag }}"
 
 - name: 2-0001-074_Firewall - set firewall enabled status
-  raw: Set-NetFirewallProfile -Name '{{ item.name }}' -Enabled '{{ item.enable }}'
+  raw: Set-NetFirewallProfile -Name '{{ item.item.name }}' -Enabled '{{ item.item.enable }}'
   always_run: no
-  with_items:
-    - name: Domain
-      enable: "{{ firewall.domain.enabled_flag }}"
-    - name: Private
-      enable: "{{ firewall.private.enabled_flag }}"
-    - name: Public
-      enable: "{{ firewall.public.enabled_flag }}"
+  when: ( item.stdout | bool ) != item.item.enable 
+  with_items: "{{ ret_pre.results }}"
 
 - name: 2-0001-074_Firewall - post check firewall enabled status
-  raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name '{{ item.name }}').Enabled
+  raw: Write-Host -NoNewline (Get-NetFirewallProfile -Name '{{ item.item.name }}').Enabled
   register: ret_post
-  failed_when: ret_post.stdout != "{{ item.enable }}"
+  failed_when: ret_post.stdout != "{{ item.item.enable }}"
   always_run: no
-  with_items:
-    - name: Domain
-      enable: "{{ firewall.domain.enabled_flag }}"
-    - name: Private
-      enable: "{{ firewall.private.enabled_flag }}"
-    - name: Public
-      enable: "{{ firewall.public.enabled_flag }}"
+  when: ( item.stdout | bool ) != item.item.enable
+  with_items: "{{ ret_pre.results }}"
 
