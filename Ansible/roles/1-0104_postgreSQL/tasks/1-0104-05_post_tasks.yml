@@ -3,15 +3,13 @@
 
 - name: 1-0104-05_post_tasks - change postgresql service state
   service:
-    name: "postgresql-{{ pgsq_version }}"
-    state: "{{ pgsq_state }}"
-  when:
-    - pgsq_state is defined
+    name: "postgresql-{{ pgsq_postgresql.version }}"
+    state: "{{ pgsq_postgresql.state }}"
+  when: pgsq_postgresql.state is defined
 
 - name: 1-0104-05_post_tasks - change auto starting setting of postgresql service
   service:
-    name: "postgresql-{{ pgsq_version }}"
-    enabled: "{{ pgsq_enabled }}"
-  when:
-    - pgsq_enabled is defined
+    name: "postgresql-{{ pgsq_postgresql.version }}"
+    enabled: "{{ pgsq_postgresql.enabled }}"
+  when: pgsq_postgresql.enabled is defined
 

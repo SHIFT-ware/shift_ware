@@ -91,7 +91,7 @@
 #local   replication     postgres                                trust
 #host    replication     postgres        127.0.0.1/32            trust
 #host    replication     postgres        ::1/128                 trust
-{% for record in pgsq_authentication_records %}
+{% for record in pgsq_postgresql.authentication.records %}
 {% if record.type == "local" %}
 local {{ record.database }} {{ record.user }}     {{ record.method }}
 {% else %}
