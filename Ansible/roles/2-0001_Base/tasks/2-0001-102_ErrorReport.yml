@@ -14,24 +14,10 @@
     flag: "1"
   when: error_report == "disabled"
 
-- name: 2-0001-102_ErrorReport - create registry path
-  raw: if ( ! ( Test-Path '{{ location }}' )) { New-Item '{{ location }}' -Force }
-  always_run: yes
-
-- name: 2-0001-102_ErrorReport - check registry value
-  raw: (Get-ItemProperty '{{ location }}').Disabled
-  register: ret_pre
-  changed_when: ret_pre.stdout != "{{ flag }}\r\n"
-  always_run: yes
-
 - name: 2-0001-102_ErrorReport - set registry value
-  raw: Set-ItemProperty '{{ location }}' 'Disabled' -Value '{{ flag }}' -Type 'dword'
-  when: ret_pre | changed
-  always_run: no
+  win_regedit:
+    path: "{{ location }}"
+    name: "Disabled"
+    data: "{{ flag }}"
+    type: "dword"
 
-- name: 2-0001-102_ErrorReport - post check registry value
-  raw: (Get-ItemProperty '{{ location }}').Disabled
-  register: ret_pre
-  when: ret_pre | changed
-  failed_when: ret_pre.stdout != "{{ flag }}\r\n"
-  always_run: no
