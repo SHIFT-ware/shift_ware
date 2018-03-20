@@ -24,8 +24,8 @@ result04=$?
 Shift_Bin/Spec-play.sh run
 result05=$?
 
-cp -rf Shift_Env/tests/2-0001_Bsse_OSCORE_01/test_case02/host_vars ./Shift_Env/
-cp -rf Shift_Env/tests/2-0001_Bsse_OSCORE_01/test_case02/properties.yml ./Shift_Env/
+cp -rf Shift_Env/tests/2-0001_Base_OSCORE_01/test_case02/host_vars ./Shift_Env/
+cp -rf Shift_Env/tests/2-0001_Base_OSCORE_01/test_case02/properties.yml ./Shift_Env/
 
 Shift_Bin/Ansible-play.sh run
 result06=$?
