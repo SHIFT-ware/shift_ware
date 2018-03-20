@@ -2,7 +2,7 @@
 - name: 2-0001-107_PsExecPolicy - set tmp variable
   set_fact:
      psexecpolicy: "{{ base_ADVANCED.psexecpolicy }}"
-  when: base_ADVANCED.psexecpolicy is defined
+  when: base_ADVANCED | has_nested_keys('psexecpolicy')
 
 - name: 2-0001-107_PsExecPolicy - check execution policy
   raw: Get-ExecutionPolicy -Scope LocalMachine

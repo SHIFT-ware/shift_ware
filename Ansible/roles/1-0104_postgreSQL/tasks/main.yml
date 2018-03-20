@@ -1,17 +1,17 @@
 ---
-- include: 1-0104-01_create_user_and_groups.yml
-- include: 1-0104-02_postgresql.yml
+- include_tasks: 1-0104-01_create_user_and_groups.yml
+- include_tasks: 1-0104-02_postgresql.yml
 
 - block:
-  - include: 1-0104-03_postgresql_conf.yml
+  - include_tasks: 1-0104-03_postgresql_conf.yml
   when:
     - pgsq_server_role is undefined or
       pgsq_server_role == ""
 
 # クラスタ構成の場合、ReplicationのためMasterを先に実行する
 - block:
-  - include: 1-0104-04_postgresql_replication.yml
-  - include: 1-0104-03_postgresql_conf.yml
+  - include_tasks: 1-0104-04_postgresql_replication.yml
+  - include_tasks: 1-0104-03_postgresql_conf.yml
   when:
     - pgsq_server_role is defined
     - pgsq_server_role == "master"
@@ -19,10 +19,10 @@
 - meta: flush_handlers
 
 - block:
-  - include: 1-0104-04_postgresql_replication.yml
-  - include: 1-0104-03_postgresql_conf.yml
+  - include_tasks: 1-0104-04_postgresql_replication.yml
+  - include_tasks: 1-0104-03_postgresql_conf.yml
   when:
     - pgsq_server_role is defined
     - pgsq_server_role == "slave"
 
-- include: 1-0104-05_post_tasks.yml
+- include_tasks: 1-0104-05_post_tasks.yml

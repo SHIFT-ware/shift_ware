@@ -2,16 +2,16 @@
 - name: 2-0001-012_UserGroup - define empty tmp variable
   set_fact:
     group: []
-  when: base_BASE.ID.group is undefined
+  when: not base_BASE | has_nested_keys('ID', 'group')
 
 - name: 2-0001-012_UserGroup - set tmp variable
   set_fact:
     group: "{{ base_BASE.ID.group }}"
-  when: base_BASE.ID.group is defined
+  when: base_BASE | has_nested_keys('ID', 'group')
 
 - name: 2-0001-012_UserGroup - modify group
   win_group:
     name: "{{ item.name }}"
     state: present
-  with_items: group 
+  with_items: "{{ group }}" 
 

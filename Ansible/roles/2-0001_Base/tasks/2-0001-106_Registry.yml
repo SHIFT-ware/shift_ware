@@ -2,22 +2,22 @@
 - name: 2-0001-106_Registry - set tmp empty variable
   set_fact:
      registry: []
-  when: base_ADVANCED.registry is undefined
+  when: not base_ADVANCED | has_nested_keys('registry')
 
 - name: 2-0001-106_Registry - set tmp variable
   set_fact:
      registry: "{{ base_ADVANCED.registry }}"
-  when: base_ADVANCED.registry is defined
+  when: base_ADVANCED | has_nested_keys('registry')
 
 - name: 2-0001-106_Registry - create registry path
   raw: if ( ! ( Test-Path 'Registry::{{ item.key }}' )) { New-Item 'Registry::{{ item.key }}' -Force }
-  with_items: registry
+  with_items: "{{ registry }}"
   always_run: yes
 
 - name: 2-0001-106_Registry - check registry value
   raw: (Get-ItemProperty 'Registry::{{ item.0.key }}').'{{ item.1.name }}'
   with_subelements:
-    - registry
+    - "{{ registry }}"
     - value
   register: ret_pre
   changed_when: ret_pre.stdout != "{{ item.1.data }}\r\n"
@@ -25,13 +25,13 @@
 
 - name: 2-0001-106_Registry - set registry value
   raw: Set-ItemProperty 'Registry::{{ item.item.0.key }}' '{{ item.item.1.name }}' -Value '{{ item.item.1.data }}' -Type '{{ item.item.1.type}}'
-  with_items: ret_pre.results | default("")
+  with_items: "{{ ret_pre.results | default('') }}"
   when: item | changed
   always_run: no
 
 - name: 2-0001-106_Registry - post check registry value
   raw: (Get-ItemProperty 'Registry::{{ item.item.0.key }}').'{{ item.item.1.name }}'
-  with_items: ret_pre.results | default("")
+  with_items: "{{ ret_pre.results | default('') }}"
   when: item | changed
   register: ret_post
   failed_when: ret_post.stdout != "{{ item.item.1.data }}\r\n"
