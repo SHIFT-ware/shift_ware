@@ -5,7 +5,7 @@
     failed_when: false
     changed_when: false
     register: check_primary_group
-    when: apac_apache.exec_groups.primary.name is defined
+    when: apac_apache | has_nested_keys("exec_groups", "primary", "name") is defined
   
   - name: 1-0102-01_create_user_and_groups - create apache user's primary group
     group:
@@ -29,7 +29,7 @@
       name: "{{ item.item.name }}"
       gid: "{{ item.item.gid | default(omit) }}"
     with_items:
-      check_secondary_groups.results
+      "{{ check_secondary_groups.results }}"
     when:
       - not ( check_secondary_groups | skipped )
       - item.rc != 0
@@ -44,8 +44,7 @@
     set_fact:
       sub_groups_str:
         "{{ apac_apache.exec_groups.secondary | map(attribute='name') | join(',') }}"
-    when:
-      - apac_apache.exec_groups.secondary is defined
+    when: apac_apache | has_nested_keys("exec_groups", "secondary")
 
   - name: 1-0102-01_create_user_and_groups - create apache user
     user:
@@ -59,5 +58,4 @@
       state: present 
     when:
       - check_apache_user.rc != 0
-  when:
-    - apac_apache.exec_user.name is defined
+  when: apac_apache | has_nested_keys("exec_user", "name")
