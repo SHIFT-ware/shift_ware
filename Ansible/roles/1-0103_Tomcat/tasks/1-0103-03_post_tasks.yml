@@ -5,17 +5,15 @@
     service:
       name: tomcat
       state: "{{ tomc_tomcat.init_script.service.state }}"
-    when:
-      - tomc_tomcat.init_script.service.state is defined
+    when: tomc_tomcat | has_nested_keys("init_script", "service", "state")
   
   - name: 1-0103-03_post_tasks - change auto_starting setting of tomcat service
     service:
       name: tomcat
       enabled: "{{ tomc_tomcat.init_script.service.enabled }}"
-    when:
-      - tomc_tomcat.init_script.service.enabled is defined
+    when: tomc_tomcat | has_nested_keys("init_script", "service", "enabled")
   when:
-    - tomc_tomcat.init_script.enable is defined
+    - tomc_tomcat | has_nested_keys("init_script", "enable")
     - tomc_tomcat.init_script.enable == true
 
 - block:
@@ -37,5 +35,5 @@
       - check_tomcat_process.rc == 0
       - tomc_tomcat.state == "stopped"
   when:
-    - tomc_tomcat.init_script.enable is defined
+    - tomc_tomcat | has_nested_keys("init_script", "enable")
     - tomc_tomcat.init_script.enable == false

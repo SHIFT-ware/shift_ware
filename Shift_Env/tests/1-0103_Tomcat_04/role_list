@@ -1,1 +1,3 @@
-1-0103_Tomcat
+Ansible/roles/1-0103_Tomcat/tasks/1-0103-01_create_user_and_groups.yml
+Ansible/roles/1-0103_Tomcat/tasks/1-0103-02_configure.yml
+Ansible/roles/1-0103_Tomcat/tasks/1-0103-03_post_tasks.yml

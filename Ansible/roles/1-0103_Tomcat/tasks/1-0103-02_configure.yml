@@ -42,7 +42,7 @@
       - "{{ tomc_tomcat.install_dir }}/webapps/docs"
       - "{{ tomc_tomcat.install_dir }}/webapps/examples"
     when:
-      - tomc_tomcat.initial_apps.enable is defined
+      - tomc_tomcat | has_nested_keys("initial_apps", "enable")
       - tomc_tomcat.initial_apps.enable == false
   
   - name: 1-0103-02_configure - drop manager applications
@@ -53,7 +53,7 @@
       - "{{ tomc_tomcat.install_dir }}/webapps/manager"
       - "{{ tomc_tomcat.install_dir }}/webapps/host-manager"
     when:
-      - tomc_tomcat.manager.enable is defined
+      - tomc_tomcat | has_nested_keys("manager", "enable")
       - tomc_tomcat.manager.enable == false
   
   - name: 1-0103-02_configure - put server.xml
@@ -83,7 +83,7 @@
       - restart_tomcat_service
       - restart_tomcat_process
     when:
-      - tomc_tomcat.manager.enable is defined
+      - tomc_tomcat | has_nested_keys("manager", "enable")
       - tomc_tomcat.manager.enable == true
   
   - name: 1-0103-02_configure - change tomcat home owner
@@ -94,8 +94,8 @@
       recurse: yes
       state: directory
     when:
-      - tomc_tomcat.exec_user.name is defined
-      - tomc_tomcat.exec_groups.primary.name is defined
+      - tomc_tomcat | has_nested_keys("exec_user", "name")
+      - tomc_tomcat | has_nested_keys("exec_groups", "primary", "name")
   when:
     - tomc_tomcat.install_dir is defined
 
@@ -114,10 +114,9 @@
 
   - name: 1-0103-02_configure - entry tomcat service
     shell: chkconfig --add tomcat 
-    when:
-      - check_tomcat_service.rc != 0
+    when: check_tomcat_service.rc != 0
   when:
-    - tomc_tomcat.init_script.enable is defined
+    - tomc_tomcat | has_nested_keys("init_script", "enable")
     - tomc_tomcat.init_script.enable == true
 
 - block:
@@ -129,14 +128,13 @@
   
   - name: 1-0103-02_configure - delete tomcat service
     shell: chkconfig --del tomcat 
-    when:
-      - check_tomcat_service.rc == 0
+    when: check_tomcat_service.rc == 0
 
   - name: 1-0103-02_configure - remove service script
     file:
       path: /etc/init.d/tomcat
       state: absent
   when:
-    - tomc_tomcat.init_script.enable is defined
+    - tomc_tomcat | has_nested_keys("init_script", "enable")
     - tomc_tomcat.init_script.enable == false
 
