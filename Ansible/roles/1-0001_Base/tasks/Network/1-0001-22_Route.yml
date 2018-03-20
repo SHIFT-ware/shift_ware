@@ -12,7 +12,7 @@
       state: present
       create: yes
     notify: network_service_restart
-    when: base_network.default_gw is defined
+    when: base_network | has_nested_keys('default_gw')
   
   - name: 1-0001-22_Route - set static route for rhel6
     lineinfile:
@@ -21,8 +21,8 @@
       state: present
       create: yes
     notify: network_service_restart
-    with_items: base_network.static_routing
-    when: base_network.static_routing is defined
+    with_items: "{{ base_network.static_routing }}"
+    when: base_network | has_nested_keys('static_routing')
   when: ansible_distribution_major_version == "6"
 
 - block:
@@ -30,15 +30,15 @@
     shell: nmcli connection modify {{ base_network.default_gw.if }} ipv4.gateway '{{ base_network.default_gw.addr }}'
     notify: network_service_restart
     when:
-      - base_network.default_gw is defined
+      - base_network | has_nested_keys('default_gw')
       - routes.stdout.find('default via {{ base_network.default_gw.addr }} dev {{ base_network.default_gw.if }}') == -1
-    
+
   - name: 1-0001-22_Route - set static route for rhel7
     shell: nmcli connection modify {{ item.if }} +ipv4.routes '{{ item.dest }} {{ item.gw }}'
     notify: network_service_restart
-    with_items: base_network.static_routing
+    with_items: "{{ base_network.static_routing }}"
     when:
-      - base_network.static_routing is defined
+      - base_network | has_nested_keys('static_routing')
       - routes.stdout.find('{{ item.dest }} via {{ item.gw }} dev {{ item.if }}') == -1
       - item.dest != "0.0.0.0/0"
   when: ansible_distribution_major_version == "7"
