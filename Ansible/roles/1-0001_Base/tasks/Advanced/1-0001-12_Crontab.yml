@@ -20,4 +20,4 @@
     month: '{{ item.record.split()[3] }}'
     weekday: '{{ item.record.split()[4] }}'
     job: '{{ item.record.split()[5:] | join(" ") }}'
-  with_items: base_advanced.cron.entry
+  with_items: "{{ base_advanced.cron.entry }}"
