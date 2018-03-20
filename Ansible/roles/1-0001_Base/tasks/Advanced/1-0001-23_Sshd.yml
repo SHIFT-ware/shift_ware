@@ -17,7 +17,7 @@
     regexp: "^PermitRootLogin"
     insertafter: "^#PermitRootLogin"
     line: "PermitRootLogin {{ base_advanced.sshd.permit_root_login | regex_replace('True', 'yes') | regex_replace('False', 'no') }}"
-  when: base_advanced.sshd.permit_root_login is defined
+  when: base_advanced | has_nested_keys('sshd', 'permit_root_login')
 
 - name: 1-0001-23_Sshd - set parameter PasswordAuthentication
   lineinfile:
@@ -26,5 +26,5 @@
     regexp: "^PasswordAuthentication"
     insertafter: "^#PasswordAuthentication"
     line: "PasswordAuthentication {{ base_advanced.sshd.password_auth | regex_replace('True', 'yes') | regex_replace('False', 'no') }}"
-  when: base_advanced.sshd.password_auth is defined
+  when: base_advanced | has_nested_keys('sshd', 'password_auth')
 
