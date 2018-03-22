@@ -16,7 +16,10 @@
   with_items: "{{ directory }}"
 
 - name: 2-0001-051_Directory - set owner of directory
-  raw: powershell "icacls '{{ item.path }}' /setowner '{{ item.owner }}'"
+  win_owner:
+    path: "{{ item.path }}"
+    user: "{{ item.owner }}"
+    recurse: False
   with_items: "{{ directory }}"
   when: item.owner is defined
 
