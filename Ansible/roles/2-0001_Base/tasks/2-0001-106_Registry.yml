@@ -11,7 +11,7 @@
 
 - name: 2-0001-106_Registry -set registry value
   win_regedit:
-    path: "Registry::{{ item.0.key }}"
+    path: "{{ item.0.key }}"
     name: "{{ item.1.name }}"
     data: "{{ item.1.data }}"
     type: "{{ item.1.type }}"
