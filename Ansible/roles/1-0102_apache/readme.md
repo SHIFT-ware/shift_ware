@@ -42,12 +42,6 @@ Red Hat Enterprise Linux|6.5
 remote_tmp_dir: "/root/.shift"
 
 apache:
-  packages:                                                        # インストールするパッケージ
-    - name: "apr-1.5.2-1.x86_64.rpm"
-    - name: "apr-util-1.5.4-1.x86_64.rpm"
-    - name: "mailcap-2.1.31-2.el6.noarch.rpm"
-    - name: "httpd-2.4.12-1.x86_64.rpm"
-    - name: "mod_ssl-2.4.12-1.x86_64.rpm"
   state: started                                                   # サービスの起動状態
   enabled: true                                                    # サービスの自動起動設定
   exec_user:                                                       # サービス実行ユーザ
