@@ -1,41 +1,11 @@
 ---
-- block:
-  - name: 1-0105-01_install - check package is installed
-    shell: rpm -qa | grep -q "{{ item.name | regex_replace('\.rpm', '') }}"
-    register: installed
-    changed_when: installed.rc == 1
-    failed_when: installed.rc == 2
-    with_items: "{{ openjdk_packages | default([]) }}"
+- name: 1-0105-01_install - install package
+  yum:
+    name: "java-{{ openjdk.version }}-openjdk"
+    state: present
 
-  - name: 1-0105-01_install - create tmp dir
-    file:
-      path: "{{ openjdk_tmp_dir }}"
-      state: directory
-    when: installed | changed
-
-  - name: 1-0105-01_install - send package
-    copy:
-      src: "../Shift_Env/files/{{ item.name }}"
-      dest: "{{ openjdk_tmp_dir }}"
-    register: send_task
-    with_items: "{{ openjdk_packages | default([]) }}"
-    when: installed | changed
-
-  - name: 1-0105-01_install - update package
-    shell: "yum update -y *"
-    args: 
-      chdir: "{{ openjdk_tmp_dir }}"
-    when: installed | changed
-
-  - name: 1-0105-01_install - install package
-    yum:
-      name: "{{ send_task.results | join(', ', attribute='dest') }}"
-      state: present
-    when: installed | changed
-  when: openjdk_packages is defined
-
-- name: 1-0105-01_install - delete tmp dir
-  file:
-    path: '{{ openjdk_tmp_dir }}'
-    state: absent
-
+- name: 1-0105-01_install - install devel package
+  yum:
+    name: "java-{{ openjdk.version }}-openjdk-devel"
+    state: present
+  when: openjdk.install_devel
