@@ -1,37 +1,13 @@
-- block:
-  - name: 1-0102-04_install_httpd2.4 - check installed package
-    shell: rpm -qa | grep -q "{{ item.name | regex_replace('\.rpm', '') }}"
-    register: installed
-    changed_when: installed.rc == 1
-    failed_when: installed.rc == 2
-    with_items: "{{ apac_apache.packages | default([]) }}"
+- name: 1-0102-04_install_httpd2.4 - install package
+  yum:
+    name: httpd
+    state: present
 
-  - name: 1-0102-04_install_httpd2.4 - create temp directory
-    file:
-      path: "{{ apac_apache_tmp_dir }}"
-      state: directory
-    when: installed | changed
-
-  - name: 1-0102-04_install_httpd2.4 - send package
-    copy:
-      src: "../Shift_Env/files/{{ item.name }}"
-      dest: "{{ apac_apache_tmp_dir }}"
-    with_items: "{{ apac_apache.packages | default([]) }}"
-    register: send_task
-    when: installed | changed
-
-  - name: 1-0102-04_install_httpd2.4 - update package
-    shell: "yum update -y *"
-    args: 
-      chdir: "{{ apac_apache_tmp_dir }}"
-    when: installed | changed
-
-  - name: 1-0102-04_install_httpd2.4 - install package
-    yum:
-      name: "{{ send_task.results | join(', ', attribute='dest') }}"
-      state: present
-    when: installed | changed
-  when: apac_apache.packages is defined
+- name: 1-0102-04_install_httpd2.4 - install mod_ssl
+  yum:
+    name: mod_ssl
+    state: present
+  when: apac_apache | has_nested_keys('virtualhost', 'ssl_vhosts')
 
 - name: 1-0102-04_install_httpd2.4 - delete temp directory
   file:
