@@ -17,31 +17,31 @@ describe ("106_Registry")do
         raise "テストに必要なパラメータADVANCED.registry.value.nameが不足しています" if value[:name] == nil
 
         describe ("に名前 #{ value[:name] } が存在すること") do
-          describe command("(Get-Item 'Registry::#{ key }').Property") do
+          describe command("(Get-Item '#{ key }').Property") do
             its(:stdout) { should match /(\A|\R)#{ value[:name] }(\R|\Z)/}
           end
         end
 
         describe ("の名前 #{ value[:name] } の種類が #{ value[:type] } であること"), :if => value[:type] != nil do
-          describe command("Write-Host -NoNewline (Get-Item 'Registry::#{ key }').GetValueKind('#{ value[:name] }')") do
+          describe command("Write-Host -NoNewline (Get-Item '#{ key }').GetValueKind('#{ value[:name] }')") do
             its(:stdout) { should eq "#{ value[:type] }" }
           end
         end
 
         describe ("に名前 #{ value[:name] } が存在すること") do
-          describe command("(Get-Item 'Registry::#{ key }').Property") do
+          describe command("(Get-Item '#{ key }').Property") do
             its(:stdout) { should match /(\A|\R)#{ value[:name] }(\R|\Z)/}
           end
         end
 
         describe ("の名前 #{ value[:name] } の種類が #{ value[:type] } であること"), :if => value[:type] != nil do
-          describe command("Write-Host -NoNewline (Get-Item 'Registry::#{ key }').GetValueKind('#{ value[:name] }')") do
+          describe command("Write-Host -NoNewline (Get-Item '#{ key }').GetValueKind('#{ value[:name] }')") do
             its(:stdout) { should eq "#{ value[:type] }" }
           end
         end
 
         describe ("の名前 #{ value[:name] } のデータが #{ value[:data] } であること"), :if => value[:data] != nil do
-          describe command("Write-Host -NoNewline (Get-Item 'Registry::#{ key }').GetValue('#{ value[:name] }')") do
+          describe command("Write-Host -NoNewline (Get-Item '#{ key }').GetValue('#{ value[:name] }')") do
             its(:stdout) { should eq "#{ value[:data] }" }
           end
         end
