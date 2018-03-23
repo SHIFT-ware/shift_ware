@@ -1,43 +1,14 @@
 ---
-- block:
-  - name: 1-0104-02_postgresql - check installed package
-    shell: rpm -qa | grep -q "{{ item.name | regex_replace('\.rpm', '') }}"
-    register: installed
-    changed_when: installed.rc == 1
-    failed_when: installed.rc == 2
-    with_items: "{{ pgsq_postgresql.packages | default([]) }}"
-
-  - name: 1-0104-02_postgresql - create tmp dir
-    file:
-      path: "{{ pgsq_tmp_dir }}"
-      state: directory
-    when: installed | changed
-
-  - name: 1-0104-02_postgresql - send package
-    copy:
-      src: "../Shift_Env/files/{{ item.name }}"
-      dest: "{{ pgsq_tmp_dir }}"
-    with_items: "{{ pgsq_postgresql.packages | default([]) }}"
-    register: send_task
-    when: installed | changed
-
-  - name: 1-0104-02_postgresql - update package
-    shell: "yum update -y *"
-    args:
-      chdir: "{{ pgsq_tmp_dir }}"
-    when: installed | changed
-
-  - name: 1-0104-02_postgresql - install package
-    yum:
-      name: "{{ send_task.results | join(', ', attribute='dest') }}"
-      state: present
-    when: installed | changed
-  when: pgsq_postgresql.packages is defined
-
-- name: 1-0104-02_postgresql - delete tmp dir
-  file:
-    path: '{{ pgsq_tmp_dir }}'
-    state: absent
+- name: 1-0104-02_postgresql - install package
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - postgresql94
+    - postgresql94-contrib
+    - postgresql94-devel
+    - postgresql94-docs
+    - postgresql94-server
 
 - name: 1-0104-02_postgresql - create postgresql database directories
   file:
