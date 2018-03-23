@@ -21,40 +21,8 @@ Red Hat Enterprise Linux|6.5
 パラメータ例:
 ```
 openjdk:
-  packages:                                                              # インストールパッケージ
-     - name: "alsa-lib-1.0.22-3.el6.x86_64.rpm"
-     - name: "flac-1.2.1-6.1.el6.x86_64.rpm"
-     - name: "fontconfig-2.8.0-3.el6.x86_64.rpm"
-     - name: "freetype-2.3.11-14.el6_3.1.x86_64.rpm"
-     - name: "giflib-4.1.6-3.1.el6.x86_64.rpm"
-     - name: "java-1.7.0-openjdk-1.7.0.45-2.4.3.3.el6.x86_64.rpm"
-     - name: "java-1.7.0-openjdk-devel-1.7.0.45-2.4.3.3.el6.x86_64.rpm"
-     - name: "jline-0.9.94-0.8.el6.noarch.rpm"
-     - name: "jpackage-utils-1.7.5-3.12.el6.noarch.rpm"
-     - name: "libasyncns-0.8-1.1.el6.x86_64.rpm"
-     - name: "libfontenc-1.0.5-2.el6.x86_64.rpm"
-     - name: "libICE-1.0.6-1.el6.x86_64.rpm"
-     - name: "libjpeg-turbo-1.2.1-1.el6.x86_64.rpm"
-     - name: "libogg-1.1.4-2.1.el6.x86_64.rpm"
-     - name: "libpng-1.2.49-1.el6_2.x86_64.rpm"
-     - name: "libSM-1.2.1-2.el6.x86_64.rpm"
-     - name: "libsndfile-1.0.20-5.el6.x86_64.rpm"
-     - name: "libvorbis-1.2.3-4.el6_2.1.x86_64.rpm"
-     - name: "libX11-1.5.0-4.el6.x86_64.rpm"
-     - name: "libX11-common-1.5.0-4.el6.noarch.rpm"
-     - name: "libXau-1.0.6-4.el6.x86_64.rpm"
-     - name: "libxcb-1.8.1-1.el6.x86_64.rpm"
-     - name: "libXext-1.3.1-2.el6.x86_64.rpm"
-     - name: "libXfont-1.4.5-2.el6.x86_64.rpm"
-     - name: "libXi-1.6.1-3.el6.x86_64.rpm"
-     - name: "libXrender-0.9.7-2.el6.x86_64.rpm"
-     - name: "libXtst-1.2.1-2.el6.x86_64.rpm"
-     - name: "pulseaudio-libs-0.9.21-14.el6_3.x86_64.rpm"
-     - name: "rhino-1.7-0.7.r2.2.el6.noarch.rpm"
-     - name: "ttmkfdir-3.0.9-32.1.el6.x86_64.rpm"
-     - name: "tzdata-java-2013g-1.el6.noarch.rpm"
-     - name: "xorg-x11-fonts-Type1-7.2-9.1.el6.noarch.rpm"
-     - name: "xorg-x11-font-utils-7.2-11.el6.x86_64.rpm"
+  version: "1.7.0"    # バージョン
+  install_devel: yes  # develパッケージをインストールするか
 ```
 
 ### Please put package files
