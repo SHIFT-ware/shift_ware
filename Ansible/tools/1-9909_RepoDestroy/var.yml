@@ -1,0 +1,3 @@
+l9909_remote_tmp_dir: "{{ l9908_remote_tmp_dir }}"
+l9909_repository_dir: "{{ l9908_repository_dir }}"
+l9909_remove_createrepo: no 
