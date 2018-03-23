@@ -1,1 +1,6 @@
-2-0001_Base
+Ansible/roles/2-0001_Base/tasks/2-0001-098_Rdp.yml
+Ansible/roles/2-0001_Base/tasks/2-0001-102_ErrorReport.yml
+Ansible/roles/2-0001_Base/tasks/2-0001-103_WinUpdate.yml
+Ansible/roles/2-0001_Base/tasks/2-0001-104_Owner.yml
+Ansible/roles/2-0001_Base/tasks/2-0001-107_PsExecPolicy.yml
+Ansible/roles/2-0001_Base/tasks/2-0001-109_Organization.yml

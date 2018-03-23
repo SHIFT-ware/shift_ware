@@ -19,7 +19,7 @@
   - name: 2-0001-078_DnsSuffix - push data "property" to "properties" to prepare changing dns suffix
     set_fact:
       properties: "{{ properties + property }}"
-  when: dns_suffix.primary.fqdn is defined
+  when: dns_suffix | has_nested_keys('primary', 'fqdn')
 
 - block:
   - name: 2-0001-078_DnsSuffix - set tmp variable "property" to prepare changing registry value "SyncDomainWithMembership" to 1
@@ -35,15 +35,17 @@
   - name: 2-0001-078_DnsSuffix - push data "property" to "properties" to prepare changing registry value "SyncDomainWithMembership"
     set_fact:
       properties: "{{ properties + property }}"
-  when: dns_suffix.primary.change_when_domain_membership_changed is defined
+  when: dns_suffix | has_nested_keys('primary', 'change_when_domain_membership_changed')
 
 - name: 2-0001-078_DnsSuffix - create registry path
   raw: if ( ! ( Test-Path '{{ location }}' )) { New-Item '{{ location }}' -Force }
+  register: create_registry_path
+  changed_when: create_registry_path.stdout != ""
   always_run: yes
 
 - name: 2-0001-078_DnsSuffix - check registry value
   raw: (Get-ItemProperty '{{ location }}').'{{ item.property }}'
-  with_items: properties
+  with_items: "{{ properties }}"
   register: ret_pre
   changed_when: ret_pre.stdout != "{{ item.data }}\r\n"
   notify:
@@ -54,14 +56,14 @@
 
 - name: 2-0001-078_DnsSuffix - set registry value
   raw: Set-ItemProperty '{{ location }}' '{{ item.item.property }}' -Value '{{ item.item.data }}' -Type '{{ item.item.type }}'
-  with_items: ret_pre.results
+  with_items: "{{ ret_pre.results }}"
   when:
     - item.changed == true
   always_run: no
 
 - name: 2-0001-078_DnsSuffix - post check registry value
   raw: (Get-ItemProperty '{{ location }}').'{{ item.property }}'
-  with_items: properties
+  with_items: "{{ properties }}"
   register: ret_post
   changed_when: ret_post.stdout != "{{ item.data }}\r\n"
   always_run: no

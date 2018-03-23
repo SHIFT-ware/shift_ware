@@ -1,1 +1,7 @@
-1-0001_Base
+Ansible/roles/1-0001_Base/tasks/Base/OSCORE/1-0001-10_Selinux.yml
+Ansible/roles/1-0001_Base/tasks/Base/OSCORE/1-0001-14_Lang.yml
+Ansible/roles/1-0001_Base/tasks/Base/OSCORE/1-0001-27_Kdump.yml
+Ansible/roles/1-0001_Base/tasks/Base/OSCORE/1-0001-28_Keyboard.yml
+Ansible/roles/1-0001_Base/tasks/Base/OSCORE/1-0001-29_Timezone.yml
+Ansible/roles/1-0001_Base/tasks/Base/OSCORE/1-0001-37_SystemRunLevel.yml
+Ansible/roles/1-0001_Base/tasks/Base/OSCORE/1-0001-40_Grub.yml

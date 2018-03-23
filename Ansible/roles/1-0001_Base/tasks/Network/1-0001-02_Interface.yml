@@ -8,6 +8,6 @@
     owner: root
     group: root
     mode: 0644
-  with_items: base_network.interface
+  with_items: "{{ base_network.interface }}"
   notify: network_service_restart
 

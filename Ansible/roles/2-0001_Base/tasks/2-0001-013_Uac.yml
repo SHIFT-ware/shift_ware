@@ -59,7 +59,7 @@
 
 - name: 2-0001-013_Uac - change registry value
   raw: Set-ItemProperty '{{ location }}' '{{ item.item.property }}' -Value '{{ item.item.value }}' -Type 'DWord'
-  with_items: ret_pre.results
+  with_items: "{{ ret_pre.results }}"
   when:
     - item.changed == true
   always_run: no

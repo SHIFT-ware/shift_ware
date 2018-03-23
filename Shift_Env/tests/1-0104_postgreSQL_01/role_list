@@ -1,1 +1,5 @@
-1-0104_postgreSQL
+Ansible/roles/1-0104_postgreSQL/tasks/1-0104-01_create_user_and_groups.yml
+Ansible/roles/1-0104_postgreSQL/tasks/1-0104-02_postgresql.yml
+Ansible/roles/1-0104_postgreSQL/tasks/1-0104-03_postgresql_conf.yml
+Ansible/roles/1-0104_postgreSQL/tasks/1-0104-04_postgresql_replication.yml
+Ansible/roles/1-0104_postgreSQL/tasks/1-0104-05_post_tasks.yml

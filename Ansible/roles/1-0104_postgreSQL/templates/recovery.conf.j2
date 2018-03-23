@@ -153,7 +153,7 @@
 #---------------------------------------------------------------------------
 
 standby_mode = 'on'
-primary_conninfo = 'host={{ pgsq_master_address }} port={{ pgsq_master_port }} application_name={{ pgsq_slave_name }} user={{ pgsq_replication_user_name }} password={{ pgsq_replication_user_password }}'
+primary_conninfo = 'host={{ pgsq_postgresql.cluster.master_address }} port={{ pgsq_postgresql.cluster.master_port }} application_name={{ pgsq_postgresql.cluster.slave_name }} user={{ pgsq_postgresql.cluster.replication_user.name }} password={{ pgsq_postgresql.cluster.replication_user.password }}'
 recovery_target_timeline = 'latest'
-restore_command = 'cp {{ pgsq_wal_archive_dir }}/%f %p'
+restore_command = 'cp {{ pgsq_postgresql.wal_archive_dir }}/%f %p'
 

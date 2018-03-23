@@ -2,35 +2,35 @@
 - name: 2-0001-073_Routing - set tmp empty variable "static_routing"
   set_fact:
     static_routing: []
-  when: base_NETWORK.static_routing is undefined
+  when: not base_NETWORK | has_nested_keys('static_routing')
 
 - name: 2-0001-073_Routing - set tmp variable "static_routing"
   set_fact:
     static_routing: "{{ base_NETWORK.static_routing }}"
-  when: base_NETWORK.static_routing is defined
+  when: base_NETWORK | has_nested_keys('static_routing')
 
 - name: 2-0001-073_Routing - set tmp variable "default_gw"
   set_fact:
     default_gw: "{{ base_NETWORK.default_gw }}"
-  when: base_NETWORK.default_gw is defined
+  when: base_NETWORK | has_nested_keys('default_gw')
 
 - name: 2-0001-073_Routing - check static route
   raw: route print -4 '{{ item.dest }}' | Select-String '{{ item.dest }}'
-  with_items: static_routing
+  with_items: "{{ static_routing }}"
   register: ret_pre
   changed_when: not ret_pre.stdout | search("\s{{ item.dest }}\s+{{ item.mask }}\s+{{ item.gw }}\s")
   always_run: yes
 
 - name: 2-0001-073_Routing - set static route entry
   raw: route -p add '{{ item.item.dest }}' mask '{{ item.item.mask }}' '{{ item.item.gw }}'
-  with_items: ret_pre.results
+  with_items: "{{ ret_pre.results }}"
   when:
     - item.changed == true
   always_run: no
 
 - name: 2-0001-073_Routing - post check static route
   raw: route print -4 '{{ item.dest }}' | Select-String '{{ item.dest }}'
-  with_items: static_routing
+  with_items: "{{ static_routing }}"
   register: ret_post
   when:
     - ret_pre | changed

@@ -1,1 +1,4 @@
-1-0001_Base
+Ansible/roles/1-0001_Base/tasks/Advanced/1-0001-05_Resolv.yml
+Ansible/roles/1-0001_Base/tasks/Advanced/1-0001-04_Hosts.yml
+Ansible/roles/1-0001_Base/tasks/Advanced/1-0001-20_Nsswitch.yml
+
