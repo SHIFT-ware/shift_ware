@@ -1,49 +1,32 @@
+describe "011_User" do
+  context "ユーザー" do
+    users = property.dig(:BASE, :ID, :user)
 
-    
-describe("011-OSユーザ")do
-  begin
-    users = property[:BASE][:ID][:user]
-  rescue NoMethodError
-    users = nil
-  end
+    users.each do |user|
+      it "#{user[:name]}が存在すること" do
+	expect(user).to exist
+      end
 
-  next if users == nil
+      it "#{user[:name]}のuidが#{user[:uid]}であること", if: user.has_key?(:uid) do
+	expect(user).to have_uid user[:uid]
+      end
 
-  users.each do |user|
-    name = user[:name]
-    uid = user[:uid]
-    group = user[:group]
-    home_dir = user[:home_dir]
-    shell = user[:shell]
-    sub_groups = user[:sub_groups]
+      it "#{user[:name]}が#{user[:group]}に所属すること", if: user.has_key?(:group) do
+	expect(user).to belong_to_primary_group user[:group]
+      end
 
-    describe user(name) do
-      describe ("ユーザが存在すること") do
-        it { should exist }
+      it "#{user[:name]}のホームディレクトリが#{user[:home_dir]}であること", if: user.has_key?(:home_dir) do
+	expect(user).to have_home_directory user[:home_dir]
       end
-      
-      describe ("のuidが#{uid}であること"), :if => uid != nil do
-        it { should have_uid "#{uid}" }
+
+      it "#{user[:name]}のログインシェルが#{user[:shell]}であること", if: user.has_key?(:shell) do
+	expect(user).to have_login_shell user[:shell]
       end
-      
-      describe ("が#{group}に所属すること"),:if => group != nil do
-        it { should belong_to_group "#{group}" }
-      end
-      
-      describe ("のホームディレクトリが#{home_dir}であること"), :if => home_dir != nil do 
-        it { should have_home_directory "#{home_dir}" }
-      end
-      
-      describe ("のログインシェルが#{shell}であること"), :if => shell != nil do
-        it { should have_login_shell "#{shell}"}
-      end
-      
-      describe ("がセカンダリグループとして#{sub_groups.to_s}に所属していること") , :if => sub_groups != nil do
-        sub_groups.to_s.split(",").each do |sub_group|
-          describe command("grep '^#{sub_group}:' /etc/group") do
-            its(:stdout) { should match /(:|,)#{name}(,|\s*$)/ } 
-          end
-        end
+
+      it "#{user[:name]}がカンダリグループとして#{user[:sub_groups]}に所属していること", if: user.has_key?(:sub_groups) do
+        user[:sub_groups].split(",").each do |sub_group|
+	  stdout = command("grep '^#{sub_group}:' /etc/group").stdout
+	  expect(stdout).to match /(:|,)#{name}(,|\s*$)/
       end
     end
   end
