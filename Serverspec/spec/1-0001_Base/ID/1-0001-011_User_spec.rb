@@ -24,10 +24,9 @@ describe "011_User" do
       end
 
       it "#{user[:name]}がカンダリグループとして#{user[:sub_groups]}に所属していること", if: user.has_key?(:sub_groups) do
-        user[:sub_groups].split(",").each do |sub_group|
-	  stdout = command("grep '^#{sub_group}:' /etc/group").stdout
-	  expect(stdout).to match /(:|,)#{name}(,|\s*$)/
-	end
+        sub_groups = user[:sub_groups].split(",")
+        stdouts = sub_groups.map { |sub_group| command("grep '^#{sub_group}:' /etc/group").stdout }
+        expect(stdouts).to all match /(:|,)#{user[:name]}(,|\s*$)/
       end
     end
   end
