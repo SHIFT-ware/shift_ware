@@ -1,6 +1,6 @@
 describe "011_User" do
   context "ユーザー" do
-    users = property.dig(:BASE, :ID, :user)
+    users = property.dig(:BASE, :ID, :user).to_a
 
     users.each do |user|
       it "#{user[:name]}が存在すること" do
@@ -27,6 +27,7 @@ describe "011_User" do
         user[:sub_groups].split(",").each do |sub_group|
 	  stdout = command("grep '^#{sub_group}:' /etc/group").stdout
 	  expect(stdout).to match /(:|,)#{name}(,|\s*$)/
+	end
       end
     end
   end
