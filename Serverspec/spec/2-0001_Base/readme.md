@@ -354,7 +354,7 @@ WindowsServer|2012R2
     hotfix:                               #更新プログラム(hotfix)
       - id: 'KB2842230'                   #KB番号(hotfix ID)
     registry:                             #レジストリ
-      - key: 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion'     #キー
+      - key: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'         #キー
         value:                            #値
           - name: 'RegisteredOrganization'     #名前
             type: 'String'                #種類

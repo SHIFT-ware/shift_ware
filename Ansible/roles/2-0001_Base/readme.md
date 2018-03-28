@@ -196,7 +196,7 @@ ADVANCED:                               #ADVANCED
       type: 'none'                      #ローテーション設定
       maxsize: 2048                     #最大サイズ(KB)
   registry:                             #レジストリ
-    - key: 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion'     #キー
+    - key: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'        #キー
       value:                            #値
         - name: 'RegisteredOrganization'              #名前
           type: 'String'                #種類
