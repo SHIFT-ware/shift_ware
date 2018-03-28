@@ -4,26 +4,31 @@ describe "011_User" do
 
     users.each do |user|
       it "#{user[:name]}が存在すること" do
-	expect(user).to exist
+	user_config = user(user[:name])
+	expect(user_config).to exist
       end
 
       it "#{user[:name]}のuidが#{user[:uid]}であること", if: user.has_key?(:uid) do
-	expect(user).to have_uid user[:uid]
+	user_config = user(user[:name])
+	expect(user_config).to have_uid user[:uid]
       end
 
       it "#{user[:name]}が#{user[:group]}に所属すること", if: user.has_key?(:group) do
-	expect(user).to belong_to_primary_group user[:group]
+	user_config = user(user[:name])
+	expect(user_config).to belong_to_primary_group user[:group]
       end
 
       it "#{user[:name]}のホームディレクトリが#{user[:home_dir]}であること", if: user.has_key?(:home_dir) do
-	expect(user).to have_home_directory user[:home_dir]
+	user_config = user(user[:name])
+	expect(user)_config.to have_home_directory user[:home_dir]
       end
 
       it "#{user[:name]}のログインシェルが#{user[:shell]}であること", if: user.has_key?(:shell) do
-	expect(user).to have_login_shell user[:shell]
+	user_config = user(user[:name])
+	expect(user_config).to have_login_shell user[:shell]
       end
 
-      it "#{user[:name]}がカンダリグループとして#{user[:sub_groups]}に所属していること", if: user.has_key?(:sub_groups) do
+      it "#{user[:name]}がセカンダリグループとして#{user[:sub_groups]}に所属していること", if: user.has_key?(:sub_groups) do
         sub_groups = user[:sub_groups].split(",")
         stdouts = sub_groups.map { |sub_group| command("grep '^#{sub_group}:' /etc/group").stdout }
         expect(stdouts).to all match /(:|,)#{user[:name]}(,|\s*$)/
