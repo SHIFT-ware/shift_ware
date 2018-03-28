@@ -17,7 +17,7 @@ describe "013_PasswordPolicy" do
       expect(password_policy.content).to match /^PASS_MIN_LEN\s+#{password_policy[:min_length]}\s*$/
     end
 
-    it "のパスワード期限切れの警告を#{password_policy[:warn_age]}日前からする設定であること"), if: password_policy.has_key?(:warn_age) do
+    it "のパスワード期限切れの警告を#{password_policy[:warn_age]}日前からする設定であること", if: password_policy.has_key?(:warn_age) do
       expect(password_policy.content).to match /^PASS_WARN_AGE\s+#{password_policy[:warn_age]}\s*$/
     end
   end
