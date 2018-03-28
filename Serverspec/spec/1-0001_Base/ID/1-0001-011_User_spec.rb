@@ -20,7 +20,7 @@ describe "011_User" do
 
       it "#{user[:name]}のホームディレクトリが#{user[:home_dir]}であること", if: user.has_key?(:home_dir) do
 	user_config = user(user[:name])
-	expect(user)_config.to have_home_directory user[:home_dir]
+	expect(user_config).to have_home_directory user[:home_dir]
       end
 
       it "#{user[:name]}のログインシェルが#{user[:shell]}であること", if: user.has_key?(:shell) do
