@@ -101,11 +101,11 @@
 #  roles: 
 #    - 1-1102_ES1Logscn
 
-- name: 1-1201_HinemosAgent
-  hosts: 1-1201_HinemosAgent_GROUP
-  become: yes
-  roles:
-    - 1-1201_HinemosAgent
+# - name: 1-1201_HinemosAgent
+#   hosts: 1-1201_HinemosAgent_GROUP
+#   become: yes
+#   roles:
+#     - 1-1201_HinemosAgent
 
 - name: 1-1301_ZabbixAgent
   hosts: 1-1301_ZabbixAgent_GROUP
@@ -167,14 +167,14 @@
 #  roles: 
 #    - 2-1102_ES1Logscn
 #
-- name: 2-1201_HinemosAgent
-  hosts: 2-1201_HinemosAgent_GROUP
-  remote_user: Administrator
-  roles:
-    - 2-1201_HinemosAgent
+# - name: 2-1201_HinemosAgent
+#   hosts: 2-1201_HinemosAgent_GROUP
+#   remote_user: Administrator
+#   roles:
+#     - 2-1201_HinemosAgent
 
-- name: 2-1301_ZabbixAgent
-  hosts: 2-1301_ZabbixAgent_GROUP
-  remote_user: Administrator
-  roles:
-    - 2-1301_ZabbixAgent
+# - name: 2-1301_ZabbixAgent
+#   hosts: 2-1301_ZabbixAgent_GROUP
+#   remote_user: Administrator
+#   roles:
+#     - 2-1301_ZabbixAgent
