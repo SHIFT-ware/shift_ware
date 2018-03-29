@@ -1,12 +1,11 @@
 require 'open3'
 require 'json'
 
-describe ("Zabbix ホスト") do
+describe ("Zabbix ホスト"), :if property[:ZabbixAgent].has_key?(:zabbix_host) do
 
   if property[:ZabbixAgent][:zabbix_host] != nil
     o, e, s = Open3.capture3("zabbix_gethost " + property[:ZabbixAgent][:zabbix_host][:server_url] + " " + property[:ZabbixAgent][:zabbix_host][:login_user] + " " + property[:ZabbixAgent][:zabbix_host][:login_pass] + " " + property[:ZabbixAgent][:zabbix_host][:host_name])
     rtnval = JSON.parse(o)
-    # p rtnval
 
     describe ("ホスト名が #{ property[:ZabbixAgent][:zabbix_host][:host_name] } の Zabbix ホストが登録されていること") do
       it { expect( rtnval.has_key?("hostid") ).to eq true }
