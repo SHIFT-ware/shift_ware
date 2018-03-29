@@ -2,6 +2,7 @@
   connection_hostname: '192.168.127.31'
   operating_system: 'Linux'
   ZabbixAgent: 
+    package: 'zabbix-agent'
     config: 
       pidfile: '/var/run/zabbix/zabbix_agentd.pid'
       logfile: '/var/log/zabbix/zabbix_agentd.log'
@@ -21,6 +22,7 @@
   connection_hostname: '192.168.127.41'
   operating_system: 'Linux'
   ZabbixAgent: 
+    package: 'zabbix-agent'
     config: 
       logfile: '/var/log/zabbix/zabbix_agentd.log'
       enableremotecommands: 0

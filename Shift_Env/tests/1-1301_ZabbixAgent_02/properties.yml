@@ -2,7 +2,9 @@
   connection_hostname: '192.168.127.31'
   operating_system: 'Linux'
   ZabbixAgent:
+    package: 'zabbix-agent'
 192.168.127.41:
   connection_hostname: '192.168.127.41'
   operating_system: 'Linux'
   ZabbixAgent:
+    package: 'zabbix-agent'

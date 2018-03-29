@@ -2,18 +2,19 @@
   connection_hostname: '192.168.127.31'
   operating_system: 'Linux'
   ZabbixAgent:
-      config:
-          server: '192.168.127.6'
-          serveractive: '192.168.127.6'
-      service:
-          state: 'started'
+    package: 'zabbix-agent'
+    config:
+      server: '192.168.127.6'
+      serveractive: '192.168.127.6'
+    service:
+      state: 'started'
 192.168.127.41:
   connection_hostname: '192.168.127.41'
   operating_system: 'Linux'
   ZabbixAgent:
-      config:
-          server: '192.168.127.6'
-          serveractive: '192.168.127.6'
-      service:
-          state: 'started'
-
+    package: 'zabbix-agent'
+    config:
+      server: '192.168.127.6'
+      serveractive: '192.168.127.6'
+    service:
+      state: 'started'

@@ -1,6 +1,7 @@
 describe ("1-1301_ZabbixAgent(package and service)") do
-  describe ("ZabbixAgentがインストールされていること") do
-    describe package("zabbix-agent") do
+  pkg = property[:ZabbixAgent][:package] rescue nil
+  describe ("ZabbixAgentがインストールされていること"), :if => pkg.nil? == false do
+    describe package(pkg) do
       it { should be_installed }
     end
   end
