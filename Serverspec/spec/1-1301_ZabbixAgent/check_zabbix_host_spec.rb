@@ -1,9 +1,10 @@
 require 'open3'
 require 'json'
 
-describe ("Zabbix ホスト"), :if => property[:ZabbixAgent].has_key?(:zabbix_host) do
+zabbix_host = property[:ZabbixAgent][:zabbix_host] rescue nil
 
-  if property[:ZabbixAgent][:zabbix_host] != nil
+if zabbix_host.nil? == false
+  describe ("Zabbix ホスト") do
     o, e, s = Open3.capture3("zabbix_gethost " + property[:ZabbixAgent][:zabbix_host][:server_url] + " " + property[:ZabbixAgent][:zabbix_host][:login_user] + " " + property[:ZabbixAgent][:zabbix_host][:login_pass] + " " + property[:ZabbixAgent][:zabbix_host][:host_name])
     rtnval = JSON.parse(o)
 
@@ -75,8 +76,6 @@ describe ("Zabbix ホスト"), :if => property[:ZabbixAgent].has_key?(:zabbix_ho
           end
         end
       end
-
     end
   end
-
 end
