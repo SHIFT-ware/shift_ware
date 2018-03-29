@@ -17,12 +17,13 @@
         dest: "{{ l9908_remote_tmp_dir }}/1-9908_RepoUp"
       with_fileglob: "../../../Shift_Env/files/shift/yum_repo/*.rpm"
       register: reg_copy_packages
-    
+   
     - name: install packages
       yum:
         name: "{{ reg_copy_packages.results | join(', ', attribute='dest') }}"
         state: "installed"
         disablerepo: "*"
+      when: reg_copy_packages | changed
     
     - name: create repository dir
       file:
