@@ -1,0 +1,7 @@
+---
+- include_tasks: 2-1301-01_pre_tasks.yml
+  when: zabbix_agent is defined
+- include_tasks: 2-1301-02_install.yml
+  when: zabbix_agent is defined
+- include_tasks: 2-1301-03_post_tasks.yml
+  when: zabbix_agent | has_nested_keys("zabbix_host")

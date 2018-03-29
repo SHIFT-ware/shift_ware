@@ -1,0 +1,26 @@
+---
+- name: 1-1201-01_Install Hinemos Agent - check install parameter
+  fail:
+    msg: "required parameter (installer or manager_ip) is not defined"
+  when:
+    hinemos_agent.package is not defined or
+    not hinemos_agent | has_nested_keys("hinemos_manager", "ip")
+
+- name: 1-1201-01_Install Hinemos Agent - install package
+  yum:
+    name: "{{ hinemos_agent.package }}"
+    state: present
+  environment:
+    HINEMOS_MANAGER: "{{ hinemos_agent.hinemos_manager.ip }}"
+
+- name: 2-1201-01_Install Hinemos Agent - HinemosAgent Service enabled
+  service:
+    name: "{{ hinemos_agent.service_HinemosAgent.name }}"
+    enabled: "{{ hinemos_agent.service_HinemosAgent.enabled }}"
+  when: hinemos_agent | has_nested_keys("service_HinemosAgent", "enabled")
+
+- name: 2-1201-01_Install Hinemos Agent - HinemosAgent Service state
+  service:
+    name: "{{ hinemos_agent.service_HinemosAgent.name }}"
+    state: "{{ hinemos_agent.service_HinemosAgent.state  }}"
+  when: hinemos_agent | has_nested_keys("service_HinemosAgent", "state")

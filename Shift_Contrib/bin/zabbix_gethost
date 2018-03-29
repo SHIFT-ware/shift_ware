@@ -1,0 +1,20 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+from zabbix_api import ZabbixAPI
+import sys
+import json
+
+argvs = sys.argv
+serverurl = argvs[1]
+username = argvs[2]
+password = argvs[3]
+hostname = argvs[4]
+
+try:
+  zapi = ZabbixAPI(server=serverurl)
+  zapi.login(username, password)
+  hostInfo=zapi.host.get({"filter":{"host": hostname}, 
+        "selectParentTemplates": ["name"], "selectGroups": ["name"], "selectInterfaces": ["type","ip"]})
+  print json.dumps(hostInfo[0])
+except:
+  print "{}"

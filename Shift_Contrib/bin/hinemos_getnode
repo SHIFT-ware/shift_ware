@@ -1,0 +1,31 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+from suds.client import Client
+from suds.transport.http import HttpAuthenticated
+import sys
+import json
+
+argvs = sys.argv
+mgrip = argvs[1]
+username = argvs[2]
+password = argvs[3]
+fId = argvs[4]
+
+url = "http://" + mgrip + ":8080/HinemosWS/RepositoryEndpoint?wsdl" 
+
+try:
+  t = HttpAuthenticated(username=username, password=password) 
+  client = Client(url, transport=t)
+
+  #ノード情報(NodeInfo)を取得する
+  nodeInfo = client.service.getNode(fId) 
+
+  result = {}
+  result["facilityId"] = nodeInfo.facilityId
+  result["facilityName"] = nodeInfo.facilityName
+  result["ipAddressV4"] = nodeInfo.ipAddressV4
+  result["ownerRoleId"] = nodeInfo.ownerRoleId
+  
+  print json.dumps(result)
+except:
+  print "{}"

@@ -1,0 +1,180 @@
+---
+- name: 2-1201-002_Install SNMP
+  win_feature:
+    name: SNMP-Service
+    state: present 
+    include_management_tools: True
+
+- name: 2-1201-002_Set Community
+  win_regedit:
+    key: HKLM:\System\CurrentControlSet\Services\SNMP\Parameters\ValidCommunities
+    value: "{{ hinemos_agent.community.name }}"
+    data: "{{ w1201_hinemosagent_community_permission }}" 
+    datatype: dword
+  notify: RestartSNMP
+  when:
+    - hinemos_agent.community.name is defined
+
+- name: 2-1201-002_Set PermittedManagers
+  win_regedit:
+    key: HKLM:\SYSTEM\CurrentControlSet\Services\SNMP\Parameters\PermittedManagers
+    value: 2
+    data: "{{ hinemos_agent.hinemos_manager.ip }}"
+    datatype: string
+  notify: RestartSNMP
+  when: hinemos_agent | has_nested_keys("hinemos_manager", "ip")
+
+- meta: flush_handlers
+
+- name: 2-1201-002_InstallAgent (Install Check)
+  raw: Write-Host -NoNewline (Get-WmiObject -Class Win32_Product -Filter "Name Like '%HinemosAgent%'" | Measure-Object).Count
+  changed_when: false
+  failed_when: false
+  register: ret_chk
+
+- block:
+  - name: 2-1201-002_CheckInstallParameter
+    fail:
+      msg: "required parameter (installer or install_path or manager_ip) is not defined"
+    when:
+      hinemos_agent.installer is not defined or
+      hinemos_agent.install_path is not defined or
+      not hinemos_agent | has_nested_keys("hinemos_manager", "ip")
+
+  - name: 2-1201-002_CreateTempDir
+    win_file:
+      path: "{{ remote_tmp_dir }}\\{{ role_name }}"
+      state: directory
+ 
+  - name: 2-1201-002_InstallAgent (Installer Put)
+    win_copy:
+      src: "{{ hinemos_agent.installer }}"
+      dest: "{{ remote_tmp_dir }}\\{{ role_name }}\\"
+ 
+  - name: 2-1201-002_InstallAgent (Install)
+    raw: cmd /c "msiexec.exe /quiet /i `"{{ remote_tmp_dir }}\\{{ role_name }}\\{{ hinemos_agent.installer }}`" InstallDir=`"{{ hinemos_agent.install_path }}`" HINEMOS_MANAGER=`"{{ hinemos_agent.hinemos_manager.ip }}`""
+    changed_when: true
+    notify: RestartSNMP
+ 
+  - meta: flush_handlers
+
+  when: ret_chk.stdout == "0" 
+ 
+  always:
+  - name: 2-1201-002_DeleteTempDir
+    win_file:
+      path: "{{ remote_tmp_dir }}\\{{ role_name }}"
+      state: absent
+ 
+- name: 2-1201-002_RegisterService (Service Check)
+  raw: Get-Service {{ hinemos_agent.service_HinemosAgent.name }}
+  changed_when: false
+  failed_when: false
+  register: ret_srv
+
+- name: CheckRegisterServiceParameter
+  fail:
+    msg: "required parameter (install_path) is not defined"
+  when:
+    - ret_srv.rc != 0
+    - hinemos_agent.install_path is not defined 
+
+- name: 2-1201-002_SetJAVA_HOME
+  win_lineinfile: >
+    dest="{{ hinemos_agent.install_path }}\\bin\\RegistAgentService.conf"
+    regexp='^;JAVA_HOME='
+    line='JAVA_HOME={{ hinemos_agent.jdk_install_path }}'
+  when:
+    - hinemos_agent.jdk_install_path is defined
+
+- name: 2-1201-002_RegiseterService (Register Service)
+  raw: cmd /c "cd `"{{ hinemos_agent.install_path }}\\bin`" & echo | RegistAgentService.bat"
+  changed_when: true
+  when: ret_srv.rc != 0
+
+- name: CheckParameter
+  fail:
+    msg: "required parameter (install_path) is not defined"
+  when:
+    - hinemos_agent | has_nested_keys("hinemos_manager", "ip")
+    - hinemos_agent.install_path is not defined
+
+- name: 2-1201-002_Set_HinemosManager
+  win_lineinfile: >
+    dest="{{ hinemos_agent.install_path }}\\conf\\Agent.properties"
+    regexp='^managerAddress'
+    line='managerAddress=http://{{ hinemos_agent.hinemos_manager.ip }}:8081/HinemosWS/'
+  when:
+    - hinemos_agent | has_nested_keys("hinemos_manager", "ip")
+  notify: RestartHinemosAgent
+
+- meta: flush_handlers
+
+- name: 2-1201-002_HinemosAgent_Service_start_mode
+  win_service:
+    name: "{{ hinemos_agent.service_HinemosAgent.name }}"
+    start_mode: "{{ hinemos_agent.service_HinemosAgent.start_mode }}"
+  when:
+    - hinemos_agent | has_nested_keys("service_HinemosAgent", "start_mode")
+
+- name: 2-1201-002_HinemosAgent_Service_Check_logon_account
+  raw: Write-Host -NoNewline (gwmi win32_service | select name,startname | Where-Object {$_.name -eq '{{ hinemos_agent.service_HinemosAgent.name }}'} | Where-Object {$_.startname -eq '{{ hinemos_agent.service_HinemosAgent.logon_account }}'} | Measure-Object).Count
+  changed_when: false
+  failed_when: false
+  register: ret_ac
+  when:
+    - hinemos_agent | has_nested_keys("service_HinemosAgent", "logon_account")
+
+- name: 2-1201-002_HinemosAgent_Service_Set_logon_account
+  raw: (gwmi win32_service -filter "name='Hinemos_6.0_Agent'").change($null,$null,$null,$null,$null,$null,"{{ hinemos_agent.service_HinemosAgent.logon_account }}","{{ hinemos_agent.service_HinemosAgent.logon_pass | default('$null') }}",$null,$null,$null) | Where-Object { $_.ReturnValue -eq 0 }
+  register: result
+  changed_when: result.stdout is defined 
+  failed_when: result.stdout == ""
+  notify: RestartHinemosAgent
+  when:
+    - hinemos_agent | has_nested_keys("service_HinemosAgent", "logon_account")
+    - ret_ac.stdout == "0"
+
+- meta: flush_handlers
+
+- name: 2-1201-002_HinemosAgent_Service_state
+  win_service:
+    name: "{{ hinemos_agent.service_HinemosAgent.name }}"
+    state: "{{ hinemos_agent.service_HinemosAgent.state }}"
+  when:
+    - hinemos_agent | has_nested_keys("service_HinemosAgent", "state")
+
+- name: 2-1201-002_SNMP_Service_start_mode
+  win_service:
+    name: "SNMP"
+    start_mode: "{{ hinemos_agent.service_SNMP.start_mode }}"
+  when:
+    - hinemos_agent | has_nested_keys("service_SNMP", "start_mode")
+
+- name: 2-1201-002_SNMP_Service_Check_logon_account
+  raw: Write-Host -NoNewline (gwmi win32_service | select name,startname | Where-Object {$_.name -eq 'SNMP'} | Where-Object {$_.startname -eq '{{ hinemos_agent.service_SNMP.logon_account }}'} | Measure-Object).Count
+  changed_when: false
+  failed_when: false
+  register: ret_ac
+  when:
+    - hinemos_agent | has_nested_keys("service_SNMP", "logon_account")
+
+- name: 2-1201-002_SNMP_Service_Set_logon_account
+  raw: (gwmi win32_service -filter "name='SNMP'").change($null,$null,$null,$null,$null,$null,"{{ hinemos_agent.service_SNMP.logon_account }}","{{ hinemos_agent.service_SNMP.logon_pass | default('$null') }}",$null,$null,$null) | Where-Object { $_.ReturnValue -eq 0 }
+  register: result
+  changed_when: result.stdout is defined 
+  failed_when: result.stdout == ""
+  notify: RestartSNMP
+  when:
+    - hinemos_agent | has_nested_keys("service_SNMP", "logon_account")
+    - ret_ac.stdout == "0"
+
+- meta: flush_handlers
+
+- name: 2-1201-002_SNMP_Service_state
+  win_service:
+    name: "SNMP"
+    state: "{{ hinemos_agent.service_SNMP.state }}"
+  when:
+    - hinemos_agent | has_nested_keys("service_SNMP", "state")
+    

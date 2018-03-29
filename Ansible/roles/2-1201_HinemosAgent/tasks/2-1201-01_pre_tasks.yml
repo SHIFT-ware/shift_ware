@@ -1,0 +1,33 @@
+---
+- name: 2-1201-001_pre_tasks - Firewall rule to allow Hinemos Agent on UDP port
+  win_firewall_rule:
+    name: Hinemos Agent
+    localport: "{{ hinemos_agent.firewall_port }}"
+    action: allow
+    direction: in
+    protocol: udp
+    profiles: "{{ hinemos_agent.firewall_profiles }}"
+    state: present
+    enabled: yes
+
+- name: 2-1201-001_pre_tasks - Install Oracle JDK (Install Check) 
+  raw: Write-Host -NoNewline (Get-WmiObject -Class Win32_Product -Filter "Name Like '%Java%'" | Measure-Object).Count
+  changed_when: false
+  failed_when: false
+  register: ret_chk
+
+- block:
+  - name: 2-1201-001_pre_tasks - Create Temp Dir
+    win_file:
+      path: "{{ remote_tmp_dir }}\\{{ role_name }}"
+      state: directory
+
+  - name: 2-1201-001_pre_tasks - Install Oracle JDK (Installer Put)
+    win_copy:
+      src: "{{ hinemos_agent.jdk_installer }}"
+      dest: "{{ remote_tmp_dir }}\\{{ role_name }}\\"
+
+  - name: 2-1201-001_pre_tasks - Install Oracle JDK (Install)
+    raw: "{{ remote_tmp_dir }}\\{{ role_name }}\\{{ hinemos_agent.jdk_installer }} /s /INSTALLDIRPUBJRE='{{ hinemos_agent.jdk_install_path }}'"
+
+  when: ret_chk.stdout == "0" 

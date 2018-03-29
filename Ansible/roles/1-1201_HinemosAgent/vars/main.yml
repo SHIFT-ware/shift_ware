@@ -1,0 +1,2 @@
+---
+hinemos_agent: "{{ HinemosAgent }}"
