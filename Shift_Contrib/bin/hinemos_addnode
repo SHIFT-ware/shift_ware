@@ -1,0 +1,61 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+from suds.client import Client
+from suds.transport.http import HttpAuthenticated
+import sys
+import json
+
+argvs = sys.argv
+mgr_addr = argvs[1]
+mgr_user = argvs[2]
+mgr_pass = argvs[3]
+ip_addr = argvs[4]
+community_name = argvs[5]
+nodeId = argvs[6]
+nodeName = argvs[7]
+roleId = argvs[8]
+scopeId = argvs[9]
+
+url = "http://" + mgr_addr + ":8080/HinemosWS/RepositoryEndpoint?wsdl" 
+
+try:
+  t = HttpAuthenticated(username=mgr_user, password=mgr_pass) 
+  client = Client(url, transport=t)
+  client.service.echo("test") 
+except:
+  #Hinemosマネージャへの認証、通信に失敗した場合はリターンコード1で終了
+  print "Connect error to Hinemos Manager"
+  sys.exit(1)
+
+try:
+  #ファシリティIDが同一のノードが存在するかチェック
+  exist_node = client.service.getNode(nodeId)  
+
+  #存在する場合は削除しておく
+  client.service.deleteNode(nodeId)
+except:
+  #存在しなければ何もしない
+  pass
+
+try:
+  #Find by SNMPを利用してノードの情報を取得
+  nodeSearch = client.service.getNodePropertyBySNMP(ip_addr, 161, community_name, "2c")
+
+  #ノードを登録
+  nodeSearch.nodeInfo.facilityId = nodeId
+  nodeSearch.nodeInfo.facilityName = nodeName
+  nodeSearch.nodeInfo.ownerRoleId = roleId
+  client.service.addNode(nodeSearch.nodeInfo)
+except:
+  #ノード登録に失敗したらリターンコード2で終了
+  print "Regist node error"
+  sys.exit(2)
+
+if len(scopeId) != 0:
+  try:
+    #ノードをスコープに割当て
+    client.service.assignNodeScope(scopeId, [nodeId])
+  except:
+    #スコープの割り当てに失敗したらリターンコード3で終了
+    print "Assign scope error"
+    sys.exit(3)

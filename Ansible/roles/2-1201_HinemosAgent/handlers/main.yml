@@ -1,0 +1,9 @@
+- name: RestartSNMP
+  win_service:
+    name: SNMP
+    state: restarted
+
+- name: RestartHinemosAgent
+  win_service:
+    name: "{{ w1201_hinemosagent_service_HinemosAgent_name }}"
+    state: restarted

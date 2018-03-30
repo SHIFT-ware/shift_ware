@@ -1,0 +1,49 @@
+- name: Check Installed Zabbix
+  raw: Get-Service | Select-Object Name | Select-string -Pattern 'Zabbix Agent'
+  register: result
+  changed_when: result.stdout == "" 
+  failed_when: result.rc == 2
+
+- name: create home_dir
+  win_file:
+    path: "{{zabbix_agent.install_path }}"
+    state: directory
+  when: zabbix_agent.config is defined or zabbix_agent.installer is defined
+
+- name: zabbix files download
+  win_copy:
+    src: "{{ item.name }}"
+    dest: "{{ zabbix_agent.install_path }}\\{{ item.name }}"
+  with_items: "{{ zabbix_agent.files }}"
+  when: zabbix_agent.files is defined
+
+- name: create zabbix_agentd.conf
+  win_template:
+    src: zabbix_agentd.conf.j2
+    dest: "{{ zabbix_agent.install_path }}\\zabbix_agentd.conf"
+  notify: zabbix_service_restart
+  when: zabbix_agent.config is defined
+
+- block:
+  - name: zabbix installer download
+    win_copy:
+      src: "{{ zabbix_agent.installer }}"
+      dest: "{{ zabbix_agent.install_path }}\\{{ zabbix_agent.installer }}"
+
+  - name: zabbix package install
+    raw: cd "{{ zabbix_agent.install_path }}"; .\zabbix_agentd.exe --config "{{ zabbix_agent.install_path }}\zabbix_agentd.conf" --install
+    changed_when: true
+
+  when: result|changed
+
+- name: Service state
+  win_service:
+    name: "Zabbix Agent"
+    state: "{{ zabbix_agent.service.state }}"
+  when: zabbix_agent | has_nested_keys("service", "state")
+
+- name: Service start mode
+  win_service:
+    name: "Zabbix Agent"
+    start_mode: "{{ zabbix_agent.service.start_mode }}"
+  when: zabbix_agent | has_nested_keys("service", "start_mode")

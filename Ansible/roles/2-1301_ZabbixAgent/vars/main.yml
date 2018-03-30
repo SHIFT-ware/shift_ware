@@ -1,0 +1,3 @@
+zabbix_agent_tmp_dir: "{{ remote_tmp_dir }}/{{ role_name }}"
+
+zabbix_agent: "{{ ZabbixAgent }}"

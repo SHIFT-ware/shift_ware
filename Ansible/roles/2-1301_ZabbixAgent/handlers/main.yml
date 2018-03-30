@@ -1,0 +1,4 @@
+- name: zabbix_service_restart
+  win_service:
+    name: "Zabbix Agent"
+    state: restarted

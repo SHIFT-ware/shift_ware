@@ -1,42 +1,9 @@
-- block:
-  - name: 1-1301-01_install - check package is installed
-    shell: rpm -qa | grep -q "{{ item.name | regex_replace('\.rpm', '') }}"
-    register: installed
-    changed_when: installed.rc == 1
-    failed_when: installed.rc == 2
-    with_items: zabbix_agent.package
-
-  - name: 1-1301-01_install - create tmp dir
-    file:
-      path: "{{ zabbix_agent_tmp_dir }}"
-      state: directory
-    when: installed | changed
-
-  - name: 1-1301-01_install - send package
-    copy:
-      src: "../Shift_Env/files/{{item.name }}"
-      dest: "{{ zabbix_agent_tmp_dir }}"
-    register: send_task
-    with_items: zabbix_agent.package
-    when: installed | changed
-
-  - name: 1-1301-01_install - update package
-    shell: "yum update -y *"
-    args:
-      chdir: "{{ zabbix_agent_tmp_dir }}"
-    when: installed | changed
-
-  - name: 1-1301-01_install - install package
-    yum:
-      name: "{{ send_task.results | join(', ', attribute='dest') }}"
-      state: present
-    when: installed | changed
+---
+- name: 1-1201-01_Install zabbix agent - install package
+  yum:
+    name: "{{ zabbix_agent.package }}"
+    state: present
   when: zabbix_agent.package is defined
-
-- name: 1-1301-01_install - delete tmp dir
-  file:
-    path: '{{ zabbix_agent_tmp_dir }}'
-    state: absent
 
 - name: 1-1301-01_install - put zabbix agent config
   template:
@@ -51,12 +18,10 @@
   service:
     name: zabbix-agent
     state: "{{ zabbix_agent.service.state }}"
-  when:
-    - zabbix_agent.service.state is defined
+  when: zabbix_agent | has_nested_keys("service", "state")
    
 - name: 1-1301-01_install - change auto starting setting
   service:
     name: zabbix-agent
     enabled: "{{ zabbix_agent.service.enabled }}"
-  when:
-    - zabbix_agent.service.enabled is defined
+  when: zabbix_agent | has_nested_keys("service", "enabled")

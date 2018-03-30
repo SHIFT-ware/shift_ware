@@ -1,0 +1,6 @@
+---
+- name: 1-1201-003_post_tasks - regist Node on Hinemos Manager
+  command: hinemos_addnode "{{ hinemos_agent.hinemos_manager.ip }}" "{{ hinemos_agent.hinemos_manager.login_user }}" "{{ hinemos_agent.hinemos_manager.login_pass }}" "{{ hinemos_agent.hinemos_node.ip }}" "{{ hinemos_agent.community.name }}" "{{ hinemos_agent.hinemos_node.facility_id }}" "{{ hinemos_agent.hinemos_node.facility_name }}" "{{ hinemos_agent.hinemos_node.role }}" "{{ hinemos_agent.hinemos_node.scope_id }}"
+  delegate_to: 127.0.0.1
+  register: return_check
+  failed_when: return_check.rc not in [0]

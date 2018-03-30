@@ -1,0 +1,11 @@
+---
+- name: 2-1301-001_pre_tasks - Firewall rule to allow Zabbix Agent on TCP port
+  win_firewall_rule:
+    name: Zabbix Agent
+    localport: "{{ ZabbixAgent.config.listenport }}"
+    action: allow
+    direction: in
+    protocol: tcp
+    profiles: "{{ ZabbixAgent.firewall_profiles }}"
+    state: present
+    enabled: yes

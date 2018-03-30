@@ -1,0 +1,27 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+from suds.client import Client
+from suds.transport.http import HttpAuthenticated
+import sys
+import json
+
+argvs = sys.argv
+mgrip = argvs[1]
+username = argvs[2]
+password = argvs[3]
+scopeId = argvs[4]
+
+url = "http://" + mgrip + ":8080/HinemosWS/RepositoryEndpoint?wsdl" 
+
+try:
+  t = HttpAuthenticated(username=username, password=password) 
+  client = Client(url, transport=t)
+
+  #スコープ直下のファシリティIDを取得する
+  fIds = client.service.getFacilityIdList(scopeId, 1)
+
+  result = {}
+  result["facilityIdList"] = fIds  
+  print json.dumps(result)
+except:
+  print "{}"

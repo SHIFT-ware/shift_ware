@@ -1,0 +1,3 @@
+---
+hinemos_agent: "{{ HinemosAgent }}"
+w1201_hinemosagent_community_permission: 4

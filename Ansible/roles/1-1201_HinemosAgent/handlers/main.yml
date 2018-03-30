@@ -1,0 +1,9 @@
+- name: RestartSNMP
+  win_service:
+    name: SNMP
+    state: restarted
+
+- name: RestartHinemosAgent
+  win_service:
+    name: HinemosAgent
+    state: restarted

@@ -1,0 +1,15 @@
+---
+- name: 2-1301-03_post_tasks - regist host on zabbix server
+  zabbix_host:
+    server_url: "{{ zabbix_agent.zabbix_host.server_url }}"
+    login_user: "{{ zabbix_agent.zabbix_host.login_user }}"
+    login_password: "{{ zabbix_agent.zabbix_host.login_pass }}"
+    host_name: "{{ zabbix_agent.zabbix_host.host_name }}"
+    visible_name: "{{ zabbix_agent.zabbix_host.visible_name }}"
+    host_groups: "{{ zabbix_agent.zabbix_host.host_groups | map(attribute='name') | list }}"
+    link_templates: "{{ zabbix_agent.zabbix_host.link_templates | map(attribute='name') | list }}"
+    status: "{{ zabbix_agent.zabbix_host.status }}"
+    state: "{{ zabbix_agent.zabbix_host.state }}"
+    inventory_mode: "{{ zabbix_agent.zabbix_host.inventory_mode }}"
+    interfaces: "{{ zabbix_agent.zabbix_host.interfaces }}"
+  delegate_to: 127.0.0.1

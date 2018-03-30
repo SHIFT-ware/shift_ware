@@ -14,11 +14,11 @@ result02=$?
 
 # Ansibleの結果判定
 echo 03
-grep -E "192\.168\.127\.31\s*:\s*ok=[0-9]{1,3}\s*changed=6\s*unreachable=0\s*failed=0" Shift_Log/Shift.1/Ansible.log
+grep -E "192\.168\.127\.31\s*:\s*ok=[0-9]{1,3}\s*changed=1\s*unreachable=0\s*failed=0" Shift_Log/Shift.1/Ansible.log
 result03=$?
 
 echo 04
-grep -E "192\.168\.127\.41\s*:\s*ok=[0-9]{1,3}\s*changed=6\s*unreachable=0\s*failed=0" Shift_Log/Shift.1/Ansible.log
+grep -E "192\.168\.127\.41\s*:\s*ok=[0-9]{1,3}\s*changed=1\s*unreachable=0\s*failed=0" Shift_Log/Shift.1/Ansible.log
 result04=$?
 
 
