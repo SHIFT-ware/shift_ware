@@ -26,7 +26,8 @@ openjdk:
 ```
 
 ### Please put package files
-本ロールでopenjdk(およびopenjdk-devel)をインストールするために、openjdk(およびopenjdk-devel)本体のパッケージおよびその依存パッケージを以下のディレクトリに配置してください。また配置したパッケージ名をhost_varsにも記載ください。
+本ロールではOpenJDKをyumでインストールします。tools/1-9908_RepoUp, tools/1-9910_RepofilePut を使って、yumリポジトリからjava-x.x.x-openjdk、および必要に応じてjava-x.x.x-openjdk-develパッケージを取得できるようにしておいてください。
+
 
 - Shift_Env/files
 
