@@ -141,7 +141,9 @@ apache:
 ```
 
 ### Please put package files
-本ロールでapacheをインストールするために、apache本体とモジュールのパッケージおよびその依存パッケージを以下のディレクトリに配置してください。また配置したパッケージ名をhost_varsにも記載ください。
+
+本ロールではApacheをyumでインストールします。tools/1-9908_RepoUp, tools/1-9910_RepofilePut を使って、yumリポジトリからhttpd、および必要ならばmod_sslパッケージを取得できるようにしておいてください。
+
 
 * Shift_Env/files
 
