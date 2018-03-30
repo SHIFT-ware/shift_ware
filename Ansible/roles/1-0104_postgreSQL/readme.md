@@ -93,7 +93,7 @@ PostgreSQL:
 ```
 
 ### Please put package files
-本ロールでpostgreSQLをインストールするために、postgreSQL本体とその依存パッケージを以下のディレクトリに配置してください。また配置したパッケージ名をhost_varsにも記載ください。
+本ロールではHinemosAgentをyumでインストールします。tools/1-9908_RepoUp, tools/1-9910_RepofilePut を使って、yumリポジトリからインストーラパッケージpostgresql94、postgresql94-contrib、postgresql94-devel、postgresql94-docs、postgresql94-serverパッケージを取得できるようにしておいてください。
 
 * Shift_Env/files
 
