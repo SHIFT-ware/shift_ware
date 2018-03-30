@@ -46,11 +46,11 @@ WindowsServer|2016
       name: 'Hinemos_6.0_Agent'               # サービス名
       state: started                          # サービス状態
       start_mode: auto                        # 自動起動設定
-      start_user: 'LocalSystem'               # ログオンアカウント名
+      logon_account: 'LocalSystem'            # ログオンアカウント名
     service_SNMP:                             # SNMP Serviceのサービス設定
       state: started                          # サービス状態
       start_mode: auto                        # 自動起動設定
-      start_user: 'LocalSystem'               # ログオンアカウント名
+      logon_account: 'LocalSystem'            # ログオンアカウント名
     community:
       name: 'public'                          # コミュニティ名
     hinemos_manager:                          # Hinemosマネージの情報

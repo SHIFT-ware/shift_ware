@@ -26,10 +26,10 @@ if zabbix_host.nil? == false
       end
 
       for spec_group in property[:ZabbixAgent][:zabbix_host][:host_groups]
-        describe ("登録された Zabbix ホストのホストグループに #{ spec_group } が含まれること") do
+        describe ("登録された Zabbix ホストのホストグループに #{ spec_group[:name] } が含まれること") do
           flag = false
           for rtn_group in rtnval["groups"]
-            if spec_group == rtn_group["name"]
+            if spec_group[:name] == rtn_group["name"]
               flag = true
             end
           end
@@ -38,10 +38,10 @@ if zabbix_host.nil? == false
       end
 
       for spec_template in property[:ZabbixAgent][:zabbix_host][:link_templates]
-        describe ("登録された Zabbix ホストにテンプレート #{ spec_template } が割り当てられていること") do
+        describe ("登録された Zabbix ホストにテンプレート #{ spec_template[:name] } が割り当てられていること") do
           flag = false
           for rtn_template in rtnval["parentTemplates"]
-            if spec_template == rtn_template["name"]
+            if spec_template[:name] == rtn_template["name"]
               flag = true
             end
           end

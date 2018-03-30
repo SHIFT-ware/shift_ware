@@ -61,7 +61,7 @@ describe ("Hinemosエージェント確認") do
         end
 
         describe ("のログオンユーザが #{ property[:HinemosAgent][:service_HinemosAgent][:logon_account] } であること"), :if => property[:HinemosAgent][:service_HinemosAgent][:logon_account] != nil do
-          describe command("gwmi win32_service | select name,startname | Where-Object {$_.name -eq 'HinemosAgent'}") do
+          describe command("gwmi win32_service | select name,startname | Where-Object {$_.name -eq '#{ property[:HinemosAgent][:service_HinemosAgent][:name] }'}") do
             its(:stdout) { should match /\s*#{ property[:HinemosAgent][:service_HinemosAgent][:logon_account] }\s*$/ }
           end
         end

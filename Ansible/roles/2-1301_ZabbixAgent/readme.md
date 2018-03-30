@@ -53,9 +53,9 @@ WindowsServer|2016
             host_name: 'host1'                              # 登録するホスト名
             visible_name: 'HOST NAME 1'                     # 登録するホストの表示名
             host_groups:                                    # 登録するホストに割り当てる所属グループ
-                - 'Windows servers'
+                - name: 'Windows servers'
             link_templates:                                 # 登録するホストに割り当てるテンプレート名
-                - 'Template OS Windows'
+                - name: 'Template OS Windows'
             status: < enabled | disabled >                  # 登録するホストの監視ステータス
             state:  < present | absent >                    # present: ホストを作成もしくは更新、absent: 存在するホストを削除
             inventory_mode: < automatic | manual | disabled> # 登録するホストのインベントリモード

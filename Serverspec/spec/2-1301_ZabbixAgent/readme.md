@@ -46,12 +46,12 @@ Windows Server|2016
             - name: 'zabbix_sender.exe'                     # ファイル名
         config:                                             # zabbix_agentd.confの設定 
             logfile: 'C:\Program Files (x86)\ZabbixAgent\zabbix_agentd.log'  # ログファイルの名前
-        enableremotecommands: '0'                           # Zabbixサーバからのリモートコマンドの許可
-        server: '192.168.0.1'                               # ZabbixサーバのIPアドレス
-        listenport: '10050'                                 # リッスンポート
-        serveractive: '192.168.0.1:10050'                   # アクティブチェック用のZabbixサーバのIP:ポート
-        hostnameitem: 'system.hostname'                     # ホストネームアイテム
-        timeout: '3'                                        # タイムアウト
+            enableremotecommands: '0'                           # Zabbixサーバからのリモートコマンドの許可
+            server: '192.168.0.1'                               # ZabbixサーバのIPアドレス
+            listenport: '10050'                                 # リッスンポート
+            serveractive: '192.168.0.1:10050'                   # アクティブチェック用のZabbixサーバのIP:ポート
+            hostnameitem: 'system.hostname'                     # ホストネームアイテム
+            timeout: '3'                                        # タイムアウト
         service:                                            # サービス設定
             state: 'started'                                # サービスの状態
             start_mode: 'auto'                              # 自動起動設定
@@ -62,9 +62,9 @@ Windows Server|2016
             host_name: 'host1'                              # 登録したホスト名
             visible_name: 'HOST NAME 1'                     # 登録したホストの表示名
             host_groups:                                    # 登録したホストに割り当てた所属グループ
-                - 'Linux servers'
+                - name: 'Linux servers'
             link_templates:                                 # 登録したホストに割り当てたテンプレート名
-                - 'Template OS Linux'
+                - name: 'Template OS Linux'
             status: < enabled | disabled >                  # 登録したホストの監視ステータス
             inventory_mode: < automatic | manual | disabled> # 登録したホストのインベントリモード
             interfaces:                                     # 登録したホストのインタフェース情報
