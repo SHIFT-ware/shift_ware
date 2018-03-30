@@ -72,7 +72,8 @@ Pgpool:
 ```
 
 ### Please put package files
-本ロールでpgpool-IIをインストールするために、pgpool-II本体のパッケージおよびその依存パッケージを以下のディレクトリに配置してください。また配置したパッケージ名をhost_varsにも記載ください。
+本ロールではPgpool-IIをyumでインストールします。tools/1-9908_RepoUp, tools/1-9910_RepofilePut を使って、yumリポジトリからをpgpool-II-pgXXパッケージを取得できるようにしておいてください。
+
 
 - Shift_Env/files
 
