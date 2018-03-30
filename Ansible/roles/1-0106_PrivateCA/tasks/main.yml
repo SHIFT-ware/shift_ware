@@ -1,7 +1,7 @@
 ---
 - name: create install dir
   file:
-    path: "{{ l0106_install_path }}"
+    path: "{{ prca_privateca.install_path }}"
     state: directory
 
 - name: put CA script
@@ -23,13 +23,13 @@
 - name: create CA
   shell: /etc/pki/tls/misc/CA -newca
   args:
-    creates: "{{ l0106_install_path }}/private/{{ l0106_ca_cert.private_key_filename }}"
+    creates: "{{ prca_privateca.install_path }}/private/{{ prca_privateca.ca_cert.private_key_filename }}"
   environment:
-    catop: "{{ l0106_install_path }}"
+    catop: "{{ prca_privateca.install_path }}"
 
 - name: create der format cert
   shell: >
-    openssl x509 -inform pem -in {{ l0106_install_path }}/{{ l0106_ca_cert.pem_filename }} \
-       -outform der -out {{ l0106_install_path }}/{{ l0106_ca_cert.der_filename }}
+    openssl x509 -inform pem -in {{ prca_privateca.install_path }}/{{ prca_privateca.ca_cert.pem_filename }} \
+       -outform der -out {{ prca_privateca.install_path }}/{{ prca_privateca.ca_cert.der_filename }}
   args:
-    creates: "{{ l0106_install_path }}/{{ l0106_ca_cert.der_filename }}"
+    creates: "{{ prca_privateca.install_path }}/{{ prca_privateca.ca_cert.der_filename }}"

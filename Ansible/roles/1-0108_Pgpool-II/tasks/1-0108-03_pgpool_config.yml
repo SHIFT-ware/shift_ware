@@ -1,10 +1,10 @@
 ---
 - name: 1-0108-03_pgpool_config - put pgpool.conf
   copy:
-    src: "{{ pgpool_config_filename }}"
+    src: "{{ pgpl_pgpool.config.filename }}"
     dest: /etc/pgpool-II/pgpool.conf
   notify: pgpool_service_restart
-  when: pgpool_config_filename is defined
+  when: pgpl_pgpool | has_nested_keys('config', 'filename') 
 
 - name: 1-0108-03_pgpool_config - configure pcp.conf
   lineinfile:
@@ -12,7 +12,7 @@
     line: "{{ item.name }}:{{ item.password | hash('md5') }}"
     regexp: "^{{ item.name }}:"
   notify: pgpool_service_restart
-  with_items: "{{ pgpool_pcp_users | default('') }}"
+  with_items: "{{ pgpl_pgpool.pcp_users | default([]) }}"
 
 - name: 1-0108-03_pgpool_config - configure pool_hba.conf when type == local
   lineinfile:
@@ -20,7 +20,7 @@
     line: "local {{ item.database }} {{ item.user }} {{ item.method }}"
     regexp: "^local *{{ item.database }} *{{ item.user }} *{{ item.method }}"
   notify: pgpool_service_restart
-  with_items: "{{ pgpool_pool_hba | default('') }}"
+  with_items: "{{ pgpl_pgpool.pool_hba | default([]) }}"
   when: item.type == "local"
 
 - name: 1-0108-03_pgpool_config - configure pool_hba.conf when type != local
@@ -29,17 +29,17 @@
     line: "{{ item.type }} {{ item.database }} {{ item.user }} {{ item.address }} {{ item.method }}"
     regexp: "^{{ item.type }} *{{ item.database }} *{{ item.user }} *{{ item.address }} *{{ item.method }}"
   notify: pgpool_service_restart
-  with_items: pgpool_pool_hba | default('')
+  with_items: "{{ pgpl_pgpool.pool_hba | default([]) }}"
   when: item.type != "local"
 
 - include: config_pool_passwd.yml
-  with_items: "{{ pgpool_pool_passwd | default('') }}"
+  with_items: "{{ pgpl_pgpool.pool_passwd | default([]) }}"
 
 - name: 1-0108-03_pgpool_config - set owner of config files
   file:
     path: /etc/pgpool-II
-    owner: "{{ pgpool_exec_user_name }}"
+    owner: "{{ pgpl_pgpool.exec_user.name }}"
     recurse: yes
     state: directory
-  when: pgpool_exec_user_name is defined
+  when: pgpl_pgpool | has_nested_keys('exec_user', 'name')
 

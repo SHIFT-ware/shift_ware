@@ -2,7 +2,7 @@
 - name: 2-0001-098_Rdp - set tmp variable
   set_fact:
      rdp: "{{ base_ADVANCED.rdp }}"
-  when: base_ADVANCED.rdp is defined
+  when: base_ADVANCED | has_nested_keys('rdp')
 
 - name: 2-0001-098_Rdp - set variable "rdp_flg" for powershell 1
   set_fact:

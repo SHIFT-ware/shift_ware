@@ -1,1 +1,2 @@
-2-0001_Base
+Ansible/roles/2-0001_Base/tasks/2-0001-076_Domain.yml
+Ansible/roles/2-0001_Base/tasks/2-0001-071_Hostname.yml

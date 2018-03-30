@@ -10,7 +10,7 @@
     - wait_for_SSH_port_up
   when:
     - ansible_distribution_major_version == "6"
-    - base_base.OSCORE.keyboard.keybord_locale is defined
+    - base_base | has_nested_keys('OSCORE', 'keyboard', 'keybord_locale')
 
 - name: 1-0001-28_Keyboard - check keytable for rhel7
   shell: localectl status
@@ -18,7 +18,7 @@
   changed_when: false
   when: 
     - ansible_distribution_major_version == "7"
-    - base_base.OSCORE.keyboard is defined
+    - base_base | has_nested_keys('OSCORE', 'keyboard')
 
 - name: 1-0001-28_Keyboard - change keytable for rhel7
   shell: localectl --no-convert set-x11-keymap {{ base_base.OSCORE.keyboard.keybord_locale}}
@@ -28,7 +28,7 @@
     - wait_for_SSH_port_up
   when: 
     - ansible_distribution_major_version == "7"
-    - base_base.OSCORE.keyboard.keybord_locale is defined
+    - base_base | has_nested_keys('OSCORE', 'keyboard', 'keybord_locale')
     - ret_pre.stdout.find( "Layout{{':'}} {{ base_base.OSCORE.keyboard.keybord_locale }}" ) == -1
 
 - name: 1-0001-28_Keyboard - post check keytable for rhel7
@@ -39,7 +39,7 @@
     - wait_for_SSH_port_up
   when:
     - ansible_distribution_major_version == "7"
-    - base_base.OSCORE.keyboard.keybord_locale is defined
+    - base_base | has_nested_keys('OSCORE', 'keyboard', 'keybord_locale')
     - ret_pre.stdout.find( "Keymap{{':'}} {{ base_base.OSCORE.keyboard.keybord_locale }}" ) == -1
 
 

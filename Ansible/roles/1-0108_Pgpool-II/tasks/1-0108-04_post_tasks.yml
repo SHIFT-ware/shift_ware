@@ -3,12 +3,12 @@
 - name: 1-0108-04_post_tasks - change pgpool service state
   service:
     name: pgpool
-    state: "{{ pgpool_state }}"
-  when: pgpool_state is defined
+    state: "{{ pgpl_pgpool.state }}"
+  when: pgpl_pgpool.state is defined
 
 - name: 1-0108-04_post_tasks - change auto_starting setting of pgpool service
   service:
     name: pgpool
-    enabled: "{{ pgpool_enabled }}"
-  when: pgpool_enabled is defined
+    enabled: "{{ pgpl_pgpool.enabled }}"
+  when: pgpl_pgpool.enabled is defined
 

@@ -1,28 +1,38 @@
 ---
-- include: 1-0104-01_create_user_and_groups.yml
-- include: 1-0104-02_postgresql.yml
+- name: set string of postgresql db super user name
+  set_fact:
+    pgsq_postgresql_db_user_name: "{{ pgsq_postgresql.db_user.name }}"
+  when: pgsq_postgresql | has_nested_keys('db_user', 'name')
+
+- name: set string of postgresql db default super user name
+  set_fact:
+    pgsq_postgresql_db_user_name: 'postgres'
+  when: not (pgsq_postgresql | has_nested_keys('db_user', 'name'))
+
+- include_tasks: 1-0104-01_create_user_and_groups.yml
+- include_tasks: 1-0104-02_postgresql.yml
 
 - block:
-  - include: 1-0104-03_postgresql_conf.yml
+  - include_tasks: 1-0104-03_postgresql_conf.yml
   when:
-    - pgsq_server_role is undefined or
-      pgsq_server_role == ""
+    - (not (pgsq_postgresql | has_nested_keys('cluster', 'server_role')) or
+      (pgsq_postgresql.cluster.server_role  == "")
 
 # クラスタ構成の場合、ReplicationのためMasterを先に実行する
 - block:
-  - include: 1-0104-04_postgresql_replication.yml
-  - include: 1-0104-03_postgresql_conf.yml
+  - include_tasks: 1-0104-04_postgresql_replication.yml
+  - include_tasks: 1-0104-03_postgresql_conf.yml
   when:
-    - pgsq_server_role is defined
-    - pgsq_server_role == "master"
+    - pgsq_postgresql | has_nested_keys('cluster', 'server_role')
+    - pgsq_postgresql.cluster.server_role == "master"
 
 - meta: flush_handlers
 
 - block:
-  - include: 1-0104-04_postgresql_replication.yml
-  - include: 1-0104-03_postgresql_conf.yml
+  - include_tasks: 1-0104-04_postgresql_replication.yml
+  - include_tasks: 1-0104-03_postgresql_conf.yml
   when:
-    - pgsq_server_role is defined
-    - pgsq_server_role == "slave"
+    - pgsq_postgresql | has_nested_keys('cluster', 'server_role')
+    - pgsq_postgresql.cluster.server_role == "slave"
 
-- include: 1-0104-05_post_tasks.yml
+- include_tasks: 1-0104-05_post_tasks.yml

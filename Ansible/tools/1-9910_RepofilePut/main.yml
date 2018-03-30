@@ -1,0 +1,28 @@
+---
+- name: 1-9910_RepofilePut
+  hosts: all
+  become: yes
+  vars_files:
+    - var.yml
+  tasks:
+    - name: create rescue dir
+      file:
+        path: /etc/yum.repos.d/shift_rescue
+        state: directory
+    
+    - name: check rescue repo files
+      shell: ls -1 /etc/yum.repos.d | grep .repo | grep -v shift.repo
+      changed_when: false
+      failed_when: false
+      register: reg_repo_files
+    
+    - name: rescue original repo files
+      shell: "mv /etc/yum.repos.d/{{ item }} /etc/yum.repos.d/shift_rescue"
+      with_items:
+        - "{{ reg_repo_files.stdout_lines | default('') }}"
+    
+    - name: send repo file
+      template:
+        src: shift.repo.j2
+        dest: /etc/yum.repos.d/shift.repo
+

@@ -1,83 +1,83 @@
 ---
-- include: ./Base/OSCORE/1-0001-40_Grub.yml
-  when: base_base.OSCORE.grub_option is defined
+- include_tasks: ./Base/OSCORE/1-0001-40_Grub.yml
+  when: base_base  | has_nested_keys('OSCORE', 'grub_option')
   
-- include: ./Network/1-0001-39_Bonding.yml
-  when: base_network.bonding_interface is defined
+- include_tasks: ./Network/1-0001-39_Bonding.yml
+  when: base_network | has_nested_keys('bonding_interface') 
   
-- include: ./Network/1-0001-02_Interface.yml
+- include_tasks: ./Network/1-0001-02_Interface.yml
   when:
-    - base_network.interface is defined
+    - base_network | has_nested_keys('interface')
     - ansible_distribution_major_version == "6"
   
-- include: ./Network/1-0001-38_InterfaceNmcli.yml
+- include_tasks: ./Network/1-0001-38_InterfaceNmcli.yml
   when:
-    - base_network.interface is defined
+    - base_network | has_nested_keys('interface')
     - ansible_distribution_major_version == "7"
   
-- include: ./Network/1-0001-03_Network.yml
-  when: base_network.hostname is defined
+- include_tasks: ./Network/1-0001-03_Network.yml
+  when: base_network | has_nested_keys('hostname') 
   
-- include: ./Network/1-0001-22_Route.yml
+- include_tasks: ./Network/1-0001-22_Route.yml
   when:
-    - base_network.static_routing is defined or
-      base_network.default_gw is defined
+    - base_network | has_nested_keys('static_routing')  or
+      base_network | has_nested_keys('default_gw') 
   
-- include: ./Base/ID/1-0001-13_OSGroup.yml
-  when: base_base.ID.user_group is defined
+- include_tasks: ./Base/ID/1-0001-13_OSGroup.yml
+  when: base_base | has_nested_keys('ID', 'user_group') 
   
-- include: ./Base/ID/1-0001-24_OSUser.yml
-  when: base_base.ID.user is defined
+- include_tasks: ./Base/ID/1-0001-24_OSUser.yml
+  when: base_base | has_nested_keys('ID', 'user') 
   
-- include: ./Advanced/1-0001-04_Hosts.yml
+- include_tasks: ./Advanced/1-0001-04_Hosts.yml
   
-- include: ./Advanced/1-0001-05_Resolv.yml
+- include_tasks: ./Advanced/1-0001-05_Resolv.yml
   when:
-    - base_advanced.name_resolve is defined
+    - base_advanced | has_nested_keys('name_resolve') 
 
-- include: ./Advanced/1-0001-08_Ntp.yml
+- include_tasks: ./Advanced/1-0001-08_Ntp.yml
   
-- include: ./Base/OSCORE/1-0001-10_Selinux.yml
-  when: base_base.OSCORE.selinux is defined
+- include_tasks: ./Base/OSCORE/1-0001-10_Selinux.yml
+  when: base_base | has_nested_keys('OSCORE', 'selinux') 
   
-- include: ./Advanced/1-0001-12_Crontab.yml
-  when: base_advanced.cron is defined
+- include_tasks: ./Advanced/1-0001-12_Crontab.yml
+  when: base_advanced | has_nested_keys('cron') 
   
-- include: ./Base/OSCORE/1-0001-14_Lang.yml
-  when: base_base.OSCORE.lang is defined 
+- include_tasks: ./Base/OSCORE/1-0001-14_Lang.yml
+  when: base_base | has_nested_keys('OSCORE', 'lang')  
   
-- include: ./Base/ID/1-0001-16_PasswordRules.yml
-  when: base_base.ID.password_policy is defined
+- include_tasks: ./Base/ID/1-0001-16_PasswordRules.yml
+  when: base_base | has_nested_keys('ID', 'password_policy') 
   
-- include: ./Advanced/1-0001-17_Logrotate.yml
-  when: base_advanced.logrotate_basic_option is defined
+- include_tasks: ./Advanced/1-0001-17_Logrotate.yml
+  when: base_advanced | has_nested_keys('logrotate_basic_option') 
   
-- include: ./Advanced/1-0001-20_Nsswitch.yml
-  when: base_advanced.name_resolve.pri_name_resolve is defined
+- include_tasks: ./Advanced/1-0001-20_Nsswitch.yml
+  when: base_advanced | has_nested_keys('name_resolve', 'pri_name_resolve') 
   
-- include: ./Advanced/1-0001-23_Sshd.yml
-  when: base_advanced.sshd is defined
+- include_tasks: ./Advanced/1-0001-23_Sshd.yml
+  when: base_advanced | has_nested_keys('sshd') 
 
-- include: ./Base/OSCORE/1-0001-27_Kdump.yml
-  when: base_base.OSCORE.kdump.path is defined
+- include_tasks: ./Base/OSCORE/1-0001-27_Kdump.yml
+  when: base_base | has_nested_keys('OSCORE', 'kdump', 'path') 
   
-- include: ./Base/OSCORE/1-0001-28_Keyboard.yml
-  when: base_base.OSCORE.keyboard is defined
+- include_tasks: ./Base/OSCORE/1-0001-28_Keyboard.yml
+  when: base_base | has_nested_keys('OSCORE', 'keyboard') 
   
-- include: ./Base/OSCORE/1-0001-29_Timezone.yml
-  when: base_base.OSCORE.time is defined
+- include_tasks: ./Base/OSCORE/1-0001-29_Timezone.yml
+  when: base_base | has_nested_keys('OSCORE', 'time') 
   
-- include: ./Storage/1-0001-35_SetDirectory.yml
-  when: base_storage.directory is defined
+- include_tasks: ./Storage/1-0001-35_SetDirectory.yml
+  when: base_storage | has_nested_keys('directory') 
   
-- include: ./Base/OSCORE/1-0001-37_SystemRunLevel.yml
-  when: base_base.OSCORE.runlevel is defined
+- include_tasks: ./Base/OSCORE/1-0001-37_SystemRunLevel.yml
+  when: base_base | has_nested_keys('OSCORE', 'runlevel') 
   
-- include: ./Advanced/1-0001-39_Snmp.yml
-  when: base_advanced.snmpd is defined
+- include_tasks: ./Advanced/1-0001-39_Snmp.yml
+  when: base_advanced | has_nested_keys('snmpd') 
   
-- include: ./Advanced/1-0001-07_Service.yml
-  when: base_advanced.service is defined
+- include_tasks: ./Advanced/1-0001-07_Service.yml
+  when: base_advanced | has_nested_keys('service') 
   
-- include: ./Advanced/1-0001-40_Syslog.yml
-  when: base_advanced.syslog.filters is defined
+- include_tasks: ./Advanced/1-0001-40_Syslog.yml
+  when: base_advanced | has_nested_keys('syslog', 'filters') 

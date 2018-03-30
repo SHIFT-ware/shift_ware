@@ -1,32 +1,3 @@
 pgsq_tmp_dir: "{{ remote_tmp_dir }}/{{ role_name }}"
 
-pgsq_exec_user_uid: "{{ PostgreSQL.exec_user.uid | default(omit) }}"
-pgsq_exec_user_shell: "{{ PostgreSQL.exec_user.shell | default(omit) }}"
-pgsq_exec_user_password: "{{ PostgreSQL.exec_user.password }}"
-
-pgsq_exec_groups_primary_gid: "{{ PostgreSQL.exec_groups.primary.gid }}"
-pgsq_exec_groups_secondary: "{{ PostgreSQL.exec_groups.secondary }}"
-
-pgsq_packages: "{{ PostgreSQL.packages }}"
-pgsq_db_user_name: "{{ PostgreSQL.db_user.name | default('postgres')}}"
-pgsq_db_user_password: "{{ PostgreSQL.db_user.password }}"
-
-pgsq_version: "{{ PostgreSQL.version }}"
-pgsq_wal_archive_dir: "{{ PostgreSQL.wal_archive_dir }}"
-pgsq_enabled: "{{ PostgreSQL.enabled }}"
-pgsq_state: "{{ PostgreSQL.state }}"
-
-pgsq_initdb_option_encoding: "{{ PostgreSQL.initdb_option.encoding }}"
-pgsq_initdb_option_locale: "{{ PostgreSQL.initdb_option.locale }}"
-
-pgsq_config_file: "{{ PostgreSQL.postgresql_conf.conf_file }}"
-
-pgsq_authentication_records: "{{ PostgreSQL.authentication.records }}"
-
-pgsq_replication_user_name: "{{ PostgreSQL.cluster.replication_user.name }}"
-pgsq_replication_user_password: "{{ PostgreSQL.cluster.replication_user.password }}"
-pgsq_server_role: "{{ PostgreSQL.cluster.server_role }}"
-pgsq_master_address: "{{ PostgreSQL.cluster.master_address }}"
-pgsq_master_port: "{{ PostgreSQL.cluster.master_port }}"
-pgsq_slave_name: "{{ PostgreSQL.cluster.slave_name }}"
-
+pgsq_postgresql: "{{ PostgreSQL }}"

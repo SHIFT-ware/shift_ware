@@ -4,7 +4,7 @@
     name: "{{ item.name }}"
     state: "{{ item.state | regex_replace('True', 'started') | regex_replace('False', 'stopped') }}"
     enabled: "{{ item.enable }}"
-  with_items: base_advanced.service
+  with_items: "{{ base_advanced.service }}"
   when:
     - item.state is defined
     - item.enable is defined
@@ -13,7 +13,7 @@
   service:
     name: "{{ item.name }}"
     state: "{{ item.state | regex_replace('True', 'started') | regex_replace('False', 'stopped') }}"
-  with_items: base_advanced.service
+  with_items: "{{ base_advanced.service }}"
   when:
     - item.state is defined
     - item.enable is undefined
@@ -22,7 +22,7 @@
   service: 
     name: "{{ item.name }}"
     enabled: "{{ item.enable }}"
-  with_items: base_advanced.service
+  with_items: "{{ base_advanced.service }}"
   when:
     - item.state is undefined
     - item.enable is defined

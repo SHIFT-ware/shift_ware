@@ -3,13 +3,13 @@
     file:
       path: "{{ item.DocumentRoot }}"
       state: directory
-    with_items: apac_apache.virtualhost.vhosts | default("")
+    with_items: "{{ apac_apache.virtualhost.vhosts | default([]) }}"
   
   - name: 1-0102-06_install_vhosts2.4 - create dir of DocumentRoot for vhosts with ssl
     file:
       path: "{{ item.DocumentRoot }}"
       state: directory
-    with_items: apac_apache.virtualhost.ssl_vhosts | default("")
+    with_items: "{{ apac_apache.virtualhost.ssl_vhosts | default([]) }}"
   
   - name: 1-0102-06_install_vhosts2.4 - put httpd-vhosts.conf
     template:
@@ -22,31 +22,31 @@
       src: httpd24-ssl.conf.j2
       dest: /etc/httpd/conf/extra/httpd-ssl.conf
     notify: restart httpd
-    when: apac_apache.virtualhost.ssl_vhosts is defined
+    when: apac_apache | has_nested_keys("virtualhost", "ssl_vhosts")
 
   - name: 1-0102-06_install_vhosts2.4 - put certificates when exec_user and exec_groups are defined
     copy:
       src: "{{ item.SSLCertificateFile | basename }}"
       dest: "{{ item.SSLCertificateFile }}"
-      owner: "{{ apache.exec_user.name | default(omit) }}"
-      group: "{{ apache.exec_groups.primary.name | default(omit) }}"
+      owner: "{{ apac_apache.exec_user.name | default(omit) }}"
+      group: "{{ apac_apache.exec_groups.primary.name | default(omit) }}"
       mode: "400"
-    with_items: apac_apache.virtualhost.ssl_vhosts | default("")
+    with_items: "{{ apac_apache.virtualhost.ssl_vhosts | default([]) }}"
     when:
-      - apache.exec_user is defined
-      - apache.exec_groups is defined
-      - apache.exec_groups.primary is defined
+      - apac_apache.exec_user is defined
+      - apac_apache.exec_groups is defined
+      - apac_apache | has_nested_keys("exec_groups", "primary")
 
   - name: 1-0102-06_install_vhosts2.4 - put certificates when exec_user and exec_groups are undefined
     copy:
       src: "{{ item.SSLCertificateFile | basename }}"
       dest: "{{ item.SSLCertificateFile }}"
       mode: "400"
-    with_items: apac_apache.virtualhost.ssl_vhosts | default("")
+    with_items: "{{ apac_apache.virtualhost.ssl_vhosts | default([]) }}"
     when:
-      - apache.exec_user is undefined or
-        apache.exec_groups is undefined or
-        apache.exec_groups.primary is undefined
+      - apac_apache.exec_user is undefined or
+        apac_apache.exec_groups is undefined or
+        not apac_apache | has_nested_keys("exec_groups", "primary")
   
   - name: 1-0102-06_install_vhosts2.4 - put private keys when exec_uesr and exec_groups are defined
     copy:
@@ -55,21 +55,21 @@
       owner: "{{ apache.exec_user.name | default(omit) }}"
       group: "{{ apache.exec_groups.primary.name | default(omit) }}"
       mode: "400"
-    with_items: apac_apache.virtualhost.ssl_vhosts | default("")
+    with_items: "{{ apac_apache.virtualhost.ssl_vhosts | default([]) }}"
     when:
-      - apache.exec_user is defined
-      - apache.exec_groups is defined
-      - apache.exec_groups.primary is defined
+      - apac_apache.exec_user is defined
+      - apac_apache.exec_groups is defined
+      - apac_apache | has_nested_keys("exec_groups", "primary")
 
   - name: 1-0102-06_install_vhosts2.4 - put private keys when exec_uesr and exec_groups are defined
     copy:
       src: "{{ item.SSLCertificateKeyFile | basename }}"
       dest: "{{ item.SSLCertificateKeyFile }}"
       mode: 400
-    with_items: apac_apache.virtualhost.ssl_vhosts | default("")
+    with_items: "{{ apac_apache.virtualhost.ssl_vhosts | default([]) }}"
     when:
-      - apache.exec_user is undefined or
-        apache.exec_groups is undefined or
-        apache.exec_groups.primary is undefined
+      - apac_apache.exec_user is undefined or
+        apac_apache.exec_groups is undefined or
+        not apac_apache | has_nested_keys("exec_groups", "primary")
   when: apac_apache.virtualhost is defined
 

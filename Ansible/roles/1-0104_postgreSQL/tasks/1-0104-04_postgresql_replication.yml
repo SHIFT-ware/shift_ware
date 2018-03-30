@@ -2,53 +2,54 @@
 - block:
   - name: 1-0104-04_postgresql_replication - check replication user exists
     shell: >
-      psql -U {{ pgsq_db_user_name | default('postgres') }} -d postgres -Atw \
-        -c "select count(*) from pg_user where usename='{{ pgsq_replication_user_name }}'"
+      psql -U {{ pgsq_postgresql_db_user_name }} -d postgres -Atw \
+        -c "select count(*) from pg_user where usename='{{ pgsq_postgresql.cluster.replication_user.name }}'"
     changed_when: false
     register: replication_user_check
 
   - name: 1-0104-04_postgresql_replication - create replication user
     shell: >
-      psql -U {{ pgsq_db_user_name | default('postgres') }} -d postgres -Atw \
-        -c "CREATE ROLE {{ pgsq_replication_user_name }} REPLICATION NOCREATEDB NOCREATEROLE LOGIN PASSWORD '{{ pgsq_replication_user_password }}'"
+      psql -U {{ pgsq_postgresql_db_user_name }} -d postgres -Atw \
+        -c "CREATE ROLE {{ pgsq_postgresql.cluster.replication_user.name }} \ 
+            REPLICATION NOCREATEDB NOCREATEROLE LOGIN PASSWORD '{{ pgsq_postgresql.cluster.replication_user.password }}'"
     when: replication_user_check.stdout == "0"
   when:
-    - pgsq_server_role is defined
-    - pgsq_server_role == "master"
+    - pgsq_postgresql | has_nested_keys('cluster', 'server_role')
+    - pgsq_postgresql.cluster.server_role == "master"
 
 - name: 1-0104-04_postgresql_replication - check slave is replicated
   stat:
-    path: "/var/lib/pgsql/{{ pgsq_version }}/data/base"
+    path: "/var/lib/pgsql/{{ pgsq_postgresql.version }}/data/base"
   register: postgresql_slave_data_st
   when:
-    - pgsq_server_role is defined
-    - pgsq_server_role == "slave"
+    - pgsq_postgresql | has_nested_keys('cluster', 'server_role')
+    - pgsq_postgresql.cluster.server_role == "slave"
 
 - block:
   - name: 1-0104-04_postgresql_replication - delete home_dir/data
     file:
-      path: "/var/lib/pgsql/{{ pgsq_version }}/data/"
+      path: "/var/lib/pgsql/{{ pgsq_postgresql.version }}/data/"
       state: absent
 
   - name: 1-0104-04_postgresql_replication - execute pg_basebackup
     shell: >
-      /usr/pgsql-{{ pgsq_version }}/bin/pg_basebackup -h {{ pgsq_master_address }} \
-        -p {{ pgsq_master_port }} -x -D /var/lib/pgsql/{{ pgsq_version }}/data --checkpoint=fast -U replication -w
+      /usr/pgsql-{{ pgsq_postgresql.version }}/bin/pg_basebackup -h {{ pgsq_postgresql.cluster.master_address }} \
+        -p {{ pgsq_postgresql.cluster.master_port }} -x -D /var/lib/pgsql/{{ pgsq_postgresql.version }}/data --checkpoint=fast -U replication -w
     environment:
-      PGPASSWORD: "{{ pgsq_replication_user_password }}"
+      PGPASSWORD: "{{ pgsq_postgresql.cluster.replication_user.password }}"
     become: yes
     become_user: postgres
 
   - name: 1-0104-04_postgresql_replication - put recovery.conf
     template:
       src: recovery.conf.j2
-      dest: "/var/lib/pgsql/{{ pgsq_version }}/data/recovery.conf"
+      dest: "/var/lib/pgsql/{{ pgsq_postgresql.version }}/data/recovery.conf"
       owner: postgres
       group: postgres
       mode: "0600"
     notify: postgresql_service_restart
   when:
-    - pgsq_server_role is defined
-    - pgsq_server_role == "slave"
+    - pgsq_postgresql | has_nested_keys('cluster', 'server_role')
+    - pgsq_postgresql.cluster.server_role == "slave"
     - postgresql_slave_data_st.stat.exists == false
 

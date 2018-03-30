@@ -4,7 +4,7 @@
     register: installed
     changed_when: installed.rc == 1
     failed_when: installed.rc == 2
-    with_items: apac_apache.packages | default("")
+    with_items: "{{ apac_apache.packages | default([]) }}"
 
   - name: 1-0102-04_install_httpd2.4 - create temp directory
     file:
@@ -16,7 +16,7 @@
     copy:
       src: "../Shift_Env/files/{{ item.name }}"
       dest: "{{ apac_apache_tmp_dir }}"
-    with_items: apac_apache.packages | default("")
+    with_items: "{{ apac_apache.packages | default([]) }}"
     register: send_task
     when: installed | changed
 

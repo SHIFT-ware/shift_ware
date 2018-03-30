@@ -3,7 +3,7 @@ remote_tmp_dir: 'C:\.shift'
 BASE: 
 ADVANCED: 
   registry: 
-    - key: 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+    - key: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
       value: 
         - name: 'RegisteredOrganization'
           type: 'String'

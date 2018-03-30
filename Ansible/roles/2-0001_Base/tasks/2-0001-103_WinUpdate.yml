@@ -24,25 +24,10 @@
     flag: "1"
   when: windows_update == "disabled"
 
-- name: 2-0001-103_WinUpdate - create registry path
-  raw: if ( ! ( Test-Path '{{ location }}' ) ) { New-Item '{{ location }}' -Force }
-  always_run: yes
-
-- name: 2-0001-103_WinUpdate - check registry value
-  raw: (Get-ItemProperty '{{ location }}').AUOptions
-  register: ret_pre
-  changed_when: ret_pre.stdout != "{{ flag }}\r\n"
-  always_run: yes
-
 - name: 2-0001-103_WinUpdate - set registry value
-  raw: Set-ItemProperty '{{ location }}' AUOptions -Value '{{ flag }}' -Type DWord
-  when: ret_pre | changed
-  always_run: no
-
-- name: 2-0001-103_WinUpdate - post check registry value
-  raw: (Get-ItemProperty '{{ location }}').AUOptions
-  register: ret_post
-  failed_when: ret_post.stdout != "{{ flag }}\r\n"
-  when: ret_pre | changed
-  always_run: no
+  win_regedit:
+    path: "{{ location }}"
+    name: "AUOptions"
+    data: "{{ flag }}"
+    type: "dword"
 

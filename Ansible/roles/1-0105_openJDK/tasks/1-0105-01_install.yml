@@ -5,7 +5,7 @@
     register: installed
     changed_when: installed.rc == 1
     failed_when: installed.rc == 2
-    with_items: openjdk_packages | default("")
+    with_items: "{{ openjdk_packages | default([]) }}"
 
   - name: 1-0105-01_install - create tmp dir
     file:
@@ -17,8 +17,8 @@
     copy:
       src: "../Shift_Env/files/{{ item.name }}"
       dest: "{{ openjdk_tmp_dir }}"
-    with_items: openjdk_packages | default("")
     register: send_task
+    with_items: "{{ openjdk_packages | default([]) }}"
     when: installed | changed
 
   - name: 1-0105-01_install - update package

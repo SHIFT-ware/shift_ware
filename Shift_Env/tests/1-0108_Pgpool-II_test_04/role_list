@@ -1,1 +1,4 @@
-1-0108_Pgpool-II
+Ansible/roles/1-0108_Pgpool-II/tasks/1-0108-01_packages.yml
+Ansible/roles/1-0108_Pgpool-II/tasks/1-0108-02_create_user_and_groups.yml
+Ansible/roles/1-0108_Pgpool-II/tasks/1-0108-03_pgpool_config.yml
+Ansible/roles/1-0108_Pgpool-II/tasks/1-0108-04_post_tasks.yml

@@ -9,5 +9,5 @@
     home: '{{ item.home_dir | default(omit)}}'
     shell: '{{ item.shell | default(omit) }}'
     state: 'present'
-  with_items: base_base.ID.user
+  with_items: "{{ base_base.ID.user }}"
 

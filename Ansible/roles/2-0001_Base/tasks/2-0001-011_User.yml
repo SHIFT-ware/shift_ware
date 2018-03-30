@@ -2,12 +2,12 @@
 - name: 2-0001-011_User - define empty tmp variable
   set_fact:
     user: []
-  when: base_BASE.ID.user is undefined
+  when: not base_BASE | has_nested_keys('ID', 'user')
 
 - name: 2-0001-011_User - set tmp variable
   set_fact:
     user: "{{ base_BASE.ID.user }}"
-  when: base_BASE.ID.user is defined
+  when: base_BASE | has_nested_keys('ID', 'user')
 
 - name: 2-0001-011_User - modify user
   win_user:
@@ -19,5 +19,5 @@
     user_cannot_change_password: "{{ item.user_cannot_change_password | default(omit) }}"
     groups_action: replace
     state: present
-  with_items: user
+  with_items: "{{ user }}"
 

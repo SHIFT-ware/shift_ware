@@ -9,7 +9,7 @@
       src: ifcfg_for_RHEL6_master.j2
       dest: "/etc/sysconfig/network-scripts/ifcfg-{{ item.name }}"
       force: yes
-    with_items: bonding
+    with_items: "{{ bonding }}"
     notify: network_service_restart
     
   - name: 1-0001-39_Bonding - set slave device config
@@ -18,7 +18,7 @@
       dest: "/etc/sysconfig/network-scripts/ifcfg-{{ item.1.name }}"
       force: yes
     with_subelements:
-      - bonding
+      - "{{ bonding }}"
       - member_interface
     notify: network_service_restart
       
@@ -27,7 +27,7 @@
       line: 'alias {{ item.name }} bonding'
       dest: /etc/modprobe.d/bonding.conf
       create: yes
-    with_items: bonding
+    with_items: "{{ bonding }}"
     notify: network_service_restart
     
   - meta: flush_handlers
@@ -37,20 +37,20 @@
 - block:
   - name: 1-0001-39_Bonding - check bonding connection exists
     shell: nmcli c | grep "{{ item.name }}"
-    with_items: bonding
+    with_items: "{{ bonding }}"
     register: ret_pre
     changed_when: ret_pre.rc != 0
     failed_when: false
   
   - name: 1-0001-39_Bonding - create bonding connection
     shell: nmcli connection add type bond autoconnect no con-name "{{ item.item.name }}" ifname "{{ item.item.name }}" mode active-backup
-    with_items: ret_pre.results
+    with_items: "{{ ret_pre.results }}"
     when: item.changed == true
     notify: network_service_restart
   
   - name: 1-0001-39_Bonding - post check master connection exists
     shell: nmcli c | grep "{{ item.name }}"
-    with_items: bonding
+    with_items: "{{ bonding }}"
     register: ret_post
     changed_when: false
     failed_when: ret_post.rc != 0
@@ -58,7 +58,7 @@
   - name: 1-0001-39_Bonding - check slave connection exists
     shell: nmcli -f connection c s "bond-slave-{{ item.1.name }}"
     with_subelements:
-      - bonding
+      - "{{ bonding }}"
       - member_interface
     register: ret_pre
     changed_when: ret_pre.rc != 0
@@ -66,14 +66,14 @@
   
   - name: 1-0001-39_Bonding - create slave connection
     shell: nmcli connection add type bond-slave autoconnect no ifname "{{ item.item.1.name }}" master "{{ item.item.0.name }}"
-    with_items: ret_pre.results
+    with_items: "{{ ret_pre.results }}"
     when: item.changed == true
     notify: network_service_restart
   
   - name: 1-0001-39_Bonding - post check slave connection exists
     shell: nmcli -f connection c s "bond-slave-{{ item.1.name }}"
     with_subelements:
-      - bonding
+      - "{{ bonding }}"
       - member_interface
     register: ret_post
     changed_when: false
@@ -81,20 +81,20 @@
   
   - name: 1-0001-39_Bonding - check bonding connection is started automatically
     shell: nmcli -f connection c s "{{ item.name }}" | egrep '^connection.autoconnect:\s+yes$'
-    with_items: bonding
+    with_items: "{{ bonding }}"
     register: ret_pre
     changed_when: ret_pre.rc != 0
     failed_when: false
   
   - name: 1-0001-39_Bonding - set as bonding connection is started automatically
     shell: nmcli c m "{{ item.item.name }}" connection.autoconnect yes
-    with_items: ret_pre.results
+    with_items: "{{ ret_pre.results }}"
     when: item.changed == true
     notify: network_service_restart
   
   - name: 1-0001-39_Bonding - post check bonding connection is started automatically
     shell: nmcli -f connection c s "{{ item.name }}" | egrep '^connection.autoconnect:\s+yes$'
-    with_items: bonding
+    with_items: "{{ bonding }}"
     register: ret_post
     changed_when: false
     failed_when: ret_post.rc != 0
@@ -102,7 +102,7 @@
   - name: 1-0001-39_Bonding - check slave connection is started automatically
     shell: nmcli -f connection c s "bond-slave-{{ item.1.name }}" | egrep "^connection.autoconnect:\s+yes$"
     with_subelements:
-      - bonding
+      - "{{ bonding }}"
       - member_interface
     register: ret_pre
     changed_when: ret_pre.rc != 0
@@ -110,14 +110,14 @@
   
   - name: 1-0001-39_Bonding - set as slave connection is started automatically
     shell: nmcli c m "bond-slave-{{ item.item.1.name }}" connection.autoconnect yes
-    with_items: ret_pre.results
+    with_items: "{{ ret_pre.results }}"
     when: item.changed == true
     notify: network_service_restart
   
   - name: 1-0001-39_Bonding - post check bonding connection is started automatically
     shell: nmcli -f connection c s "bond-slave-{{ item.1.name }}" | egrep "^connection.autoconnect:\s+yes$"
     with_subelements:
-      - bonding
+      - "{{ bonding }}"
       - member_interface
     register: ret_post
     changed_when: false

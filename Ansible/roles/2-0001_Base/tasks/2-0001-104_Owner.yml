@@ -5,42 +5,16 @@
      location1: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
      location2: 'HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion'
 
-- name: 2-0001-104_Owner - create registry path
-  raw: if ( ! ( Test-Path '{{ item.location }}' )) { New-Item '{{ item.location }}' -Force }
-  with_items:
-    - location: '{{ location1 }}'
-    - location: '{{ location2 }}'
-  always_run: yes
-
-- name: 2-0001-104_Owner - check registry value
-  raw: (Get-ItemProperty '{{ item.location }}').'{{ item.property }}'
-  with_items:
-    - location: '{{ location1 }}'
-      property: "RegisteredOwner"
-      data: '{{ own }}'
-    - location: '{{ location2 }}'
-      property: "RegisteredOwner"
-      data: '{{ own }}'
-  register: ret_pre
-  changed_when: ret_pre.stdout != "{{ item.data }}\r\n"
-  always_run: yes
-
 - name: 2-0001-104_Owner - set registry value
-  raw: Set-ItemProperty '{{ item.item.location }}' '{{ item.item.property }}' -Value '{{ item.item.data }}' -Type String
-  with_items: ret_pre.results
-  when:
-    - item.changed == true
-  always_run: no
-
-- name: 2-0001-104_Owner - post check registry value
-  raw: (Get-ItemProperty '{{ item.location }}').'{{ item.property }}'
+  win_regedit:
+    path: "{{ item.location }}"
+    name: "{{ item.property }}"
+    data: "{{ item.data }}"
+    type: "string"
   with_items:
-    - location: '{{ location1 }}'
-      property: "RegisteredOwner"
-      data: '{{ own }}'
-    - location: '{{ location2 }}'
-      property: "RegisteredOwner"
-      data: '{{ own }}'
-  register: ret_post
-  changed_when: ret_post.stdout != "{{ item.data }}\r\n"
-  always_run: no
+  - location: '{{ location1 }}'
+    property: "RegisteredOwner"
+    data: '{{ own }}'
+  - location: '{{ location2 }}'
+    property: "RegisteredOwner"
+    data: '{{ own }}'

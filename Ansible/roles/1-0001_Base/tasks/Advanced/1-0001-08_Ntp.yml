@@ -2,14 +2,14 @@
   yum:
     name: ntp
     state: present
-  when: base_advanced.timeserver is defined
+  when: base_advanced | has_nested_keys('timeserver')
 
 - name: 1-0001-08_Ntp - start and enable service
   service:
     name: 'ntpd'
     state: 'started'
     enabled: 'yes'
-  when: base_advanced.timeserver is defined
+  when: base_advanced | has_nested_keys('timeserver')
 
 - name: 1-0001-08_Ntp - register ntp server
   lineinfile:
@@ -18,8 +18,8 @@
     line: "server {{ item.server }} iburst {% if item.prefer %}prefer{% endif %}"
     state: present
   notify: ntpd_restart
-  with_items: base_advanced.timeserver
-  when: base_advanced.timeserver is defined
+  with_items: "{{ base_advanced.timeserver }}"
+  when: base_advanced | has_nested_keys('timeserver')
 
 - name: 1-0001-09_NtpSlew - enable slew mode
   lineinfile:
@@ -27,9 +27,9 @@
     regexp: "^OPTIONS*"
     line: "OPTIONS=\"-x -u ntp:ntp -p /var/run/ntpd.pid -g\""
   notify: ntpd_restart
-  with_items: base_advanced.timeserver
+  with_items: "{{ base_advanced.timeserver }}"
   when:
-    - base_advanced.ntp_option is defined
+    - base_advanced | has_nested_keys('ntp_option')
     - base_advanced.ntp_option.slew == true
 
 - name: 1-0001-09_NtpSlew - disable slew mode
@@ -38,7 +38,7 @@
     regexp: "^OPTIONS=*"
     line: "OPTIONS=\"-u ntp:ntp -p /var/run/ntpd.pid -g\""
   notify: ntpd_restart
-  with_items: base_advanced.timeserver
+  with_items: "{{ base_advanced.timeserver }}"
   when:
-    - base_advanced.ntp_option is defined
+    - base_advanced | has_nested_keys('ntp_option')
     - base_advanced.ntp_option.slew == false
