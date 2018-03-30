@@ -1,30 +1,30 @@
 - block:
-  - name: 1-0102-06_install_vhosts2.4 - create dir of DocumentRoot for vhost
+  - name: 1-0102-06_install_vhosts - create dir of DocumentRoot for vhost
     file:
       path: "{{ item.DocumentRoot }}"
       state: directory
     with_items: "{{ apac_apache.virtualhost.vhosts | default([]) }}"
   
-  - name: 1-0102-06_install_vhosts2.4 - create dir of DocumentRoot for vhosts with ssl
+  - name: 1-0102-06_install_vhosts - create dir of DocumentRoot for vhosts with ssl
     file:
       path: "{{ item.DocumentRoot }}"
       state: directory
     with_items: "{{ apac_apache.virtualhost.ssl_vhosts | default([]) }}"
   
-  - name: 1-0102-06_install_vhosts2.4 - put httpd-vhosts.conf
+  - name: 1-0102-06_install_vhosts - put httpd-vhosts.conf
     template:
-      src: httpd24-vhosts.conf.j2
+      src: httpd-vhosts.conf.j2
       dest: /etc/httpd/conf/extra/httpd-vhosts.conf
     notify: restart httpd
 
-  - name: 1-0102-06_install_vhosts2.4 - put httpd-ssl.conf
+  - name: 1-0102-06_install_vhosts - put httpd-ssl.conf
     template:
-      src: httpd24-ssl.conf.j2
+      src: httpd-ssl.conf.j2
       dest: /etc/httpd/conf/extra/httpd-ssl.conf
     notify: restart httpd
     when: apac_apache | has_nested_keys("virtualhost", "ssl_vhosts")
 
-  - name: 1-0102-06_install_vhosts2.4 - put certificates when exec_user and exec_groups are defined
+  - name: 1-0102-06_install_vhosts - put certificates when exec_user and exec_groups are defined
     copy:
       src: "{{ item.SSLCertificateFile | basename }}"
       dest: "{{ item.SSLCertificateFile }}"
@@ -37,7 +37,7 @@
       - apac_apache.exec_groups is defined
       - apac_apache | has_nested_keys("exec_groups", "primary")
 
-  - name: 1-0102-06_install_vhosts2.4 - put certificates when exec_user and exec_groups are undefined
+  - name: 1-0102-06_install_vhosts - put certificates when exec_user and exec_groups are undefined
     copy:
       src: "{{ item.SSLCertificateFile | basename }}"
       dest: "{{ item.SSLCertificateFile }}"
@@ -48,7 +48,7 @@
         apac_apache.exec_groups is undefined or
         not apac_apache | has_nested_keys("exec_groups", "primary")
   
-  - name: 1-0102-06_install_vhosts2.4 - put private keys when exec_uesr and exec_groups are defined
+  - name: 1-0102-06_install_vhosts - put private keys when exec_uesr and exec_groups are defined
     copy:
       src: "{{ item.SSLCertificateKeyFile | basename }}"
       dest: "{{ item.SSLCertificateKeyFile }}"
@@ -61,7 +61,7 @@
       - apac_apache.exec_groups is defined
       - apac_apache | has_nested_keys("exec_groups", "primary")
 
-  - name: 1-0102-06_install_vhosts2.4 - put private keys when exec_uesr and exec_groups are defined
+  - name: 1-0102-06_install_vhosts - put private keys when exec_uesr and exec_groups are defined
     copy:
       src: "{{ item.SSLCertificateKeyFile | basename }}"
       dest: "{{ item.SSLCertificateKeyFile }}"
