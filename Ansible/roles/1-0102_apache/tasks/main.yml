@@ -1,6 +1,6 @@
 ---
 - include_tasks: 1-0102-01_create_user_and_groups.yml
-- include_tasks: 1-0102-04_install_httpd2.4.yml
-- include_tasks: 1-0102-05_install_mod_jk2.4.yml
-- include_tasks: 1-0102-06_install_vhosts2.4.yml
+- include_tasks: 1-0102-04_install_httpd.yml
+- include_tasks: 1-0102-05_install_mod_jk.yml
+- include_tasks: 1-0102-06_install_vhosts.yml
 - include_tasks: 1-0102-07_post_tasks.yml

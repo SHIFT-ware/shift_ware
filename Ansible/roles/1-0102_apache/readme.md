@@ -42,12 +42,6 @@ Red Hat Enterprise Linux|6.5
 remote_tmp_dir: "/root/.shift"
 
 apache:
-  packages:                                                        # インストールするパッケージ
-    - name: "apr-1.5.2-1.x86_64.rpm"
-    - name: "apr-util-1.5.4-1.x86_64.rpm"
-    - name: "mailcap-2.1.31-2.el6.noarch.rpm"
-    - name: "httpd-2.4.12-1.x86_64.rpm"
-    - name: "mod_ssl-2.4.12-1.x86_64.rpm"
   state: started                                                   # サービスの起動状態
   enabled: true                                                    # サービスの自動起動設定
   exec_user:                                                       # サービス実行ユーザ
@@ -147,7 +141,9 @@ apache:
 ```
 
 ### Please put package files
-本ロールでapacheをインストールするために、apache本体とモジュールのパッケージおよびその依存パッケージを以下のディレクトリに配置してください。また配置したパッケージ名をhost_varsにも記載ください。
+
+本ロールではApacheをyumでインストールします。tools/1-9908_RepoUp, tools/1-9910_RepofilePut を使って、yumリポジトリからhttpd、および必要ならばmod_sslパッケージを取得できるようにしておいてください。
+
 
 * Shift_Env/files
 

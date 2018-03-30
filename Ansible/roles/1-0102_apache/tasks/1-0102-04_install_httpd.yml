@@ -1,0 +1,66 @@
+- name: 1-0102-04_install_httpd - install package
+  yum:
+    name: httpd
+    state: present
+
+- name: 1-0102-04_install_httpd - install mod_ssl
+  yum:
+    name: mod_ssl
+    state: present
+  when: apac_apache | has_nested_keys('virtualhost', 'ssl_vhosts')
+
+- name: 1-0102-04_install_httpd - delete temp directory
+  file:
+    path: '{{ apac_apache_tmp_dir }}'
+    state: absent
+
+- name: 1-0102-04_install_httpd - put httpd.conf
+  template: 
+    src: httpd.conf.j2
+    dest: /etc/httpd/conf/httpd.conf
+  notify: restart httpd
+
+- name: 1-0102-04_install_httpd - put httpd-autoindex.conf
+  template:
+    src: httpd-autoindex.conf.j2
+    dest: /etc/httpd/conf/extra/httpd-autoindex.conf
+  notify: restart httpd
+  when: apac_apache.autoindex is defined
+
+- name: 1-0102-04_install_httpd - put httpd-mpm.conf
+  template:
+    src: httpd-mpm.conf.j2
+    dest: /etc/httpd/conf/extra/httpd-mpm.conf
+  notify: restart httpd
+  when: apac_apache.mpm is defined
+
+- name: 1-0102-04_install_httpd - put httpd-default.conf
+  template:
+    src: httpd-default.conf.j2
+    dest: /etc/httpd/conf/extra/httpd-default.conf
+  notify: restart httpd
+
+- name: 1-0102-04_install_httpd - put httpd-info.conf
+  template:
+    src: httpd-info.conf.j2
+    dest: /etc/httpd/conf/extra/httpd-info.conf
+  notify: restart httpd
+  when:
+    - apac_apache.visible_server_status is defined or
+      apac_apache.visible_server_info is defined
+
+- name: 1-0102-04_install_httpd - put httpd-languages.conf
+  template:
+    src: httpd-languages.conf.j2
+    dest: /etc/httpd/conf/extra/httpd-languages.conf
+  notify: restart httpd
+  when:
+    - apac_apache.is_default_charset_utf8 is defined or
+      apac_apache.is_1st_prior_language_ja is defined
+
+- name: 1-0102-04_install_httpd - put httpd-userdir.conf
+  template:
+    src: httpd-userdir.conf.j2
+    dest: /etc/httpd/conf/extra/httpd-userdir.conf
+  notify: restart httpd
+  when: apac_apache.disable_userdir is defined
