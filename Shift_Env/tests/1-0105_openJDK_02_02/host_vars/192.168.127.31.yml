@@ -1,6 +1,8 @@
 remote_tmp_dir: /root/.shift
 
 openjdk:
+  version: "1.8.0"
+  install_devel: yes
   packages:
     - name: "alsa-lib-1.0.22-3.el6.x86_64.rpm"
     - name: "fontconfig-2.8.0-5.el6.x86_64.rpm"
