@@ -42,14 +42,6 @@ postgreSQL のインストール、初期設定を構築します。本ロール
 パラメータ例:
 ```yml
 PostgreSQL:
-  packages:                                                      # インストールパッケージ
-    - name: 'postgresql94-server-9.4.10-1PGDG.rhel6.x86_64.rpm' 
-    - name: 'postgresql94-9.4.10-1PGDG.rhel6.x86_64.rpm'
-    - name: 'postgresql94-libs-9.4.10-1PGDG.rhel6.x86_64.rpm'
-    - name: 'postgresql94-contrib-9.4.10-1PGDG.rhel6.x86_64.rpm'
-    - name: 'postgresql94-devel-9.4.10-1PGDG.rhel6.x86_64.rpm'
-    - name: 'postgresql94-docs-9.4.10-1PGDG.rhel6.x86_64.rpm'
-    - name: 'libxslt-1.1.26-2.el6_3.1.x86_64.rpm'
   state: started                                                 # サービス起動状態
   enabled: yes                                                   # サービス自動起動設定
   exec_groups:                                                   # サービス起動ユーザ所属グループ
@@ -101,7 +93,7 @@ PostgreSQL:
 ```
 
 ### Please put package files
-本ロールでpostgreSQLをインストールするために、postgreSQL本体とその依存パッケージを以下のディレクトリに配置してください。また配置したパッケージ名をhost_varsにも記載ください。
+本ロールではHinemosAgentをyumでインストールします。tools/1-9908_RepoUp, tools/1-9910_RepofilePut を使って、yumリポジトリからインストーラパッケージpostgresql94、postgresql94-contrib、postgresql94-devel、postgresql94-docs、postgresql94-serverパッケージを取得できるようにしておいてください。
 
 * Shift_Env/files
 
