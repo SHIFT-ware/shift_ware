@@ -28,12 +28,7 @@ Red Hat Enterprise Linux|6.5
 remote_tmp_dir: "/root/.shift"                               # 一時ディレクトリのパス
 
 Pgpool:
-  packages:                                                  # pgpool-IIのパッケージおよび依存パッケージ
-    - name: libmemcached-0.31-1.1.el6.x86_64.rpm
-    - name: pgpool-II-pg94-3.4.8-1pgdg.rhel6.x86_64.rpm
-    - name: postgresql94-9.4.10-1PGDG.rhel6.x86_64.rpm
-    - name: postgresql94-libs-9.4.10-1PGDG.rhel6.x86_64.rpm
-    - name: postgresql-libs-8.4.20-6.el6.x86_64.rpm
+  postgresql_version: 9.4                                    # 使用するpostgresqlのバージョン
   state: started                                             # サービス起動状態
   enabled: yes                                               # サービス自動起動設定
   exec_groups:                                               # サービス起動ユーザ所属グループ
@@ -77,7 +72,8 @@ Pgpool:
 ```
 
 ### Please put package files
-本ロールでpgpool-IIをインストールするために、pgpool-II本体のパッケージおよびその依存パッケージを以下のディレクトリに配置してください。また配置したパッケージ名をhost_varsにも記載ください。
+本ロールではPgpool-IIをyumでインストールします。tools/1-9908_RepoUp, tools/1-9910_RepofilePut を使って、yumリポジトリからをpgpool-II-pgXXパッケージを取得できるようにしておいてください。
+
 
 - Shift_Env/files
 
