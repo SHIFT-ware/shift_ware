@@ -1,0 +1,21 @@
+[1-0001_Base_GROUP]
+{{ targets.centos6 }}  ansible_user=root  ansible_ssh_pass=password
+{{ targets.centos7 }}  ansible_user=root  ansible_ssh_pass=password
+
+[linux:children]
+1-0001_Base_GROUP
+1-0102_apache_GROUP
+1-0103_Tomcat_GROUP
+1-0104_postgreSQL_GROUP
+1-0105_openJDK_GROUP
+1-0106_PrivateCA_GROUP
+1-0108_Pgpool-II_GROUP
+1-1301_ZabbixAgent_GROUP
+[windows:children]
+2-0001_Base_GROUP
+[linux:vars]
+ansible_ssh_port = 22
+[windows:vars]
+ansible_ssh_port = 5986
+ansible_connection = winrm
+ansible_winrm_server_cert_validation = ignore
