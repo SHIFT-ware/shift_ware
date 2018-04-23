@@ -1,3 +1,4 @@
+test
 # SHIFT ware
 
 SHIFT wareはITインフラ構築・運用・保守作業を自動化するためのフレームワークです。Infrastructure as Codeの各技術要素に対する知識がない方でも簡単に利用できることを目指して開発されています。
