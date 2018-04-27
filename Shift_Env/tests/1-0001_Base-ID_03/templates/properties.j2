@@ -1,0 +1,16 @@
+{{ targets.centos6 }}:
+  connection_hostname: {{ targets.centos6 }}
+  operating_system: 'Linux'
+  BASE: 
+    ID: 
+      password_policy: 
+        max_days: 10000
+        min_days: 1
+{{ targets.centos7 }}:
+  connection_hostname: {{ targets.centos7 }}
+  operating_system: 'Linux'
+  BASE: 
+    ID: 
+      password_policy: 
+        max_days: 10000
+        min_days: 1
