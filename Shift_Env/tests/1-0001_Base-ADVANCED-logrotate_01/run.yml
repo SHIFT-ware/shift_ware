@@ -93,15 +93,13 @@
 - name: "Set host_vars/{{ targets.centos6 }}-2"
   template:
         src: "{{ test_directory }}/templates/centos6-2.j2"
-        dest: "{{ shiftware_directory }}/Shift_Env/host_vars/{{ tar
-gets.centos6 }}.yml"
+        dest: "{{ shiftware_directory }}/Shift_Env/host_vars/{{ targets.centos6 }}.yml"
 
 
 - name: "Set host_vars/{{ targets.centos7 }}-2"
   template:
         src: "{{ test_directory }}/templates/centos7-2.j2"
-        dest: "{{ shiftware_directory }}/Shift_Env/host_vars/{{ tar
-gets.centos7 }}.yml"
+        dest: "{{ shiftware_directory }}/Shift_Env/host_vars/{{ targets.centos7 }}.yml"
 
 
 - name: "Set properties-2"
