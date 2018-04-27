@@ -38,10 +38,10 @@
         chdir: "{{ shiftware_directory }}"
 
 - name: "01 Check Serverspec - CnetOS6"
-  shell: grep -E "OK=0," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos6 }}.csv
+  shell: grep -E "OK=2," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos6 }}.csv
 
 - name: "01 Check Serverspec - CentOS7"
-  shell: grep -E "OK=0," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos7 }}.csv
+  shell: grep -E "OK=2," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos7 }}.csv
 
 - name: "02 Run Ansible"
   shell: Shift_Bin/Ansible-play.sh run
