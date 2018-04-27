@@ -1,0 +1,46 @@
+{{ targets.centos6 }}:
+  connection_hostname: {{ targets.centos6 }}
+  operating_system: 'Linux'
+  BASE: 
+    ID: 
+      user: 
+        - name: 'user001'
+          uid: 501
+          group: 'groupe001'
+          home_dir: '/home/user001'
+          shell: '/bin/bash'
+          sub_groups: 'groupe002'
+        - name: 'user002'
+          uid: 502
+          group: 'root'
+          home_dir: '/home/user002'
+          shell: '/bin/bash'
+          sub_groups: 'groupe001,groupe002'
+      user_group: 
+        - name: 'groupe001'
+          gid: 503
+        - name: 'groupe002'
+          gid: 504
+{{ targets.centos7 }}:
+  connection_hostname: {{ targets.centos7 }}
+  operating_system: 'Linux'
+  BASE: 
+    ID: 
+      user: 
+        - name: 'user001'
+          uid: 501
+          group: 'groupe001'
+          home_dir: '/home/user001'
+          shell: '/bin/bash'
+          sub_groups: 'groupe002'
+        - name: 'user002'
+          uid: 502
+          group: 'root'
+          home_dir: '/home/user002'
+          shell: '/bin/bash'
+          sub_groups: 'groupe001,groupe002'
+      user_group: 
+        - name: 'groupe001'
+          gid: 503
+        - name: 'groupe002'
+gid: 504
