@@ -160,9 +160,7 @@ gets.centos7 }}.yml"
   shell: grep -E "{{ targets.centos6 }}\s*:\s*ok=[0-9]{1,3}\s*changed=0\s*unreachable=0\s*failed=0" {{ shiftware_directory }}/Shift_Log/Ansible.log
 
 - name: "08 Check Ansible - CentOS7"
-  shell: grep -E "{{ targets.centos7 }}\s*:\s*ok=[0-9]{1,3}\s*chang
-ed=0\s*unreachable=0\s*failed=0" {{ shiftware_directory }}/Shift_Lo
-g/Ansible.log
+  shell: grep -E "{{ targets.centos7 }}\s*:\s*ok=[0-9]{1,3}\s*changed=0\s*unreachable=0\s*failed=0" {{ shiftware_directory }}/Shift_Log/Ansible.log
 
 
 - name: "09 Run Serverspec"
