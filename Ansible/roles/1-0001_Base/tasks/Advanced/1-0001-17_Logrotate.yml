@@ -1,4 +1,5 @@
 ---
+
 - name: 1-0001-17_Logrotate - set rotate_cycle={{ base_advanced.logrotate_basic_option.cycle }}
   lineinfile:
     dest: /etc/logrotate.conf
