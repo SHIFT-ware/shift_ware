@@ -1,4 +1,4 @@
-connection_hostname: '192.168.127.31'
+connection_hostname: {{ targets.centos6 }}
 remote_tmp_dir: '~root/.shift'
 BASE: 
 ADVANCED:
@@ -8,4 +8,3 @@ ADVANCED:
     create: True
     add_date: True
     compress: True
-

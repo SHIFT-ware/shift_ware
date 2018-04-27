@@ -1,0 +1,177 @@
+- debug:
+        msg: "{{ test_case }} Start"
+
+
+- name: "Set host_vars/{{ targets.centos6 }}"
+  template:
+        src: "{{ test_directory }}/templates/centos6.j2"
+        dest: "{{ shiftware_directory }}/Shift_Env/host_vars/{{ targets.centos6 }}.yml"
+
+
+- name: "Set host_vars/{{ targets.centos7 }}"
+  template:
+        src: "{{ test_directory }}/templates/centos7.j2"
+        dest: "{{ shiftware_directory }}/Shift_Env/host_vars/{{ targets.centos7 }}.yml"
+
+
+- name: "Set properties"
+  template:
+        src: "{{ test_directory }}/templates/properties.j2"
+        dest: "{{ shiftware_directory }}/Shift_Env/properties.yml"
+
+
+- name: "Set Ansible.1.inventory"
+  template:
+        src: "{{ test_directory }}/templates/Ansible.1.inventory.j2"
+        dest: "{{ shiftware_directory }}/Shift_Env/Ansible.1.inventory"
+
+
+- name: "Set Serverspec.1.inventory"
+  template:
+        src: "{{ test_directory }}/templates/Serverspec.1.inventory.j2"
+        dest: "{{ shiftware_directory }}/Shift_Env/Serverspec.1.inventory"
+
+
+- name: "01 Run Serverspec"
+  shell: Shift_Bin/Spec-play.sh run
+  args:
+        chdir: "{{ shiftware_directory }}"
+
+- name: "01 Check Serverspec - CnetOS6"
+  shell: grep -E "OK=0," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos6 }}.csv
+
+- name: "01 Check Serverspec - CentOS7"
+  shell: grep -E "OK=0," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos7 }}.csv
+
+- name: "02 Run Ansible"
+  shell: Shift_Bin/Ansible-play.sh run
+  args:
+        chdir: "{{ shiftware_directory }}"
+
+- name: "02 Check Ansible - CentOS6"
+  shell: grep -E "{{ targets.centos6 }}\s*:\s*ok=[0-9]{1,3}\s*changed=[0-9]{1,3}\s*unreachable=0\s*failed=0" {{ shiftware_directory }}/Shift_Log/Ansible.log
+
+- name: "02 Check Ansible - CentOS7"
+  shell: grep -E "{{ targets.centos7 }}\s*:\s*ok=[0-9]{1,3}\s*changed=[0-9]{1,3}\s*unreachable=0\s*failed=0" {{ shiftware_directory }}/Shift_Log/Ansible.log
+
+
+- name: "03 Run Serverspec"
+  shell: Shift_Bin/Spec-play.sh run
+  args:
+        chdir: "{{ shiftware_directory }}"
+
+- name: "03 Check Serverspec - CnetOS6"
+  shell: grep -E "NG=0," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos6 }}.csv
+
+- name: "03 Check Serverspec - CentOS7"
+  shell: grep -E "NG=0," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos7 }}.csv
+
+- name: "04 Run Ansible"
+  shell: Shift_Bin/Ansible-play.sh run
+  args:
+        chdir: "{{ shiftware_directory }}"
+
+- name: "04 Check Ansible - CentOS6"
+  shell: grep -E "{{ targets.centos6 }}\s*:\s*ok=[0-9]{1,3}\s*changed=0\s*unreachable=0\s*failed=0" {{ shiftware_directory }}/Shift_Log/Ansible.log
+
+- name: "04 Check Ansible - CentOS7"
+  shell: grep -E "{{ targets.centos7 }}\s*:\s*ok=[0-9]{1,3}\s*changed=0\s*unreachable=0\s*failed=0" {{ shiftware_directory }}/Shift_Log/Ansible.log
+
+
+- name: "05 Run Serverspec"
+  shell: Shift_Bin/Spec-play.sh run
+  args:
+        chdir: "{{ shiftware_directory }}"
+
+- name: "05 Check Serverspec - CnetOS6"
+  shell: grep -E "NG=0," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos6 }}.csv
+
+- name: "05 Check Serverspec - CentOS7"
+  shell: grep -E "NG=0," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos7 }}.csv
+
+
+- name: "Set host_vars/{{ targets.centos6 }}-2"
+  template:
+        src: "{{ test_directory }}/templates/centos6-2.j2"
+        dest: "{{ shiftware_directory }}/Shift_Env/host_vars/{{ tar
+gets.centos6 }}.yml"
+
+
+- name: "Set host_vars/{{ targets.centos7 }}-2"
+  template:
+        src: "{{ test_directory }}/templates/centos7-2.j2"
+        dest: "{{ shiftware_directory }}/Shift_Env/host_vars/{{ tar
+gets.centos7 }}.yml"
+
+
+- name: "Set properties-2"
+  template:
+        src: "{{ test_directory }}/templates/properties-2.j2"
+        dest: "{{ shiftware_directory }}/Shift_Env/properties.yml"
+
+- name: "06 Run Ansible"
+  shell: Shift_Bin/Ansible-play.sh run
+  args:
+        chdir: "{{ shiftware_directory }}"
+
+- name: "06 Check Ansible - CentOS6"
+  shell: grep -E "{{ targets.centos6 }}\s*:\s*ok=[0-9]{1,3}\s*changed=0\s*unreachable=0\s*failed=0" {{ shiftware_directory }}/Shift_Log/Ansible.log
+
+- name: "06 Check Ansible - CentOS7"
+  shell: grep -E "{{ targets.centos7 }}\s*:\s*ok=[0-9]{1,3}\s*changed=0\s*unreachable=0\s*failed=0" {{ shiftware_directory }}/Shift_Log/Ansible.log
+
+
+- name: "07 Run Serverspec"
+  shell: Shift_Bin/Spec-play.sh run
+  args:
+        chdir: "{{ shiftware_directory }}"
+
+- name: "07 Check Serverspec - CnetOS6"
+  shell: grep -E "NG=0," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos6 }}.csv
+
+- name: "07 Check Serverspec - CentOS7"
+  shell: grep -E "NG=0," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos7 }}.csv
+
+
+- name: "Set host_vars/{{ targets.centos6 }}-3"
+  template:
+        src: "{{ test_directory }}/templates/centos6-3.j2"
+        dest: "{{ shiftware_directory }}/Shift_Env/host_vars/{{ targets.centos6 }}.yml"
+
+
+- name: "Set host_vars/{{ targets.centos7 }}-3"
+  template:
+        src: "{{ test_directory }}/templates/centos7-3.j2"
+        dest: "{{ shiftware_directory }}/Shift_Env/host_vars/{{ targets.centos7 }}.yml"
+
+
+- name: "Set properties-3"
+  template:
+        src: "{{ test_directory }}/templates/properties-3.j2"
+        dest: "{{ shiftware_directory }}/Shift_Env/properties.yml"
+
+
+- name: "08 Run Ansible"
+  shell: Shift_Bin/Ansible-play.sh run
+  args:
+        chdir: "{{ shiftware_directory }}"
+
+- name: "08 Check Ansible - CentOS6"
+  shell: grep -E "{{ targets.centos6 }}\s*:\s*ok=[0-9]{1,3}\s*changed=0\s*unreachable=0\s*failed=0" {{ shiftware_directory }}/Shift_Log/Ansible.log
+
+- name: "08 Check Ansible - CentOS7"
+  shell: grep -E "{{ targets.centos7 }}\s*:\s*ok=[0-9]{1,3}\s*chang
+ed=0\s*unreachable=0\s*failed=0" {{ shiftware_directory }}/Shift_Lo
+g/Ansible.log
+
+
+- name: "09 Run Serverspec"
+  shell: Shift_Bin/Spec-play.sh run
+  args:
+        chdir: "{{ shiftware_directory }}"
+
+- name: "09 Check Serverspec - CnetOS6"
+  shell: grep -E "NG=2," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos6 }}.csv
+
+- name: "09 Check Serverspec - CentOS7"
+  shell: grep -E "NG=2," {{ shiftware_directory }}/Shift_Log/Serverspec_Result_{{ targets.centos7 }}.csv

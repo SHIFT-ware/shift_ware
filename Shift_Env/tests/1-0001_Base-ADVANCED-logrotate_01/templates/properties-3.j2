@@ -1,17 +1,16 @@
-192.168.127.31:
-  connection_hostname: '192.168.127.31'
+{{ targets.centos6 }}:
+  connection_hostname: {{ targets.centos6 }}
   operating_system: 'Linux'
   BASE: 
   ADVANCED:
     logrotate_files: 
       - path: '/var/log/wtmp2'
       - path: '/var/log/btmp2'
-192.168.127.41:
-  connection_hostname: '192.168.127.41'
+{{ targets.centos7 }}:
+  connection_hostname: {{ targets.centos7 }}
   operating_system: 'Linux'
   BASE: 
   ADVANCED:
     logrotate_files: 
       - path: '/var/log/wtmp2'
       - path: '/var/log/btmp2'
-

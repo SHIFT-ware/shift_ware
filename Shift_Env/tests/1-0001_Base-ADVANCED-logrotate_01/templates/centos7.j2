@@ -1,4 +1,4 @@
-connection_hostname: '192.168.127.31'
+connection_hostname: {{ targets.centos7 }}
 remote_tmp_dir: '~root/.shift'
 BASE: 
 ADVANCED:
@@ -11,4 +11,3 @@ ADVANCED:
   logrotate_files: 
     - path: '/var/log/wtmp'
     - path: '/var/log/btmp'
-
