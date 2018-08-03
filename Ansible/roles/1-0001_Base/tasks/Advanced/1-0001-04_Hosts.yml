@@ -11,6 +11,6 @@
     dest: '/etc/hosts'
     state: present
     line: "{{ item.ip }}     {{ item.server }}"
-  with_items: base_advanced.name_resolve.hosts_records
+  with_items: "{{ base_advanced.name_resolve.hosts_records }}" 
   when: base_advanced | has_nested_keys('name_resolve', 'hosts_records')
 

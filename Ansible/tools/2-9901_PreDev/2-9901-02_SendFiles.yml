@@ -3,6 +3,6 @@
   win_copy:
     src: 'files/{{ item }}'
     dest: '{{ remote_tmp_dir }}/'
-  with_items: tool_list
+  with_items: "{{ tool_list }}"
   when: tool_list is defined
 

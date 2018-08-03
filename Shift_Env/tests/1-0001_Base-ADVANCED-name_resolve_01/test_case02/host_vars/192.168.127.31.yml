@@ -5,6 +5,9 @@ BASE:
     version: '6.5'
 ADVANCED:
   name_resolve:
+    hosts_records:
+      - server: 'target31'
+        ip: '192.168.127.31'
     name_server:
       - server: '192.168.0.5,192.168.0.6'
         interface: 'ens161'
