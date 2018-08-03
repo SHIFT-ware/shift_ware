@@ -4,11 +4,11 @@ cd ${WORKSPACE}/shift
 
 # Serverspecが全てNG
 echo 01
-grep -E "NG=7," Shift_Log/Shift.7/Serverspec_Result_192.168.127.31.csv
+grep -E "NG=8," Shift_Log/Shift.7/Serverspec_Result_192.168.127.31.csv
 result01=$?
 
 echo 02
-grep -E "NG=7," Shift_Log/Shift.7/Serverspec_Result_192.168.127.41.csv
+grep -E "NG=8," Shift_Log/Shift.7/Serverspec_Result_192.168.127.41.csv
 result02=$?
 
 
