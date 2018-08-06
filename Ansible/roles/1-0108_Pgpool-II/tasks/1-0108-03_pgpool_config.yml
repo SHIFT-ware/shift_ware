@@ -32,7 +32,7 @@
   with_items: "{{ pgpl_pgpool.pool_hba | default([]) }}"
   when: item.type != "local"
 
-- include: config_pool_passwd.yml
+- include_tasks: config_pool_passwd.yml
   with_items: "{{ pgpl_pgpool.pool_passwd | default([]) }}"
 
 - name: 1-0108-03_pgpool_config - set owner of config files

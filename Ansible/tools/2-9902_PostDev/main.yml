@@ -5,8 +5,8 @@
   vars_files:
     - var.yml
   tasks:
-    - include: 2-9902-01_RemoveTmp.yml
-    - include: 2-9902-02_RemoveHotfix.yml
+    - import_tasks: 2-9902-01_RemoveTmp.yml
+    - import_tasks: 2-9902-02_RemoveHotfix.yml
       when: ansible_distribution_version | match("6\.2.*")
   handlers:
     - name: server_restart_for_Win

@@ -1,5 +1,5 @@
 ---
-- include_tasks: 1-1201-01_install.yml
+- import_tasks: 1-1201-01_install.yml
   when: hinemos_agent is defined
-- include_tasks: 1-1201-02_post_tasks.yml
+- import_tasks: 1-1201-02_post_tasks.yml
   when: hinemos_agent | has_nested_keys("hinemos_node")

@@ -6,12 +6,12 @@
     - ../1-9901_PreDev/var.yml
     - var.yml
   tasks:
-    - include: 1-9902-04_TmpDir.yml
-    - include: 1-9902-08_SshConfig.yml
-    - include: 1-9902-07_SudoAuth.yml
-    - include: 1-9902-02_User.yml
-    - include: 1-9902-01_Selinux.yml
-    - include: 1-9902-09_DeleteKeys.yml
+    - import_tasks: 1-9902-04_TmpDir.yml
+    - import_tasks: 1-9902-08_SshConfig.yml
+    - import_tasks: 1-9902-07_SudoAuth.yml
+    - import_tasks: 1-9902-02_User.yml
+    - import_tasks: 1-9902-01_Selinux.yml
+    - import_tasks: 1-9902-09_DeleteKeys.yml
   handlers:
     - name: server_restart_for_RHEL6
       command: shutdown -r now
