@@ -1,73 +1,73 @@
 ---
-- include_tasks: 2-0001-107_PsExecPolicy.yml
+- import_tasks: 2-0001-107_PsExecPolicy.yml
 
-- include_tasks: 2-0001-075_Teaming.yml
+- import_tasks: 2-0001-075_Teaming.yml
   when: base_NETWORK | has_nested_keys('teaming')
 
-- include_tasks: 2-0001-072_Interface.yml
+- import_tasks: 2-0001-072_Interface.yml
   when: base_NETWORK | has_nested_keys('eth')
 
-- include_tasks: 2-0001-073_Routing.yml
+- import_tasks: 2-0001-073_Routing.yml
   when:
     - base_NETWORK | has_nested_keys('default_gw')  or
       base_NETWORK | has_nested_keys('static_routing')
 
-- include_tasks: 2-0001-079_NameResolve.yml
+- import_tasks: 2-0001-079_NameResolve.yml
   when: base_NETWORK | has_nested_keys('name_resolve')
 
-- include_tasks: 2-0001-074_Firewall.yml
+- import_tasks: 2-0001-074_Firewall.yml
   when: base_NETWORK | has_nested_keys('firewall')
 
-- include_tasks: 2-0001-077_IPv6Disable.yml
+- import_tasks: 2-0001-077_IPv6Disable.yml
   when: base_NETWORK | has_nested_keys('ipv6')
 
-- include_tasks: 2-0001-012_UserGroup.yml
+- import_tasks: 2-0001-012_UserGroup.yml
 
-- include_tasks: 2-0001-011_User.yml
+- import_tasks: 2-0001-011_User.yml
 
-- include_tasks: 2-0001-076_Domain.yml
+- import_tasks: 2-0001-076_Domain.yml
   when: base_NETWORK | has_nested_keys('domain')
 
-- include_tasks: 2-0001-071_Hostname.yml
+- import_tasks: 2-0001-071_Hostname.yml
   when: base_NETWORK | has_nested_keys('hostname')
 
-- include_tasks: 2-0001-078_DnsSuffix.yml
+- import_tasks: 2-0001-078_DnsSuffix.yml
   when: base_NETWORK | has_nested_keys('dns_suffix')
 
-- include_tasks: 2-0001-095_Feature.yml
+- import_tasks: 2-0001-095_Feature.yml
   when: base_ADVANCED | has_nested_keys('feature')
 
-- include_tasks: 2-0001-096_Service.yml
+- import_tasks: 2-0001-096_Service.yml
 
-- include_tasks: 2-0001-051_Directory.yml
+- import_tasks: 2-0001-051_Directory.yml
 
-- include_tasks: 2-0001-102_ErrorReport.yml
+- import_tasks: 2-0001-102_ErrorReport.yml
   when: base_ADVANCED | has_nested_keys('error_report')
 
-- include_tasks: 2-0001-105_EventLog.yml
+- import_tasks: 2-0001-105_EventLog.yml
   when: base_ADVANCED | has_nested_keys('eventlog')
 
-- include_tasks: 2-0001-002_Memory.yml
+- import_tasks: 2-0001-002_Memory.yml
   when: base_BASE | has_nested_keys('HW', 'memory')
 
-- include_tasks: 2-0001-104_Owner.yml
+- import_tasks: 2-0001-104_Owner.yml
   when: base_ADVANCED | has_nested_keys('owner')
 
-- include_tasks: 2-0001-109_Organization.yml
+- import_tasks: 2-0001-109_Organization.yml
   when: base_ADVANCED | has_nested_keys('organization')
 
-- include_tasks: 2-0001-098_Rdp.yml
+- import_tasks: 2-0001-098_Rdp.yml
 
-- include_tasks: 2-0001-025_RecoverOs.yml
+- import_tasks: 2-0001-025_RecoverOs.yml
   when: base_BASE | has_nested_keys('OSCORE', 'recover_os')
 
-- include_tasks: 2-0001-106_Registry.yml
+- import_tasks: 2-0001-106_Registry.yml
 
-- include_tasks: 2-0001-024_Timezone.yml
+- import_tasks: 2-0001-024_Timezone.yml
   when: base_BASE | has_nested_keys('OSCORE', 'timezone')
 
-- include_tasks: 2-0001-013_Uac.yml
+- import_tasks: 2-0001-013_Uac.yml
   when: base_BASE | has_nested_keys('ID', 'uac')
 
-- include_tasks: 2-0001-103_WinUpdate.yml
+- import_tasks: 2-0001-103_WinUpdate.yml
   when: base_ADVANCED | has_nested_keys('windows_update')

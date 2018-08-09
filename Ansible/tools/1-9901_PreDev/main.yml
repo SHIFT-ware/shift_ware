@@ -5,12 +5,12 @@
   vars_files:
     - var.yml
   tasks:
-    - include: 1-9901-01_Selinux.yml
-    - include: 1-9901-02_User.yml
-    - include: 1-9901-07_SudoAuth.yml
-    - include: 1-9901-03_SshKey.yml
-    - include: 1-9901-08_SshConfig.yml
-    - include: 1-9901-04_TmpDir.yml
+    - import_tasks: 1-9901-01_Selinux.yml
+    - import_tasks: 1-9901-02_User.yml
+    - import_tasks: 1-9901-07_SudoAuth.yml
+    - import_tasks: 1-9901-03_SshKey.yml
+    - import_tasks: 1-9901-08_SshConfig.yml
+    - import_tasks: 1-9901-04_TmpDir.yml
 
   handlers:
     - name: sshd_service_restart

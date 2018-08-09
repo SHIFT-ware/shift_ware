@@ -1,2 +1,2 @@
 ---
-- include_tasks: 1-0105-01_install.yml
+- import_tasks: 1-0105-01_install.yml

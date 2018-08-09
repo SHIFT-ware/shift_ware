@@ -1,5 +1,5 @@
 ---
-- include_tasks: 1-0108-01_packages.yml
-- include_tasks: 1-0108-02_create_user_and_groups.yml
-- include_tasks: 1-0108-03_pgpool_config.yml
-- include_tasks: 1-0108-04_post_tasks.yml
+- import_tasks: 1-0108-01_packages.yml
+- import_tasks: 1-0108-02_create_user_and_groups.yml
+- import_tasks: 1-0108-03_pgpool_config.yml
+- import_tasks: 1-0108-04_post_tasks.yml

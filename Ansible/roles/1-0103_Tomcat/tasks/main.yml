@@ -1,4 +1,4 @@
 ---
-- include_tasks: 1-0103-01_create_user_and_groups.yml
-- include_tasks: 1-0103-02_configure.yml
-- include_tasks: 1-0103-03_post_tasks.yml
+- import_tasks: 1-0103-01_create_user_and_groups.yml
+- import_tasks: 1-0103-02_configure.yml
+- import_tasks: 1-0103-03_post_tasks.yml

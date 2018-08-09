@@ -5,9 +5,9 @@
   vars_files:
     - var.yml
   tasks:
-    - include: 2-9901-01_CreateTmp.yml
-    - include: 2-9901-02_SendFiles.yml
-    - include: 2-9901-03_ApplyHotfix.yml
+    - import_tasks: 2-9901-01_CreateTmp.yml
+    - import_tasks: 2-9901-02_SendFiles.yml
+    - import_tasks: 2-9901-03_ApplyHotfix.yml
       when: ansible_distribution_version | match("6\.2.*")
   handlers:
     - name: server_restart_for_Win
